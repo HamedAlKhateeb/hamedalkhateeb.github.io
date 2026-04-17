@@ -13,6 +13,8 @@ const Header: QuartzComponent = ({ displayName, fileData, cfg, tree }: QuartzCom
           <a href="/Programming">برمجة</a>
           <a href="/Experiences">تجارب</a>
           <a href="/Personal">شخصي</a>
+          <a href="/Poetry">أشعاري</a>
+          <a href="/Archive">مقالات قديمة</a>
           <a href="/About">من أنا</a>
         </nav>
       </div>

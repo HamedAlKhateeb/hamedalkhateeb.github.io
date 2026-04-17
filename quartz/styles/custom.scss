@@ -1,14 +1,23 @@
 @use "./base.scss";
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap');
 
 :root {
   direction: rtl;
 }
 
 body, html {
-  font-family: 'IBM Plex Sans Arabic', 'Amiri', sans-serif;
+  font-family: var(--bodyFont);
   text-align: right;
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--light);
+  color: var(--dark);
+}
+
+h1, h2, h3, h4, h5, h6, .title {
+  font-family: var(--headerFont);
+}
+
+label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
 }
 
 .page {

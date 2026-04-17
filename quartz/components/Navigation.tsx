@@ -9,6 +9,8 @@ const Navigation: QuartzComponent = ({ displayClass }: QuartzComponentProps) => 
         <li class="separator">✧</li>
         <li><a href="/tags/خواطر">خواطر</a></li>
         <li class="separator">✧</li>
+        <li><a href="/tags/أشعاري">أشعاري</a></li>
+        <li class="separator">✧</li>
         <li><a href="/tags/عن-المدونة">عن المدونة</a></li>
       </ul>
     </nav>
