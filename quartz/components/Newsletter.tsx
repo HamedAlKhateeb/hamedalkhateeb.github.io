@@ -6,7 +6,7 @@ const Newsletter: QuartzComponent = ({ displayClass }: QuartzComponentProps) => 
     <div class={classNames(displayClass, "newsletter-section")}>
       <div class="newsletter-content">
         <h3>ابق على اطلاع</h3>
-        <p>مقالات جديدة كل شهر في الرياضيات والخوارزميات وتاريخ الأفكار بدون إزعاج.</p>
+        <p>حديثٌ ذو شجون، وأنيسٌ لا يخون</p>
         <form action="#" method="POST" class="newsletter-form">
           <button type="submit">اشتراك</button>
           <input type="email" placeholder="بريدك الإلكتروني" required />
