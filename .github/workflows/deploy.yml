@@ -1,8 +1,5 @@
 name: Deploy Quartz site to GitHub Pages
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 on:
   push:
     branches:
@@ -22,11 +19,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # تأكد أنها v4
+        uses: actions/checkout@v6 # التحديث إلى v6 لدعم Node.js 24 وتجنب التحذير
         with:
           fetch-depth: 0
       - name: Setup Node.js
-        uses: actions/setup-node@v4 # تأكد أنها v4
+        uses: actions/setup-node@v6 # التحديث إلى v6 لدعم Node.js 24 وتجنب التحذير
         with:
           node-version: '24' # حدد الإصدار الذي تريده لمشروعك هنا
       - name: Install Dependencies
