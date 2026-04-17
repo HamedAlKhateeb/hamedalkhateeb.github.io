@@ -5,8 +5,6 @@ const Navigation: QuartzComponent = ({ displayClass }: QuartzComponentProps) => 
   return (
     <nav class={classNames(displayClass, "top-navigation")}>
       <ul>
-        <li><a href="/">الرئيسية</a></li>
-        <li class="separator">✧</li>
         <li><a href="/tags/مقالات">مقالات</a></li>
         <li class="separator">✧</li>
         <li><a href="/tags/خواطر">خواطر</a></li>
