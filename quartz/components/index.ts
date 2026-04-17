@@ -51,3 +51,6 @@ export {
   Flex,
   ConditionalRender,
 }
+
+export { default as Navigation } from './Navigation'
+export { default as Newsletter } from './Newsletter'

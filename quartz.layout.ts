@@ -4,8 +4,13 @@ import * as Component from "./quartz/components"
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
-  header: [],
-  afterBody: [],
+  header: [
+    Component.PageTitle(),
+    Component.Navigation(),
+  ],
+  afterBody: [
+    Component.Newsletter(),
+  ],
   footer: Component.Footer({
     links: {},
   }),
@@ -18,30 +23,13 @@ export const defaultContentPageLayout: PageLayout = {
     Component.ContentMeta(),
     Component.TagList(),
   ],
-  left: [
-    Component.PageTitle(),
-    Component.Search(), // البحث أسفل العنوان/الهيدر
-    Component.Darkmode(), // وضع في الجانب للحفاظ على البساطة
-  ],
-  right: [], // إفراغ الجانب الأيمن تماماً للتركيز على المحتوى
+  left: [],
+  right: [],
 }
 
 // components for pages that display lists of pages  (e.g. tags or folders)
 export const defaultListPageLayout: PageLayout = {
   beforeBody: [Component.Breadcrumbs(), Component.ArticleTitle(), Component.ContentMeta()],
-  left: [
-    Component.PageTitle(),
-    Component.MobileOnly(Component.Spacer()),
-    Component.Flex({
-      components: [
-        {
-          Component: Component.Search(),
-          grow: true,
-        },
-        { Component: Component.Darkmode() },
-      ],
-    }),
-    Component.Explorer(),
-  ],
+  left: [],
   right: [],
 }

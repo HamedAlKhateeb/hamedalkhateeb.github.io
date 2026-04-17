@@ -12,7 +12,9 @@ body, html {
 }
 
 .page {
-  justify-content: flex-start; // تشفيت المحتوى لليمين
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 // تنسيق الهيدرز (Navbar)
