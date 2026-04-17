@@ -8,7 +8,6 @@ import { htmlToJsx } from "../../util/jsx"
 import { i18n } from "../../i18n"
 import { ComponentChildren } from "preact"
 import { concatenateResources } from "../../util/resources"
-import Navigation from "../Navigation"
 
 interface TagContentOptions {
   sort?: SortFn
@@ -114,18 +113,12 @@ export default ((opts?: Partial<TagContentOptions>) => {
         ...props,
         allFiles: pages,
       }
-
-      const NavComponent = Navigation()
       
       return (
         <section class="page-container">
           <header class="main-header">
             <h1 class="title">{`الوسم: ${tag}`}</h1>
             {fileData.description && <p class="subtitle">{fileData.description}</p>}
-
-            <div class="headers-container">
-              <NavComponent {...props} />
-            </div>
 
             <p class="meta-data">{pages.length} مقال</p>
           </header>
@@ -138,7 +131,7 @@ export default ((opts?: Partial<TagContentOptions>) => {
     }
   }
 
-  TagContent.css = concatenateResources(style, PageList.css, Navigation.css, `
+  TagContent.css = concatenateResources(style, PageList.css, `
 .page-container {
   max-width: 900px;
   margin: 0 auto;
@@ -166,14 +159,6 @@ export default ((opts?: Partial<TagContentOptions>) => {
 .headers-container {
   margin: 20px 0;
   width: 100%;
-}
-
-.headers-container .top-navigation {
-  margin: 0;
-}
-.headers-container .top-navigation ul {
-  border: none;
-  background: var(--lightgray);
 }
 
 .meta-data {

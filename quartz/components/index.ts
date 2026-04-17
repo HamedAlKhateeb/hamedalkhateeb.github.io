@@ -52,7 +52,6 @@ export {
   ConditionalRender,
 }
 
-export { default as Navigation } from './Navigation'
 export { default as Newsletter } from './Newsletter'
 export { default as ControlPanel } from './ControlPanel'
 export { default as ArticleFooter } from './ArticleFooter'

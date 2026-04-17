@@ -9,7 +9,6 @@ import { QuartzPluginData } from "../../plugins/vfile"
 import { ComponentChildren } from "preact"
 import { concatenateResources } from "../../util/resources"
 import { trieFromAllFiles } from "../../util/ctx"
-import Navigation from "../Navigation"
 
 interface FolderContentOptions {
   /**
@@ -107,9 +106,6 @@ export default ((opts?: Partial<FolderContentOptions>) => {
       // Estimate reading time for all articles roughly or just omit
       return acc + 15 // Static estimate or calculate if possible
     }, 0)
-    
-    // Create navigation component instance locally so we can inject it where the user wants
-    const NavComponent = Navigation()
 
     return (
       <section class="page-container">
@@ -118,10 +114,6 @@ export default ((opts?: Partial<FolderContentOptions>) => {
             <a href="/" class="internal title-link">{fileData.frontmatter?.title || "مقالات"}</a>
           </h1>
           {fileData.description && <p class="subtitle">{fileData.description}</p>}
-
-          <div class="headers-container">
-            <NavComponent {...props} />
-          </div>
 
           {options.showFolderCount && (
              <p class="meta-data">{allPagesInFolder.length} مقال</p>
@@ -135,7 +127,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
     )
   }
 
-  FolderContent.css = concatenateResources(style, PageList.css, Navigation.css, `
+  FolderContent.css = concatenateResources(style, PageList.css, `
 .page-container {
   max-width: 900px;
   margin: 0 auto;
@@ -172,15 +164,6 @@ export default ((opts?: Partial<FolderContentOptions>) => {
 .headers-container {
   margin: 20px 0;
   width: 100%;
-}
-
-/* Reset navigation styles inside this header to match new layout */
-.headers-container .top-navigation {
-  margin: 0;
-}
-.headers-container .top-navigation ul {
-  border: none;
-  background: var(--lightgray);
 }
 
 .meta-data {
