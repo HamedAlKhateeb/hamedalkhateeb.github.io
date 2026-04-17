@@ -3,19 +3,7 @@ import { classNames } from "../util/lang"
 import { FullSlug, resolveRelative } from "../util/path"
 
 const Navigation: QuartzComponent = ({ displayClass, fileData }: QuartzComponentProps) => {
-  return (
-    <nav class={classNames(displayClass, "top-navigation")}>
-      <ul>
-        <li><a href={resolveRelative(fileData.slug!, "tags/مقالات" as FullSlug)}>مقالات</a></li>
-        <li class="separator">✧</li>
-        <li><a href={resolveRelative(fileData.slug!, "tags/خواطر" as FullSlug)}>خواطر</a></li>
-        <li class="separator">✧</li>
-        <li><a href={resolveRelative(fileData.slug!, "tags/أشعاري" as FullSlug)}>أشعاري</a></li>
-        <li class="separator">✧</li>
-        <li><a href={resolveRelative(fileData.slug!, "tags/عن-المدونة" as FullSlug)}>عن المدونة</a></li>
-      </ul>
-    </nav>
-  )
+  return null
 }
 
 Navigation.css = `
