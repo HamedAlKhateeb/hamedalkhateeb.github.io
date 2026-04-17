@@ -222,14 +222,17 @@ a {
       gap: 1.2rem;
       top: 0;
       box-sizing: border-box;
-      padding: $topSpacing 2rem 2rem 2rem;
+      padding: $topSpacing 1.5rem 2rem 1.5rem;
       display: flex;
       height: 100vh;
       position: sticky;
+      overflow-y: auto;
+      z-index: 10;
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
     & .sidebar.left {
-      z-index: 1;
+      z-index: 11;
       grid-area: grid-sidebar-left;
       flex-direction: column;
       @media all and ($mobile) {

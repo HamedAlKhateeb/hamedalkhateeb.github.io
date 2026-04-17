@@ -8,11 +8,11 @@ export const sharedPageComponents: SharedLayout = {
     Component.PageTitle(),
     Component.Search(),
     Component.Darkmode(),
-    Component.ReaderMode(),
-    Component.Navigation(),
   ],
   afterBody: [
     Component.Newsletter(),
+    Component.ArticleFooter(),
+    Component.ControlPanel(),
   ],
   footer: Component.Footer({
     links: {},
@@ -27,7 +27,7 @@ export const defaultContentPageLayout: PageLayout = {
     Component.TagList(),
   ],
   left: [],
-  right: [],
+  right: [Component.TableOfContents()],
 }
 
 // components for pages that display lists of pages  (e.g. tags or folders)

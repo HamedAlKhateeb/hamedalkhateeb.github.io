@@ -2,6 +2,8 @@
 
 :root {
   direction: rtl;
+  --main-font-size: 18px;
+  --content-width: 800px;
 }
 
 body, html {
@@ -21,8 +23,38 @@ label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
 
 .page {
   justify-content: center;
-  max-width: 1200px;
+  max-width: 100vw !important;
+  padding: 0 16px; /* مسافة بسيطة جداً حتى لا يلتصق النص بالشاشة في الجوال، يمكن إلغاؤها */
+  box-sizing: border-box;
   margin: 0 auto;
+}
+
+// Override the main grid layout so the article center column can expand to our dynamic width!
+.page > #quartz-body {
+  grid-template-columns: 1fr minmax(auto, var(--content-width, 580px)) 1fr !important;
+  transition: grid-template-columns 0.3s ease;
+}
+
+// Content article respects reading settings
+.center > article {
+  font-size: var(--main-font-size);
+  max-width: 100%;
+  margin: 0 auto;
+  transition: font-size 0.3s ease;
+}
+
+// Sepia theme colors
+:root[saved-theme="sepia"] {
+  --light: #f4ecd8;
+  --lightgray: #e8dcc8;
+  --gray: #9a8b73;
+  --darkgray: #5b4636;
+  --dark: #3d2e1f;
+  --secondary: #8b6f47;
+  --tertiary: #a08060;
+  --highlight: rgba(139, 111, 71, 0.15);
+  --textHighlight: #d4a96888;
+  color-scheme: light;
 }
 
 // تنسيق الهيدرز (Navbar)
@@ -44,4 +76,28 @@ label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
 
 .navbar a:hover {
   color: #666666;
+}
+
+/* ==================================
+   Reader Mode (Distraction-Free)
+   ================================== */
+html[reader-mode="on"] .sidebar.left,
+html[reader-mode="on"] .sidebar.right,
+html[reader-mode="on"] .article-footer-wrapper,
+html[reader-mode="on"] footer,
+html[reader-mode="on"] .breadcrumbs,
+html[reader-mode="on"] .page-title-container,
+html[reader-mode="on"] hr {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html[reader-mode="on"] .page > #quartz-body {
+  grid-template-columns: 1fr minmax(auto, var(--content-width, 800px)) 1fr !important;
+}
+
+html[reader-mode="on"] .center > article {
+  transform: translateY(-20px);
+  transition: transform 0.4s ease;
 }

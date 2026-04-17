@@ -8,6 +8,7 @@ import { htmlToJsx } from "../../util/jsx"
 import { i18n } from "../../i18n"
 import { ComponentChildren } from "preact"
 import { concatenateResources } from "../../util/resources"
+import Navigation from "../Navigation"
 
 interface TagContentOptions {
   sort?: SortFn
@@ -114,20 +115,84 @@ export default ((opts?: Partial<TagContentOptions>) => {
         allFiles: pages,
       }
 
+      const NavComponent = Navigation()
+      
       return (
-        <div class="popover-hint">
-          <article class={classes}>{content}</article>
-          <div class="page-listing">
-            <p>{i18n(cfg.locale).pages.tagContent.itemsUnderTag({ count: pages.length })}</p>
-            <div>
-              <PageList {...listProps} sort={options?.sort} />
+        <section class="page-container">
+          <header class="main-header">
+            <h1 class="title">{`الوسم: ${tag}`}</h1>
+            {fileData.description && <p class="subtitle">{fileData.description}</p>}
+
+            <div class="headers-container">
+              <NavComponent {...props} />
             </div>
+
+            <p class="meta-data">{pages.length} مقال</p>
+          </header>
+
+          <div class="cards-grid">
+            <PageList {...listProps} sort={options?.sort} />
           </div>
-        </div>
+        </section>
       )
     }
   }
 
-  TagContent.css = concatenateResources(style, PageList.css)
+  TagContent.css = concatenateResources(style, PageList.css, Navigation.css, `
+.page-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.main-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.main-header .title {
+  margin-bottom: 0.5rem;
+  font-family: var(--headerFont);
+}
+
+.main-header .subtitle {
+  color: var(--gray);
+  margin-bottom: 1.5rem;
+}
+
+.headers-container {
+  margin: 20px 0;
+  width: 100%;
+}
+
+.headers-container .top-navigation {
+  margin: 0;
+}
+.headers-container .top-navigation ul {
+  border: none;
+  background: var(--lightgray);
+}
+
+.meta-data {
+  color: var(--darkgray);
+  font-size: 0.95rem;
+  margin-top: 1rem;
+}
+
+.cards-grid .page-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 30px !important;
+}
+
+@media (max-width: 768px) {
+  .cards-grid .page-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+  `)
   return TagContent
 }) satisfies QuartzComponentConstructor

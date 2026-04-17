@@ -1,0 +1,319 @@
+/* ============================
+   Floating Dock & Layout 
+   ============================ */
+
+/* Pure, isolated hardware-accelerated button container that mimics the exact logic of the Working Back arrow */
+.isolated-gear-dock {
+  position: fixed !important;
+  bottom: 16px !important;
+  right: 16px !important;
+  z-index: 10000 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: translateZ(0) !important;
+}
+
+/* The settings panel popup logic independently positioned */
+.isolated-settings-panel {
+  position: fixed !important;
+  bottom: 74px !important; /* 16px + 50px (button height) + 8px gap */
+  right: 16px !important;
+  direction: rtl;
+  z-index: 9999 !important;
+  margin: 0 !important;
+}
+
+/* Back Button - Extreme Top Right */
+.back-to-prev-dock {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9998;
+}
+
+
+/* Scroll To Top - Bottom Left */
+.scroll-to-top-dock {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 0.5rem;
+  z-index: 998;
+}
+
+
+.dock-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--darkgray);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background: var(--highlight);
+    transform: translateY(-3px);
+    color: #8a252c;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
+}
+
+:root[saved-theme="dark"] .dock-btn {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  &:hover {
+    color: #d1565e;
+  }
+}
+
+/* ============================
+   Control Panel Popover
+   ============================ */
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem; /* ~20% smaller gap */
+  padding: 1rem; /* ~20% smaller padding */
+  font-family: var(--bodyFont);
+  direction: rtl;
+  width: 240px; /* ~20% smaller width */
+  max-width: calc(100vw - 4rem);
+  
+  /* Solid floating card */
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-sizing: border-box;
+
+  /* Animation for toggle */
+  transform-origin: bottom right; /* Drop down from the bottom right again */
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, visibility 0.3s;
+}
+
+.control-panel.panel-collapsed {
+  transform: scale(0.9) translateY(20px); /* Move slightly downward when collapsed */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+:root[saved-theme="dark"] .control-panel {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================
+   Internal Panel Elements
+   ============================ */
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.control-label {
+  font-family: var(--headerFont);
+  font-size: 0.85rem; /* smaller */
+  color: #8a252c;
+  font-weight: 700;
+  user-select: none;
+  text-align: right;
+}
+
+:root[saved-theme="dark"] .control-label {
+  color: #d1565e;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ctrl-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 0.3rem;
+  padding: 0.4rem 0.3rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 8px;
+  background: var(--light);
+  color: var(--darkgray);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 40px; /* ~20% smaller */
+  font-family: var(--bodyFont);
+
+  & .btn-text {
+    font-size: 0.7rem;
+  }
+  
+  & .btn-text-only {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  &:hover {
+    background: var(--highlight);
+  }
+
+  &.active {
+    border-color: #8a252c;
+    color: #8a252c;
+    background: var(--highlight);
+    
+    & svg {
+      stroke: #8a252c;
+    }
+  }
+
+  & svg {
+    stroke: var(--darkgray);
+    flex-shrink: 0;
+  }
+}
+
+:root[saved-theme="dark"] .ctrl-btn.active {
+  border-color: #d1565e;
+  color: #d1565e;
+  & svg {
+    stroke: #d1565e;
+  }
+}
+
+.color-swatch {
+  width: 24px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid var(--lightgray);
+}
+
+.swatch-dark {
+  background: #1e1e1e;
+}
+.swatch-sepia {
+  background: #f4ecd8;
+}
+.swatch-light {
+  background: #ffffff;
+}
+
+.control-divider {
+  border: none;
+  height: 1px;
+  background: var(--lightgray);
+  margin: 0.2rem 0;
+}
+
+.toggles-list {
+  gap: 1rem;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle-label {
+  font-family: var(--headerFont);
+  font-size: 0.8rem;
+  color: #8a252c;
+  font-weight: 600;
+}
+
+:root[saved-theme="dark"] .toggle-label {
+  color: #d1565e;
+}
+
+.small-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  background: var(--light);
+  color: var(--darkgray);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--bodyFont);
+  font-size: 0.7rem;
+  font-weight: 600;
+
+  &:hover {
+    background: var(--highlight);
+  }
+
+  &.active {
+    border-color: #8a252c;
+    color: #8a252c;
+    background: rgba(138, 37, 44, 0.05);
+  }
+}
+
+:root[saved-theme="dark"] .small-action-btn.active {
+  border-color: #d1565e;
+  color: #d1565e;
+}
+
+// Right Sidebar (RTL physical left): Completely detached from document flow to prevent grid pushing in wide mode!
+.sidebar.right {
+  position: fixed !important;
+  top: 100px !important;
+  left: 2vw !important; /* Distance from left screen edge */
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column;
+  width: 260px !important;
+  height: calc(100vh - 100px);
+  z-index: 100;
+  pointer-events: none; /* Let wide mode clicks pass through to the article */
+}
+
+.sidebar.right .toc {
+  pointer-events: auto; /* Re-enable clicks on the TOC frame itself */
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  padding: 1.2rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0; // Removed extra margin-top since absolute positioning top handles it
+  overflow: hidden;
+}
+
+:root[saved-theme="dark"] .sidebar.right .toc {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar.right .toc .toc-header h3 {
+  color: #8a252c;
+  font-family: var(--headerFont);
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+:root[saved-theme="dark"] .sidebar.right .toc .toc-header h3 {
+  color: #d1565e;
+}
+
+.sidebar.sidebar-hidden {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+:root[dir="rtl"] .sidebar.right.sidebar-hidden {
+  transform: translateX(100%);
+}

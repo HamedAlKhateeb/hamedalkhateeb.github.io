@@ -6,16 +6,12 @@
   overflow-y: hidden;
   min-height: 1.4rem;
   flex: 0 0.5 auto;
-  &:has(button.toc-header.collapsed) {
-    flex: 0 1 1.4rem;
-  }
 }
 
-button.toc-header {
+.toc-header {
   background-color: transparent;
   border: none;
   text-align: left;
-  cursor: pointer;
   padding: 0;
   color: var(--dark);
   display: flex;
@@ -25,16 +21,6 @@ button.toc-header {
     font-size: 1rem;
     display: inline-block;
     margin: 0;
-  }
-
-  & .fold {
-    margin-left: 0.5rem;
-    transition: transform 0.3s ease;
-    opacity: 0.8;
-  }
-
-  &.collapsed .fold {
-    transform: rotateZ(-90deg);
   }
 }
 
@@ -49,12 +35,15 @@ ul.toc-content.overflow {
 
   & > li > a {
     color: var(--dark);
-    opacity: 0.35;
+    opacity: 0.85; /* Fully readable by default */
     transition:
       0.5s ease opacity,
+      0.3s ease font-weight,
       0.3s ease color;
     &.in-view {
-      opacity: 0.75;
+      opacity: 1; /* Highlight when directly active */
+      color: #8a252c;
+      font-weight: bold;
     }
   }
 
