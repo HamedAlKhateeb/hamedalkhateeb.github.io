@@ -1,17 +1,18 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { classNames } from "../util/lang"
+import { FullSlug, resolveRelative } from "../util/path"
 
-const Navigation: QuartzComponent = ({ displayClass }: QuartzComponentProps) => {
+const Navigation: QuartzComponent = ({ displayClass, fileData }: QuartzComponentProps) => {
   return (
     <nav class={classNames(displayClass, "top-navigation")}>
       <ul>
-        <li><a href="/tags/مقالات">مقالات</a></li>
+        <li><a href={resolveRelative(fileData.slug!, "tags/مقالات" as FullSlug)}>مقالات</a></li>
         <li class="separator">✧</li>
-        <li><a href="/tags/خواطر">خواطر</a></li>
+        <li><a href={resolveRelative(fileData.slug!, "tags/خواطر" as FullSlug)}>خواطر</a></li>
         <li class="separator">✧</li>
-        <li><a href="/tags/أشعاري">أشعاري</a></li>
+        <li><a href={resolveRelative(fileData.slug!, "tags/أشعاري" as FullSlug)}>أشعاري</a></li>
         <li class="separator">✧</li>
-        <li><a href="/tags/عن-المدونة">عن المدونة</a></li>
+        <li><a href={resolveRelative(fileData.slug!, "tags/عن-المدونة" as FullSlug)}>عن المدونة</a></li>
       </ul>
     </nav>
   )

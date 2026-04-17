@@ -1,5 +1,5 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
-import { FullSlug, joinSegments } from "../util/path"
+import { FullSlug, joinSegments, resolveRelative } from "../util/path"
 
 const Header: QuartzComponent = ({ displayName, fileData, cfg, tree }: QuartzComponentProps) => {
   return (
@@ -7,15 +7,15 @@ const Header: QuartzComponent = ({ displayName, fileData, cfg, tree }: QuartzCom
       <div class="header-inner">
         <h1>مدونة حامد الخطيب</h1>
         <nav class="navbar">
-          <a href="/Math">رياضيات</a>
-          <a href="/Culture">ثقافة</a>
-          <a href="/Engineering">هندسة</a>
-          <a href="/Programming">برمجة</a>
-          <a href="/Experiences">تجارب</a>
-          <a href="/Personal">شخصي</a>
-          <a href="/Poetry">أشعاري</a>
-          <a href="/Archive">مقالات قديمة</a>
-          <a href="/About">من أنا</a>
+          <a href={resolveRelative(fileData.slug!, "Math" as FullSlug)}>رياضيات</a>
+          <a href={resolveRelative(fileData.slug!, "Culture" as FullSlug)}>ثقافة</a>
+          <a href={resolveRelative(fileData.slug!, "Engineering" as FullSlug)}>هندسة</a>
+          <a href={resolveRelative(fileData.slug!, "Programming" as FullSlug)}>برمجة</a>
+          <a href={resolveRelative(fileData.slug!, "Experiences" as FullSlug)}>تجارب</a>
+          <a href={resolveRelative(fileData.slug!, "Personal" as FullSlug)}>شخصي</a>
+          <a href={resolveRelative(fileData.slug!, "Poetry" as FullSlug)}>أشعاري</a>
+          <a href={resolveRelative(fileData.slug!, "Archive" as FullSlug)}>مقالات قديمة</a>
+          <a href={resolveRelative(fileData.slug!, "About" as FullSlug)}>من أنا</a>
         </nav>
       </div>
     </header>
