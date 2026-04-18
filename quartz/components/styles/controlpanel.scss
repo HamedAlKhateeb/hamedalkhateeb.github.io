@@ -418,59 +418,58 @@
 }
 
 /* Paragraph Hover Bookmarks */
-.bookmark-icon {
-  position: absolute;
-  right: -42px; /* Pull it slightly more out to clear the text selection */
-  top: 0px;
-  background: transparent;
-  border: none;
-  color: var(--tertiary);
-  cursor: pointer;
-  opacity: 0; /* Hidden by default */
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  padding: 8px; /* Slightly larger clickable area */
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-/* Tiny invisible bridge strictly bridging the gap to the paragraph limit, without overlapping text */
-.bookmark-icon::before {
-  content: '';
-  position: absolute;
-  left: -15px; /* Extend hit area 15px directly back to the text to bridge the gap */
-  right: 0;
-  top: 0;
-  bottom: 0;
-}
-.bookmark-icon:hover {
-  background: transparent;
-  color: #8a252c !important;
-  opacity: 1 !important;
-  transform: scale(1.1);
-}
-.bookmark-icon svg {
-  position: relative;
-  z-index: 2;
-  padding: 4px;
-  transition: all 0.2s ease;
-}
-.bookmark-icon:hover svg,
-.bookmark-active svg {
-  background: var(--highlight);
-  border-radius: 4px;
-}
-p:hover > .bookmark-icon,
-blockquote:hover > .bookmark-icon,
-li:hover > .bookmark-icon {
-  opacity: 0.8;
-  color: var(--gray);
-}
-.bookmark-active {
-  color: #8a252c !important;
-  opacity: 1 !important;
-  background: transparent;
-}
+  .bookmark-icon {
+    position: absolute;
+    right: -42px; /* Positioned fully outside the text selection */
+    top: 0px;
+    background: transparent;
+    border: none;
+    color: var(--tertiary);
+    cursor: pointer;
+    opacity: 0; /* Hidden by default */
+    visibility: hidden; /* Ignore clicks natively when hidden */
+    /* Transition with delay keeps the icon fully clickable for half a second while trailing the mouse */
+    transition: opacity 0.5s ease, visibility 0s linear 0.5s, transform 0.2s ease;
+    padding: 8px; /* Safe boundaries for icon clicks only */
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bookmark-icon:hover {
+    background: transparent;
+    color: #8a252c !important;
+    opacity: 1 !important;
+    visibility: visible;
+    transition: opacity 0.2s ease, visibility 0s, transform 0.2s ease;
+    transform: scale(1.1);
+  }
+  .bookmark-icon svg {
+    position: relative;
+    z-index: 2;
+    padding: 4px;
+    transition: all 0.2s ease;
+  }
+  .bookmark-icon:hover svg,
+  .bookmark-active svg {
+    background: var(--highlight);
+    border-radius: 4px;
+  }
+  p:hover > .bookmark-icon,
+  blockquote:hover > .bookmark-icon,
+  li:hover > .bookmark-icon {
+    opacity: 0.8 !important;
+    visibility: visible;
+    transition: opacity 0.2s ease, visibility 0s, transform 0.2s ease;
+    color: var(--gray);
+  }
+  .bookmark-active {
+    color: #8a252c !important;
+    opacity: 1 !important;
+    visibility: visible;
+    transition: opacity 0.2s ease, visibility 0s;
+    background: transparent;
+  }
 :root[saved-theme="dark"] .bookmark-active {
   color: #d1565e !important;
 }
