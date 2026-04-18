@@ -16,7 +16,7 @@ const config: QuartzConfig = {
       provider: "plausible",
     },
     locale: "ar-SA",
-    baseUrl: "HamedAlKhateeb.github.io/quartz",
+    baseUrl: "HamedAlKhateeb.github.io",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     theme: {
