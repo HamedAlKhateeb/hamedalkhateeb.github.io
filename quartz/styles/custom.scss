@@ -37,12 +37,18 @@ label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
 }
 
 // Content article respects reading settings
-.center > article {
+.center > article,
+.center > article p,
+.center > article li,
+.center > article blockquote {
   font-size: var(--main-font-size);
-  line-height: var(--main-line-height);
+  line-height: var(--main-line-height) !important;
+  transition: font-size 0.3s ease, line-height 0.3s ease;
+}
+
+.center > article {
   max-width: 100%;
   margin: 0 auto;
-  transition: font-size 0.3s ease, line-height 0.3s ease;
 }
 
 // Sepia theme colors

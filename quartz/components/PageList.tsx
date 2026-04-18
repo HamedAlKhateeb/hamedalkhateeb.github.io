@@ -90,13 +90,6 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
               </a>
             )}
             <div class="section card-content">
-              <div class="desc card-text-center">
-                <h3 class={tags.length > 0 ? "no-bottom-margin" : ""}>
-                  <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
-                    {title}
-                  </a>
-                </h3>
-              </div>
               {tags.length > 0 && (
                 <div class="card-tags-joined-container">
                   <div class="card-tags-joined">
@@ -108,12 +101,19 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
                         >
                           {tag}
                         </a>
-                        {i < Math.min(tags.length, 4) - 1 && <span class="tag-separator"> - </span>}
+                        {i < Math.min(tags.length, 4) - 1 && <span class="tag-separator"> · </span>}
                       </span>
                     ))}
                   </div>
                 </div>
               )}
+              <div class="desc card-text-center">
+                <h3 class="card-title">
+                  <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
+                    {title}
+                  </a>
+                </h3>
+              </div>
               <div class="desc card-text-center">
                 {description && <p class="card-description">{description}</p>}
               </div>
@@ -198,6 +198,7 @@ PageList.css = `
   font-size: 0.8rem;
   display: inline-block;
   font-weight: 600;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
 }
 
 .card-tags-joined .tag-link.inline-tag {
@@ -223,18 +224,15 @@ PageList.css = `
   width: 100%;
 }
 
-.card-text-center h3 {
+.card-title {
   margin: 0 0 1rem 0;
   font-size: 1.5rem;
   font-weight: 800;
   line-height: 1.4;
+  font-family: 'Aref Ruqaa', var(--headerFont);
 }
 
-.card-text-center h3.no-bottom-margin {
-  margin-bottom: 0.8rem;
-}
-
-.card-text-center h3 a {
+.card-title a {
   color: var(--dark);
   text-decoration: none;
 }
@@ -248,6 +246,7 @@ PageList.css = `
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  font-family: 'Amiri', var(--bodyFont);
 }
 
 .card-divider {
@@ -264,14 +263,14 @@ PageList.css = `
   margin: auto 0 0 0;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between; /* Space out date and read time */
   flex-wrap: wrap;
   width: 100%;
   padding: 0;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
 }
 
 .meta-dot {
-  margin: 0 0.4rem;
-  opacity: 0.5;
+  display: none; /* Hide the dot since they are spaced apart */
 }
 `
