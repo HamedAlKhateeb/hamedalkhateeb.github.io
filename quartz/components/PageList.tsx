@@ -67,7 +67,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
   }
 
   return (
-    <ul class="section-ul page-grid">
+    <ul class="page-grid">
       {list.map((page) => {
         const title = page.frontmatter?.title
         const tags = page.frontmatter?.tags ?? []
@@ -83,13 +83,20 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
         }
   
         return (
-          <li class="section-li page-card">
+          <li class="page-card">
             {cover && (
               <a href={resolveRelative(fileData.slug!, page.slug!)} class="card-image-link">
                 <img src={cover} alt={title} class="card-image" />
               </a>
             )}
-            <div class="section card-content">
+            <div class="card-content">
+              <div class="desc card-text-center">
+                <h3 class="card-title">
+                  <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
+                    {title}
+                  </a>
+                </h3>
+              </div>
               {tags.length > 0 && (
                 <div class="card-tags-joined-container">
                   <div class="card-tags-joined">
@@ -107,13 +114,6 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
                   </div>
                 </div>
               )}
-              <div class="desc card-text-center">
-                <h3 class="card-title">
-                  <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
-                    {title}
-                  </a>
-                </h3>
-              </div>
               <div class="desc card-text-center">
                 {description && <p class="card-description">{description}</p>}
               </div>
