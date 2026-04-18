@@ -36,6 +36,42 @@ document.addEventListener("nav", () => {
   })
 
   // =====================
+  // Line Height Control
+  // =====================
+  const lineHeights: Record<string, string> = {
+    small: "1.4",
+    medium: "1.7",
+    large: "2.1",
+  }
+
+  const lineHeightButtons = {
+    small: document.querySelector("#btn-line-small") as HTMLButtonElement | null,
+    medium: document.querySelector("#btn-line-medium") as HTMLButtonElement | null,
+    large: document.querySelector("#btn-line-large") as HTMLButtonElement | null,
+  }
+
+  const setLineHeight = (size: string) => {
+    document.documentElement.style.setProperty("--main-line-height", lineHeights[size])
+    localStorage.setItem("reader-line-height", size)
+
+    // Update active state
+    Object.entries(lineHeightButtons).forEach(([key, btn]) => {
+      if (btn) btn.classList.toggle("active", key === size)
+    })
+  }
+
+  // Restore saved line height
+  const savedLineHeight = localStorage.getItem("reader-line-height") ?? "medium"
+  setLineHeight(savedLineHeight)
+
+  Object.entries(lineHeightButtons).forEach(([size, btn]) => {
+    if (!btn) return
+    const handler = () => setLineHeight(size)
+    btn.addEventListener("click", handler)
+    window.addCleanup(() => btn.removeEventListener("click", handler))
+  })
+
+  // =====================
   // Content Width Control
   // =====================
   const widths: Record<string, string> = {

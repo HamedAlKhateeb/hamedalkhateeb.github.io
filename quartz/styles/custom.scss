@@ -3,6 +3,7 @@
 :root {
   direction: rtl;
   --main-font-size: 18px;
+  --main-line-height: 1.7;
   --content-width: 800px;
 }
 
@@ -38,9 +39,10 @@ label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
 // Content article respects reading settings
 .center > article {
   font-size: var(--main-font-size);
+  line-height: var(--main-line-height);
   max-width: 100%;
   margin: 0 auto;
-  transition: font-size 0.3s ease;
+  transition: font-size 0.3s ease, line-height 0.3s ease;
 }
 
 // Sepia theme colors

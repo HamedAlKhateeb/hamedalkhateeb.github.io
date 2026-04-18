@@ -78,6 +78,48 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
 
           <div class="control-divider"></div>
 
+          {/* Line Height Control */}
+          <div class="control-group">
+            <span class="control-label">ارتفاع السطر</span>
+            <div class="control-buttons">
+              <button id="btn-line-large" class="ctrl-btn" title="واسع">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m3 16 4 4 4-4"></path>
+                  <path d="M7 20V4"></path>
+                  <path d="m11 8-4-4-4 4"></path>
+                  <path d="M15 12h6"></path>
+                  <path d="M15 18h6"></path>
+                  <path d="M15 6h6"></path>
+                </svg>
+                <span class="btn-text">واسع</span>
+              </button>
+              <button id="btn-line-medium" class="ctrl-btn active" title="متوسط">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m3 16 4 4 4-4"></path>
+                  <path d="M7 20V4"></path>
+                  <path d="m11 8-4-4-4 4"></path>
+                  <path d="M15 12h6"></path>
+                  <path d="M15 18h6"></path>
+                  <path d="M15 6h6"></path>
+                </svg>
+                <span class="btn-text">متوسط</span>
+              </button>
+              <button id="btn-line-small" class="ctrl-btn" title="ضيق">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m3 16 4 4 4-4"></path>
+                  <path d="M7 20V4"></path>
+                  <path d="m11 8-4-4-4 4"></path>
+                  <path d="M15 12h6"></path>
+                  <path d="M15 18h6"></path>
+                  <path d="M15 6h6"></path>
+                </svg>
+                <span class="btn-text">ضيق</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="control-divider"></div>
+
           {/* Color Theme Control */}
           <div class="control-group">
             <span class="control-label">وضع الألوان</span>
