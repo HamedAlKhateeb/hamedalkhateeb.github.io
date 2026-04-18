@@ -55,3 +55,5 @@ export {
 export { default as Newsletter } from './Newsletter'
 export { default as ControlPanel } from './ControlPanel'
 export { default as ArticleFooter } from './ArticleFooter'
+export * from './HomeArticles'
+export { default as HomeArticles } from './HomeArticles'
