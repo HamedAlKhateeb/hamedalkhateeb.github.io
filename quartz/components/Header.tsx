@@ -5,7 +5,7 @@ const Header: QuartzComponent = ({ displayName, fileData, cfg, tree }: QuartzCom
   return (
     <header>
       <div class="header-inner">
-        <h1>مدونة حامد الخطيب</h1>
+        <h1><a href="https://hamedalkhateeb.github.io/">مدونة حامد الخطيب</a></h1>
         <nav class="navbar">
           <a href={resolveRelative(fileData.slug!, "Math" as FullSlug)}>رياضيات</a>
           <a href={resolveRelative(fileData.slug!, "Culture" as FullSlug)}>ثقافة</a>
