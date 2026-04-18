@@ -31,7 +31,7 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
       )}
 
       {/* Settings Gear - Bottom Right, completely isolated */}
-      {fileData.slug !== "index" && (
+      {fileData.slug !== "index" && (fileData.frontmatter?.cssclasses?.includes("المقالات") || fileData.frontmatter?.tags?.includes("المقالات")) && (
         <>
           <div class="isolated-gear-dock">
             <button id="btn-settings-toggle" class="dock-btn" title="إعدادات القراءة">
