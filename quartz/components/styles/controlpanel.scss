@@ -429,16 +429,31 @@
   opacity: 0.15;
   transition: all 0.2s ease;
   padding: 6px;
-  padding-left: 20px; /* span the gap to the paragraph edge */
   border-radius: 4px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
+}
+/* Creates a 2cm invisible radius around the icon to catch hover events earlier */
+.bookmark-icon::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  bottom: -40px;
+  left: -60px;
+  right: -40px;
+  z-index: 1;
 }
 .bookmark-icon:hover {
   background: transparent;
   color: #8a252c !important;
   opacity: 1 !important;
+}
+.bookmark-icon svg {
+  position: relative;
+  z-index: 2;
+  padding: 4px;
+  transition: all 0.2s ease;
 }
 .bookmark-icon:hover svg,
 .bookmark-active svg {
