@@ -420,56 +420,57 @@
 /* Paragraph Hover Bookmarks */
 p, blockquote, li {
   position: relative;
-  overflow: visible;
 }
 
 .bookmark-icon {
   position: absolute;
-  right: -28px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
+  right: -32px;
+  top: 4px;
+  width: 40px;
+  height: 28px;
   background: transparent;
   border: none;
   color: var(--tertiary);
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.15s ease, transform 0.2s, color 0.15s ease;
+  z-index: 100;
+  transition: opacity 0.2s ease, color 0.2s ease;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
 }
 
-/* Bulletproof JS controlled class */
-.bookmark-icon.icon-visible {
+/* Make it visible when the paragraph OR the button itself is hovered */
+p:hover > .bookmark-icon,
+blockquote:hover > .bookmark-icon,
+li:hover > .bookmark-icon,
+.bookmark-icon:hover {
   opacity: 0.8 !important;
   pointer-events: auto;
-  color: var(--gray);
 }
 
-.bookmark-icon.icon-visible:hover {
+.bookmark-icon:hover {
   color: #8a252c !important;
   opacity: 1 !important;
-  transform: translateY(-50%) scale(1.1);
 }
-  
+
+/* The visual SVG icon placed at the far right of the fat button */
 .bookmark-icon svg {
-  position: relative;
-  z-index: 2;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
   pointer-events: none;
   transition: all 0.2s ease;
 }
 
-.bookmark-icon.icon-visible:hover svg,
+.bookmark-icon:hover svg,
 .bookmark-active svg {
   background: var(--highlight);
   border-radius: 4px;
 }
-  
+
   .bookmark-active {
     color: #8a252c !important;
     opacity: 1 !important;
