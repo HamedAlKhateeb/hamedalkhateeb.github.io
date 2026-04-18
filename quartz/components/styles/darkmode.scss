@@ -39,15 +39,21 @@
   & > .nightIcon {
     display: inline;
   }
+  & > .sepiaIcon {
+    display: none;
+  }
 }
 
 :root[saved-theme="sepia"] .darkmode {
   & > .dayIcon {
-    display: inline;
-    opacity: 0.6;
+    display: none;
   }
   & > .nightIcon {
     display: none;
+  }
+  & > .sepiaIcon {
+    display: inline;
+    opacity: 0.7;
   }
 }
 
@@ -56,6 +62,9 @@
     display: inline;
   }
   & > .nightIcon {
+    display: none;
+  }
+  & > .sepiaIcon {
     display: none;
   }
 }
