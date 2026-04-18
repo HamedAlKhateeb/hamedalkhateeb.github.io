@@ -428,23 +428,13 @@
     cursor: pointer;
     opacity: 0; /* Hidden by default */
     visibility: hidden; /* Ignore clicks natively when hidden */
-    /* Transition with delay keeps the icon fully clickable for half a second while trailing the mouse */
-    transition: opacity 0.5s ease, visibility 0s linear 0.5s, transform 0.2s ease;
+    /* Delay the hide transition so the icon lingers while the mouse reaches for it */
+    transition: opacity 0.3s ease 0.5s, visibility 0s linear 0.8s, transform 0.2s ease;
     padding: 8px; /* Safe boundaries for icon clicks only */
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  /* Bridge the gap so hover isn't lost when moving mouse to the icon */
-  .bookmark-icon::before {
-    content: "";
-    position: absolute;
-    left: -40px; 
-    width: 40px;
-    height: 100%;
-    cursor: auto;
   }
   
   .bookmark-icon:hover {
