@@ -1,8 +1,10 @@
-import { FullSlug, isFolderPath, resolveRelative } from "../util/path"
+import { FullSlug, isFolderPath, resolveRelative, slugifyFilePath } from "../util/path"
 import { QuartzPluginData } from "../plugins/vfile"
 import { Date, getDate } from "./Date"
 import { QuartzComponent, QuartzComponentProps } from "./types"
 import { GlobalConfiguration } from "../cfg"
+import readingTime from "reading-time"
+import { i18n } from "../i18n"
 
 export type SortFn = (f1: QuartzPluginData, f2: QuartzPluginData) => number
 
@@ -69,8 +71,16 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
       {list.map((page) => {
         const title = page.frontmatter?.title
         const tags = page.frontmatter?.tags ?? []
-          const cover = (page.frontmatter?.cover ?? page.frontmatter?.image) as string | undefined
-          const description = page.frontmatter?.description ?? page.description
+        const cover = (page.frontmatter?.cover ?? page.frontmatter?.image) as string | undefined
+        const description = page.frontmatter?.description ?? page.description
+        
+        let displayedTime = ""
+        if (page.text) {
+          const { minutes } = readingTime(page.text)
+          displayedTime = i18n(cfg.locale).components.contentMeta.readingTime({
+            minutes: Math.ceil(minutes),
+          })
+        }
   
         return (
           <li class="section-li page-card">
@@ -81,20 +91,23 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
             )}
             <div class="section card-content">
               {tags.length > 0 && (
-                <ul class="tags card-tags">
-                  {tags.slice(0, 3).map((tag) => (
-                    <li>
-                      <a
-                        class="internal tag-link"
-                        href={resolveRelative(fileData.slug!, `tags/${tag}` as FullSlug)}
-                      >
-                        {tag}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+                <div class="card-tags-joined-container">
+                  <div class="card-tags-joined">
+                    {tags.slice(0, 4).map((tag, i) => (
+                      <span key={tag}>
+                        <a
+                          class="internal tag-link inline-tag"
+                          href={resolveRelative(fileData.slug!, `tags/${tag}` as FullSlug)}
+                        >
+                          {tag}
+                        </a>
+                        {i < Math.min(tags.length, 4) - 1 && <span class="tag-separator"> - </span>}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
-              <div class="desc">
+              <div class="desc card-text-center">
                 <h3>
                   <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
                     {title}
@@ -102,8 +115,14 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
                 </h3>
                 {description && <p class="card-description">{description}</p>}
               </div>
-              <p class="meta card-meta">
+              <div class="card-divider"></div>
+              <p class="meta card-meta-inline">
                 {page.dates && <Date date={getDate(cfg, page)!} locale={cfg.locale} />}
+                {displayedTime && (
+                  <span class="card-reading-time">
+                    <span class="meta-dot"> • </span>{displayedTime}
+                  </span>
+                )}
               </p>
             </div>
           </li>
@@ -160,31 +179,54 @@ PageList.css = `
   flex-grow: 1;
 }
 
-.card-tags {
+.card-tags-joined-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  justify-content: right;
   margin-bottom: 1rem;
-  list-style: none;
-  padding: 0;
-  justify-content: flex-start;
 }
 
-.card-tags .tag-link {
+.card-tags-joined {
   background-color: var(--highlight);
   color: var(--secondary);
-  padding: 0.2rem 0.6rem;
+  padding: 0.4rem 1rem;
   border-radius: 50px;
   font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-weight: 600;
+}
+
+.card-tags-joined .tag-link.inline-tag {
+  background-color: transparent;
+  color: var(--secondary);
+  padding: 0;
+  border-radius: 0;
   text-decoration: none;
 }
 
-.card-content h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.25rem;
+.card-tags-joined .tag-link.inline-tag:hover {
+  text-decoration: underline;
 }
 
-.card-content h3 a {
+.tag-separator {
+  margin: 0 0.3rem;
+  color: var(--secondary);
+  opacity: 0.7;
+}
+
+.card-text-center {
+  text-align: center;
+  flex-grow: 1;
+}
+
+.card-text-center h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.card-text-center h3 a {
   color: var(--dark);
   text-decoration: none;
 }
@@ -192,7 +234,7 @@ PageList.css = `
 .card-description {
   color: var(--gray);
   font-size: 0.95rem;
-  line-height: 1.5;
+  line-height: 1.6;
   margin: 0 0 1.5rem 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -200,11 +242,26 @@ PageList.css = `
   overflow: hidden;
 }
 
-.card-meta {
-  margin-top: auto;
+.card-divider {
+  height: 1px;
+  background-color: var(--lightgray);
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.card-meta-inline {
   font-size: 0.85rem;
   color: var(--gray);
-  padding-top: 1rem;
-  border-top: 1px solid var(--lightgray);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Left-aligned for RTL text */
+  flex-wrap: wrap;
+  padding: 0;
+}
+
+.meta-dot {
+  margin: 0 0.4rem;
+  opacity: 0.5;
 }
 `
