@@ -119,7 +119,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
       <section class="page-container">
         <header class="main-header">
           <h1 class="title">
-            <a href={resolveRelative(fileData.slug!, fileData.slug!)} class="internal title-link">{fileData.frontmatter?.title || "مقالات"}</a>
+            {fileData.frontmatter?.title || "مقالات"}
           </h1>
           {fileData.description && <p class="subtitle">{fileData.description}</p>}
 
