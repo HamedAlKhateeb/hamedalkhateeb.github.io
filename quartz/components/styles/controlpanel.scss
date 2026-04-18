@@ -460,15 +460,17 @@
   .bookmark-container {
     position: relative;
     display: flex;
+    width: fit-content; /* Ensure hover doesn't trigger on empty width */
+    max-width: 100%;
     align-items: flex-start;
   }
   
   .bookmark-container > p,
   .bookmark-container > blockquote,
   .bookmark-container > li {
-    flex: 1;
     margin-top: 0;
     margin-bottom: 1rem;
+    flex-shrink: 1;
   }
 
   .bookmark-container:hover .bookmark-icon {
