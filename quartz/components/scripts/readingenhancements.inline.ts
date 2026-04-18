@@ -294,6 +294,21 @@ document.addEventListener("nav", () => {
       renderBookmarkPanel()
     })
 
+    // Bulletproof JS fallback for bookmark hover icon
+    para.addEventListener('mouseenter', () => {
+      icon.classList.add('icon-visible')
+    })
+    para.addEventListener('mouseleave', (e) => {
+      if (e.relatedTarget !== icon && !icon.contains(e.relatedTarget as Node)) {
+        icon.classList.remove('icon-visible')
+      }
+    })
+    icon.addEventListener('mouseleave', (e) => {
+      if (e.relatedTarget !== para && !para.contains(e.relatedTarget as Node)) {
+        icon.classList.remove('icon-visible')
+      }
+    })
+
     para.appendChild(icon)
   }
 

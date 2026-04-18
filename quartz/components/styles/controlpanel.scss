@@ -423,18 +423,6 @@ p, blockquote, li {
   overflow: visible;
 }
 
-p::after,
-blockquote::after,
-li::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -32px;
-  width: 32px;
-  height: 100%;
-  z-index: 0;
-}
-
 .bookmark-icon {
   position: absolute;
   right: -28px;
@@ -448,16 +436,22 @@ li::after {
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  /* transition matches opacity */
-  transition: opacity 0.15s ease, transform 0.2s;
+  transition: opacity 0.15s ease, transform 0.2s, color 0.15s ease;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
+  z-index: 10;
 }
 
-.bookmark-icon:hover {
+/* Bulletproof JS controlled class */
+.bookmark-icon.icon-visible {
+  opacity: 0.8 !important;
+  pointer-events: auto;
+  color: var(--gray);
+}
+
+.bookmark-icon.icon-visible:hover {
   color: #8a252c !important;
   opacity: 1 !important;
   transform: translateY(-50%) scale(1.1);
@@ -466,22 +460,14 @@ li::after {
 .bookmark-icon svg {
   position: relative;
   z-index: 2;
-  pointer-events: none; /* Ensure clicks fall through to the button */
+  pointer-events: none;
   transition: all 0.2s ease;
 }
 
-.bookmark-icon:hover svg,
+.bookmark-icon.icon-visible:hover svg,
 .bookmark-active svg {
   background: var(--highlight);
   border-radius: 4px;
-}
-
-p:hover > .bookmark-icon,
-blockquote:hover > .bookmark-icon,
-li:hover > .bookmark-icon {
-  opacity: 0.8 !important;
-  pointer-events: auto;
-  color: var(--gray);
 }
   
   .bookmark-active {
