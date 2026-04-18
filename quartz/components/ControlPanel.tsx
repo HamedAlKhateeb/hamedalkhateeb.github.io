@@ -1,5 +1,7 @@
 // @ts-ignore
 import controlPanelScript from "./scripts/controlpanel.inline"
+// @ts-ignore
+import readingEnhancementsScript from "./scripts/readingenhancements.inline"
 import styles from "./styles/controlpanel.scss"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { classNames } from "../util/lang"
@@ -7,9 +9,14 @@ import { classNames } from "../util/lang"
 const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzComponentProps) => {
   return (
     <div class="control-panel-root">
+      {/* Top Reading Progress Bar */}
+      <div id="reading-progress-bar"></div>
 
       {/* Scroll to Top - Bottom Left */}
       <div class="scroll-to-top-dock">
+        <div id="reading-time-info" class="reading-time-info" style="display: none;">
+          <span id="reading-time-remaining"></span>
+        </div>
         <button id="btn-scroll-top" class="dock-btn" title="أعلى الصفحة">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 19V5"/>
@@ -35,7 +42,11 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
         <>
           <div class="isolated-gear-dock">
             <button id="btn-settings-toggle" class="dock-btn" title="إعدادات القراءة">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="progress-ring" width="50" height="50">
+                <circle class="progress-ring-bg" stroke="rgba(0,0,0,0.05)" stroke-width="2" fill="transparent" r="23" cx="25" cy="25"/>
+                <circle class="progress-ring__circle" stroke="currentColor" stroke-width="2" fill="transparent" r="23" cx="25" cy="25" stroke-dasharray="144.5" stroke-dashoffset="144.5"/>
+              </svg>
+              <svg class="gear-icon-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
               </svg>
@@ -176,6 +187,19 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
             </div>
           </div>
 
+          <div class="control-divider"></div>
+
+          {/* Bookmarks Section */}
+          <div class="control-group bookmarks-section">
+            <div class="bookmarks-header">
+              <span class="control-label">العلامات المرجعية</span>
+              <button id="btn-clear-bookmarks" class="small-action-btn" title="حذف الكل">تفريع</button>
+            </div>
+            <div id="bookmarks-container" class="bookmarks-list">
+              <div class="empty-bookmarks">لا توجد علامات مرجعية بعد. يمكنك حفظ أي فقرة عند القراءة.</div>
+            </div>
+          </div>
+
         </div>
         </>
       )}
@@ -184,7 +208,7 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
   )
 }
 
-ControlPanel.afterDOMLoaded = controlPanelScript
+ControlPanel.afterDOMLoaded = controlPanelScript + "\n" + readingEnhancementsScript
 ControlPanel.css = styles
 
 export default (() => ControlPanel) satisfies QuartzComponentConstructor
