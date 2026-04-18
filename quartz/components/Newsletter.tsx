@@ -21,7 +21,6 @@ const Newsletter: QuartzComponent = ({ fileData, displayClass }: QuartzComponent
         method="POST" 
         class="newsletter-form"
         target="popupwindow"
-        onSubmit="window.open('https://buttondown.email/al-khateeb', 'popupwindow')"
       >
         <button type="submit">اشتراك</button>
         <input type="email" name="email" placeholder="بريدك الإلكتروني" required />
