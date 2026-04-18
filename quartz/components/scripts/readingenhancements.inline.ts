@@ -247,39 +247,15 @@ document.addEventListener("nav", () => {
   const bookmarks = getBookmarks()
 
   allParagraphs.forEach((para, index) => {
-    // Set position relative for absolute icon placement
-    para.style.position = "relative"
-
-    // Check if already bookmarked
-    const isBookmarked = bookmarks.some(b => b.slug === pageSlug && b.index === index)
-    if (isBookmarked) {
-      para.classList.add("is-bookmarked")
-      injectBookmarkIcon(para, index, true)
-    }
-
-    const showIcon = () => {
-      if (!para.querySelector(".bookmark-icon")) {
-        injectBookmarkIcon(para, index, para.classList.contains("is-bookmarked"))
+      para.style.position = "relative"
+      const isBookmarked = bookmarks.some(b => b.slug === pageSlug && b.index === index)
+      if (isBookmarked) {
+        para.classList.add("is-bookmarked")
       }
-    }
-
-    const hideIcon = () => {
-      if (!para.classList.contains("is-bookmarked")) {
-        const icon = para.querySelector(".bookmark-icon")
-        if (icon) icon.remove()
-      }
-    }
-
-    para.addEventListener("mouseenter", showIcon)
-    para.addEventListener("mouseleave", hideIcon)
-
-    window.addCleanup(() => {
-      para.removeEventListener("mouseenter", showIcon)
-      para.removeEventListener("mouseleave", hideIcon)
+      injectBookmarkIcon(para, index, isBookmarked)
     })
-  })
 
-  function injectBookmarkIcon(para: HTMLElement, index: number, active: boolean) {
+    function injectBookmarkIcon(para: HTMLElement, index: number, active: boolean) {
     const existing = para.querySelector(".bookmark-icon")
     if (existing) {
       existing.classList.toggle("bookmark-active", active)
@@ -463,3 +439,4 @@ document.addEventListener("nav", () => {
   document.addEventListener("mousedown", hideOnClick)
   window.addCleanup(() => document.removeEventListener("mousedown", hideOnClick))
 })
+
