@@ -454,15 +454,17 @@ li:hover .bookmark-icon {
 .is-bookmarked {
   position: relative;
 }
+:root {
+  --bookmark-flash-bg: rgba(138, 37, 44, 0.2);
+}
+:root[saved-theme="dark"] {
+  --bookmark-flash-bg: rgba(209, 86, 94, 0.2);
+}
 .bookmark-flash {
   animation: flashBookmark 1.2s ease-out;
 }
 @keyframes flashBookmark {
-  0% { background-color: rgba(138, 37, 44, 0.2); }
-  100% { background-color: transparent; }
-}
-:root[saved-theme="dark"] @keyframes flashBookmark {
-  0% { background-color: rgba(209, 86, 94, 0.2); }
+  0% { background-color: var(--bookmark-flash-bg); }
   100% { background-color: transparent; }
 }
 
