@@ -4,7 +4,7 @@ document.documentElement.setAttribute("saved-theme", currentTheme)
 
 const emitThemeChangeEvent = (theme: "light" | "dark" | "sepia") => {
   const event: CustomEventMap["themechange"] = new CustomEvent("themechange", {
-    detail: { theme },
+    detail: { theme: theme as any },
   })
   document.dispatchEvent(event)
 }

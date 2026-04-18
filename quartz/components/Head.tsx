@@ -34,7 +34,10 @@ export default (() => {
     const usesCustomOgImage = ctx.cfg.plugins.emitters.some(
       (e) => e.name === CustomOgImagesEmitterName,
     )
-    const ogImageDefaultPath = `https://${cfg.baseUrl}/static/thumbnails/og-image.png`
+    const frontmatterImage = fileData.frontmatter?.cover ?? fileData.frontmatter?.image;
+    const ogImageDefaultPath = frontmatterImage
+      ? `https://${cfg.baseUrl}${frontmatterImage}`
+      : `https://${cfg.baseUrl}/static/thumbnails/og-image.png`
 
     return (
       <head>

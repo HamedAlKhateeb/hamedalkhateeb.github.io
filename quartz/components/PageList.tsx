@@ -69,9 +69,9 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
       {list.map((page) => {
         const title = page.frontmatter?.title
         const tags = page.frontmatter?.tags ?? []
-        const cover = page.frontmatter?.cover
-        const description = page.frontmatter?.description ?? page.description
-
+          const cover = (page.frontmatter?.cover ?? page.frontmatter?.image) as string | undefined
+          const description = page.frontmatter?.description ?? page.description
+  
         return (
           <li class="section-li page-card">
             {cover && (

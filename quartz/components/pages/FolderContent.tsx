@@ -172,18 +172,6 @@ export default ((opts?: Partial<FolderContentOptions>) => {
   font-size: 0.95rem;
   margin-top: 1rem;
 }
-
-.cards-grid .page-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: 30px !important;
-}
-
-@media (max-width: 768px) {
-  .cards-grid .page-grid {
-    grid-template-columns: 1fr !important;
-  }
-}
   `)
   return FolderContent
 }) satisfies QuartzComponentConstructor
