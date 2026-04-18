@@ -109,3 +109,102 @@ html[reader-mode="on"] .center > article {
   transform: translateY(-20px);
   transition: transform 0.4s ease;
 }
+
+
+/* ==================================
+   RTL Global Improvements
+   ================================== */
+[dir="rtl"] {
+  // Generic alignment for left-bound elements
+  text-align: right;
+  
+  // Lists and meta
+  ul.section-ul { padding-right: 0; padding-left: 0; }
+  li.section-li > .section .meta { 
+    margin: 0 0 0 1em; 
+  }
+
+  // Blockquotes
+  blockquote {
+    border-left: none;
+    border-right: 3px solid var(--secondary);
+    padding-left: 0;
+    padding-right: 1rem;
+  }
+
+  // Table of Contents
+  .toc-header {
+    text-align: right;
+  }
+  .toc-content.overflow {
+    @for $i from 0 through 6 {
+      & .depth-#{$i} {
+        padding-left: 0;
+        padding-right: calc(1rem * #{$i});
+      }
+    }
+  }
+
+  // Code Blocks & Math
+  pre, code, mjx-container.MathJax {
+    direction: ltr;
+    text-align: left;
+  }
+  
+  // Tag limits
+  .tags {
+    margin-right: auto;
+    margin-left: unset;
+  }
+
+  // Explorer (Sidebar)
+  .explorer .fold {
+    margin-left: 0;
+    margin-right: 0.5rem;
+  }
+  button.mobile-explorer, button.desktop-explorer {
+    text-align: right;
+  }
+  .explorer-content .folder-outer > ul {
+    border-left: none;
+    border-right: 1px solid var(--lightgray);
+    margin-left: 0;
+    margin-right: 6px;
+    padding-left: 0;
+    padding-right: 0.8rem;
+  }
+  .folder-icon {
+    margin-right: 0;
+    margin-left: 5px;
+  }
+  li:has(> .folder-outer:not(.open)) > .folder-container > svg {
+    transform: rotate(90deg);
+  }
+  
+  // Mobile Explorer Slide Out
+  @media all and (max-width: 600px) {
+    .page > #quartz-body.lock-scroll > :not(.sidebar.left:has(.explorer)) {
+      transform: translateX(-100dvw);
+    }
+    
+    .explorer {
+      .explorer-content {
+        left: unset;
+        right: 0;
+        transform: translateX(100vw);
+      }
+      &.collapsed > .explorer-content {
+        transform: translateX(100vw);
+      }
+      &:not(.collapsed) > .explorer-content {
+        transform: translateX(0);
+      }
+    }
+  }
+
+  // Search Results
+  .search > div > .search-contents > .search-contents-body {
+     text-align: right;
+  }
+}
+
