@@ -31,9 +31,13 @@ label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
 }
 
 // Override the main grid layout so the article center column can expand to our dynamic width!
-.page > #quartz-body {
-  grid-template-columns: 1fr minmax(auto, var(--content-width, 580px)) 1fr !important;
-  transition: grid-template-columns 0.3s ease;
+@use "./variables.scss" as *;
+
+@media all and ($desktop) {
+  .page > #quartz-body {
+    grid-template-columns: 1fr minmax(auto, var(--content-width, 580px)) 1fr !important;
+    transition: grid-template-columns 0.3s ease;
+  }
 }
 
 // Content article respects reading settings
@@ -101,8 +105,10 @@ html[reader-mode="on"] hr {
   pointer-events: none !important;
 }
 
-html[reader-mode="on"] .page > #quartz-body {
-  grid-template-columns: 1fr minmax(auto, var(--content-width, 800px)) 1fr !important;
+@media all and ($desktop) {
+  html[reader-mode="on"] .page > #quartz-body {
+    grid-template-columns: 1fr minmax(auto, var(--content-width, 800px)) 1fr !important;
+  }
 }
 
 html[reader-mode="on"] .center > article {
