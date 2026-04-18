@@ -420,34 +420,34 @@
 /* Paragraph Hover Bookmarks */
 .bookmark-icon {
   position: absolute;
-  right: -36px;
+  right: -42px; /* Pull it slightly more out to clear the text selection */
   top: 0px;
   background: transparent;
   border: none;
   color: var(--tertiary);
   cursor: pointer;
-  opacity: 0.15;
-  transition: all 0.2s ease;
-  padding: 6px;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  padding: 8px; /* Slightly larger clickable area */
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-/* Creates a 2cm invisible radius around the icon to catch hover events earlier */
+/* Tiny invisible bridge strictly bridging the gap to the paragraph limit, without overlapping text */
 .bookmark-icon::before {
   content: '';
   position: absolute;
-  top: -40px;
-  bottom: -40px;
-  left: -60px;
-  right: -40px;
-  z-index: 1;
+  left: -15px; /* Extend hit area 15px directly back to the text to bridge the gap */
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 .bookmark-icon:hover {
   background: transparent;
   color: #8a252c !important;
   opacity: 1 !important;
+  transform: scale(1.1);
 }
 .bookmark-icon svg {
   position: relative;
@@ -463,7 +463,7 @@
 p:hover > .bookmark-icon,
 blockquote:hover > .bookmark-icon,
 li:hover > .bookmark-icon {
-  opacity: 0.8 !important;
+  opacity: 0.8;
   color: var(--gray);
 }
 .bookmark-active {
