@@ -9,6 +9,7 @@ import { QuartzPluginData } from "../../plugins/vfile"
 import { ComponentChildren } from "preact"
 import { concatenateResources } from "../../util/resources"
 import { trieFromAllFiles } from "../../util/ctx"
+import { resolveRelative } from "../../util/path"
 
 interface FolderContentOptions {
   /**
@@ -111,7 +112,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
       <section class="page-container">
         <header class="main-header">
           <h1 class="title">
-            <a href="/" class="internal title-link">{fileData.frontmatter?.title || "مقالات"}</a>
+            <a href={resolveRelative(fileData.slug!, fileData.slug!)} class="internal title-link">{fileData.frontmatter?.title || "مقالات"}</a>
           </h1>
           {fileData.description && <p class="subtitle">{fileData.description}</p>}
 
