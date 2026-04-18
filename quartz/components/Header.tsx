@@ -1,11 +1,11 @@
-import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
+﻿import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { FullSlug, joinSegments, resolveRelative } from "../util/path"
 
-const Header: QuartzComponent = ({ displayName, fileData, cfg, tree }: QuartzComponentProps) => {
+const Header: QuartzComponent = ({ children, displayName, fileData, cfg, tree }: QuartzComponentProps) => {
   return (
     <header>
       <div class="header-inner">
-        <h1><a href="https://hamedalkhateeb.github.io/">مدونة حامد الخطيب</a></h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", margin: "0", flexWrap: "wrap", gap: "1rem" }}><h1><a href="https://hamedalkhateeb.github.io/">مدونة حامد الخطيب</a></h1><div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>{children}</div></div>
         <nav class="navbar">
           <a href={resolveRelative(fileData.slug!, "Math" as FullSlug)}>رياضيات</a>
           <a href={resolveRelative(fileData.slug!, "Culture" as FullSlug)}>ثقافة</a>
