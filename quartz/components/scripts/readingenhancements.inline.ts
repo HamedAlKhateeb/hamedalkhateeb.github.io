@@ -234,7 +234,7 @@ document.addEventListener("nav", () => {
         const paragraphs = articleContent.querySelectorAll("p, blockquote, li")
         const para = paragraphs[idx] as HTMLElement | undefined
         if (para) {
-          wrapper.classList.remove("is-bookmarked")
+          const wrapper = para.closest(".bookmark-container"); if (wrapper) wrapper.classList.remove("is-bookmarked")
           const icon = para.querySelector(".bookmark-icon")
           if (icon) icon.remove()
         }
@@ -335,11 +335,12 @@ document.addEventListener("nav", () => {
         const wrapper = para.closest(".bookmark-container")
         if (wrapper) {
             wrapper.classList.remove("is-bookmarked")
-            const icon = wrapper.querySelector(".bookmark-icon")
+            const icon = wrapper.querySelector(".bookmark-icon") as HTMLElement | null
             if (icon) {
                 icon.classList.remove("bookmark-active")
                 icon.title = "حفظ كعلامة مرجعية"
-                icon.innerHTML = \<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>            }
+                icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>`
+            }
         }
       })
       renderBookmarkPanel()
