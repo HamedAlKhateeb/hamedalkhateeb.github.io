@@ -234,7 +234,7 @@ document.addEventListener("nav", () => {
         const paragraphs = articleContent.querySelectorAll("p, blockquote, li")
         const para = paragraphs[idx] as HTMLElement | undefined
         if (para) {
-          const wrapper = para.closest(".bookmark-container"); if (wrapper) wrapper.classList.remove("is-bookmarked")
+          para.classList.remove("is-bookmarked")
           const icon = para.querySelector(".bookmark-icon")
           if (icon) icon.remove()
         }
@@ -247,21 +247,16 @@ document.addEventListener("nav", () => {
   const bookmarks = getBookmarks()
 
   allParagraphs.forEach((para, index) => {
-    // Wrap paragraph safely with parent container
-    const wrapper = document.createElement("div")
-    wrapper.className = "bookmark-container"
-    para.parentNode?.insertBefore(wrapper, para)
-    wrapper.appendChild(para)
+      para.style.position = "relative"
+      const isBookmarked = bookmarks.some(b => b.slug === pageSlug && b.index === index)
+      if (isBookmarked) {
+        para.classList.add("is-bookmarked")
+      }
+      injectBookmarkIcon(para, index, isBookmarked)
+    })
 
-    const isBookmarked = bookmarks.some(b => b.slug === pageSlug && b.index === index)
-    if (isBookmarked) {
-      wrapper.classList.add("is-bookmarked")
-    }
-    injectBookmarkIcon(para, wrapper, index, isBookmarked)
-  })
-
-  function injectBookmarkIcon(para: HTMLElement, wrapper: HTMLElement, index: number, active: boolean) {
-    const existing = wrapper.querySelector(".bookmark-icon")
+    function injectBookmarkIcon(para: HTMLElement, index: number, active: boolean) {
+    const existing = para.querySelector(".bookmark-icon")
     if (existing) {
       existing.classList.toggle("bookmark-active", active)
       return
@@ -282,7 +277,7 @@ document.addEventListener("nav", () => {
         // Remove
         const updated = all.filter(b => !(b.slug === pageSlug && b.index === index))
         saveBookmarks(updated)
-        wrapper.classList.remove("is-bookmarked")
+        para.classList.remove("is-bookmarked")
         icon.classList.remove("bookmark-active")
         icon.title = "حفظ كعلامة مرجعية"
         icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>`
@@ -291,7 +286,7 @@ document.addEventListener("nav", () => {
         const text = para.innerText || ""
         all.push({ slug: pageSlug, text, index })
         saveBookmarks(all)
-        wrapper.classList.add("is-bookmarked")
+        para.classList.add("is-bookmarked")
         icon.classList.add("bookmark-active")
         icon.title = "إزالة العلامة المرجعية"
         icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>`
@@ -299,7 +294,7 @@ document.addEventListener("nav", () => {
       renderBookmarkPanel()
     })
 
-    wrapper.appendChild(icon)
+    para.appendChild(icon)
   }
 
   // Sidebar toggle logic
@@ -332,16 +327,9 @@ document.addEventListener("nav", () => {
       saveBookmarks(updated)
       // Remove all bookmark classes and icons
       allParagraphs.forEach(para => {
-        const wrapper = para.closest(".bookmark-container")
-        if (wrapper) {
-            wrapper.classList.remove("is-bookmarked")
-            const icon = wrapper.querySelector(".bookmark-icon") as HTMLElement | null
-            if (icon) {
-                icon.classList.remove("bookmark-active")
-                icon.title = "حفظ كعلامة مرجعية"
-                icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>`
-            }
-        }
+        para.classList.remove("is-bookmarked")
+        const icon = para.querySelector(".bookmark-icon")
+        if (icon) icon.remove()
       })
       renderBookmarkPanel()
     }
