@@ -543,3 +543,307 @@ li:hover .bookmark-icon {
 :root[saved-theme="dark"] .bookmark-remove:hover {
   color: #d1565e;
 }
+/* New UI Styling matching standard image */
+
+.control-panel {
+  width: 220px !important;
+  gap: 0.6rem !important;
+  padding: 0.8rem !important;
+}
+
+.isolated-settings-panel {
+  bottom: 70px !important;
+}
+
+.toggles-list .toggle-row {
+  margin-bottom: 4px;
+}
+
+.small-action-btn {
+  background: var(--light);
+}
+
+/* Left Sidebar for Bookmarks */
+.bookmarks-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100vh;
+  background: var(--light);
+  border-right: 1px solid var(--lightgray);
+  box-shadow: 4px 0 30px rgba(0,0,0,0.05);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+  direction: rtl;
+}
+
+:root[saved-theme="dark"] .bookmarks-sidebar {
+  box-shadow: 4px 0 30px rgba(0,0,0,0.3);
+}
+
+.bookmarks-sidebar.sidebar-hidden {
+  transform: translateX(-100%);
+}
+
+:root[dir="rtl"] .bookmarks-sidebar.sidebar-hidden {
+  transform: translateX(-100%);
+}
+
+.bookmarks-sidebar .bookmarks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1rem 1rem;
+  border-bottom: 1px solid var(--lightgray);
+}
+
+.bookmarks-sidebar .bookmarks-header h3 {
+  margin: 0;
+  font-family: var(--headerFont);
+  color: var(--darkgray);
+  font-size: 1.1rem;
+}
+
+.close-sidebar-btn {
+  background: transparent;
+  border: 1px solid var(--lightgray);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--darkgray);
+  transition: background 0.2s;
+}
+
+.close-sidebar-btn:hover {
+  background: var(--lightgray);
+}
+
+.bookmarks-info-text {
+  padding: 1rem;
+  border-bottom: 1px solid var(--lightgray);
+}
+
+.bookmarks-info-text span {
+  color: #8a252c;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+:root[saved-theme="dark"] .bookmarks-info-text span {
+  color: #d1565e;
+}
+
+.bookmarks-info-text p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--darkgray);
+  line-height: 1.5;
+}
+
+.bookmarks-sidebar .bookmarks-list {
+  padding: 1rem;
+  flex: 1;
+  overflow-y: auto;
+  max-height: none;
+}
+
+.bookmarks-sidebar .bookmark-item {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+}
+
+.bookmarks-sidebar .bookmark-item:hover {
+  background: transparent;
+}
+
+.bookmarks-sidebar .bookmark-content {
+  flex: 1;
+  margin-left: 0.5rem;
+  border-right: 2px solid #8a252c;
+  padding-right: 8px;
+}
+:root[saved-theme="dark"] .bookmarks-sidebar .bookmark-content {
+  border-right-color: #d1565e;
+}
+
+.bookmarks-sidebar .bookmark-title {
+  color: #8a252c;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+:root[saved-theme="dark"] .bookmarks-sidebar .bookmark-title {
+  color: #d1565e;
+}
+
+.bookmarks-sidebar .bookmark-text {
+  font-size: 0.85rem;
+  color: var(--darkgray);
+  line-height: 1.5;
+  margin: 0;
+  text-align: right;
+}
+
+
+.control-panel {
+  width: 220px !important;
+  gap: 0.6rem !important;
+  padding: 0.8rem !important;
+}
+
+.isolated-settings-panel {
+  bottom: 70px !important;
+}
+
+.toggles-list .toggle-row {
+  margin-bottom: 4px;
+}
+
+.small-action-btn {
+  background: var(--light);
+}
+
+.bookmarks-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100vh;
+  background: var(--light);
+  border-right: 1px solid var(--lightgray);
+  box-shadow: 4px 0 30px rgba(0,0,0,0.05);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+  direction: rtl;
+}
+
+:root[saved-theme="dark"] .bookmarks-sidebar {
+  box-shadow: 4px 0 30px rgba(0,0,0,0.3);
+}
+
+.bookmarks-sidebar.sidebar-hidden {
+  transform: translateX(-100%);
+}
+
+:root[dir="rtl"] .bookmarks-sidebar.sidebar-hidden {
+  transform: translateX(-100%);
+}
+
+.bookmarks-sidebar .bookmarks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1rem 1rem;
+  border-bottom: 1px solid var(--lightgray);
+}
+
+.bookmarks-sidebar .bookmarks-header h3 {
+  margin: 0;
+  font-family: var(--headerFont);
+  color: var(--darkgray);
+  font-size: 1.1rem;
+}
+
+.close-sidebar-btn {
+  background: transparent;
+  border: 1px solid var(--lightgray);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--darkgray);
+  transition: background 0.2s;
+}
+
+.close-sidebar-btn:hover {
+  background: var(--lightgray);
+}
+
+.bookmarks-info-text {
+  padding: 1rem;
+  border-bottom: 1px solid var(--lightgray);
+}
+
+.bookmarks-info-text span {
+  color: #8a252c;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+:root[saved-theme="dark"] .bookmarks-info-text span {
+  color: #d1565e;
+}
+
+.bookmarks-info-text p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--darkgray);
+  line-height: 1.5;
+}
+
+.bookmarks-sidebar .bookmarks-list {
+  padding: 1rem;
+  flex: 1;
+  overflow-y: auto;
+  max-height: none;
+}
+
+.bookmarks-sidebar .bookmark-item {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+}
+
+.bookmarks-sidebar .bookmark-item:hover {
+  background: transparent;
+}
+
+.bookmarks-sidebar .bookmark-content {
+  flex: 1;
+  margin-left: 0.5rem;
+  border-right: 2px solid #8a252c;
+  padding-right: 8px;
+}
+:root[saved-theme="dark"] .bookmarks-sidebar .bookmark-content {
+  border-right-color: #d1565e;
+}
+
+.bookmarks-sidebar .bookmark-title {
+  color: #8a252c;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+:root[saved-theme="dark"] .bookmarks-sidebar .bookmark-title {
+  color: #d1565e;
+}
+
+.bookmarks-sidebar .bookmark-text {
+  font-size: 0.85rem;
+  color: var(--darkgray);
+  line-height: 1.5;
+  margin: 0;
+  text-align: right;
+}
+

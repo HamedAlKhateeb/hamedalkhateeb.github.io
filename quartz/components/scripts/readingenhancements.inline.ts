@@ -10,7 +10,6 @@ document.addEventListener("nav", () => {
   // Reading Progress & Time
   // =====================
   const topProgressBar = document.getElementById("reading-progress-bar") as HTMLElement | null
-  const progressRingCircle = document.querySelector(".progress-ring__circle") as SVGCircleElement | null
   const readingTimeInfo = document.getElementById("reading-time-info") as HTMLElement | null
   const readingTimeRemaining = document.getElementById("reading-time-remaining") as HTMLElement | null
 
@@ -19,9 +18,6 @@ document.addEventListener("nav", () => {
   const wordCount = text.trim().split(/\s+/).length
   const wordsPerMinute = 200
   const totalMinutes = Math.ceil(wordCount / wordsPerMinute)
-
-  // SVG ring circumference: 2*pi*r = 2*pi*23 ≈ 144.5
-  const RING_CIRCUMFERENCE = 144.5
 
   const updateReadingProgress = () => {
     const docEl = document.documentElement
@@ -36,12 +32,6 @@ document.addEventListener("nav", () => {
     // Update top progress bar
     if (topProgressBar) {
       topProgressBar.style.width = `${progressPercent}%`
-    }
-
-    // Update circular ring on gear button
-    if (progressRingCircle) {
-      const offset = RING_CIRCUMFERENCE - progress * RING_CIRCUMFERENCE
-      progressRingCircle.style.strokeDashoffset = String(offset)
     }
 
     // Update reading time remaining
@@ -101,27 +91,32 @@ document.addEventListener("nav", () => {
     const pageBookmarks = all.filter(b => b.slug === pageSlug)
 
     if (pageBookmarks.length === 0) {
-      container.innerHTML = `<div class="empty-bookmarks">لا توجد علامات مرجعية بعد. يمكنك حفظ أي فقرة عند القراءة.</div>`
-      return
-    }
+        container.innerHTML = `<div class="empty-bookmarks">لا توجد إشارات مرجعية بعد. يمكنك حفظ أي فقرة عند القراءة.</div>`
+        return
+      }
+  
+      container.innerHTML = pageBookmarks.map((bm, i) => `
+        <div class="bookmark-item" data-index="${bm.index}">
+          <div class="bookmark-content">
+            <span class="bookmark-title">إشارة</span>
+            <p class="bookmark-text">${bm.text.substring(0, 80)}${bm.text.length > 80 ? "…" : ""}</p>
+          </div>
+          <button class="bookmark-remove" data-bm-index="${bm.index}" title="حذف">
+             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      `).join("")
 
-    container.innerHTML = pageBookmarks.map((bm, i) => `
-      <div class="bookmark-item" data-index="${bm.index}">
-        <span class="bookmark-text">${bm.text.substring(0, 80)}${bm.text.length > 80 ? "…" : ""}</span>
-        <button class="bookmark-remove" data-bm-index="${bm.index}" title="حذف">×</button>
-      </div>
-    `).join("")
-
-    // Click to scroll to paragraph
-    container.querySelectorAll<HTMLElement>(".bookmark-item").forEach(item => {
-      item.addEventListener("click", (e) => {
-        if ((e.target as HTMLElement).classList.contains("bookmark-remove")) return
-        const idx = parseInt(item.dataset.index ?? "0")
-        const paragraphs = articleContent.querySelectorAll("p, blockquote, li")
-        const target = paragraphs[idx] as HTMLElement | undefined
-        if (target) {
-          target.scrollIntoView({ behavior: "smooth", block: "center" })
-          target.classList.add("bookmark-flash")
+      // Click to scroll to paragraph
+      container.querySelectorAll<HTMLElement>(".bookmark-item").forEach(item => {
+        item.addEventListener("click", (e) => {
+          if ((e.target as HTMLElement).classList.contains("bookmark-remove") || (e.target as HTMLElement).closest(".bookmark-remove")) return
+          const idx = parseInt(item.dataset.index ?? "0")
+          const paragraphs = articleContent.querySelectorAll("p, blockquote, li")
+          const target = paragraphs[idx] as HTMLElement | undefined
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "center" })
+            target.classList.add("bookmark-flash")
           setTimeout(() => target.classList.remove("bookmark-flash"), 1200)
         }
       })
@@ -227,7 +222,28 @@ document.addEventListener("nav", () => {
     para.appendChild(icon)
   }
 
-  // Clear all bookmarks for this page
+  // Sidebar toggle logic
+  const toggleBookmarksBtn = document.getElementById("btn-toggle-bookmarks-sidebar") as HTMLButtonElement | null
+  const closeBookmarksBtn = document.getElementById("btn-close-bookmarks") as HTMLButtonElement | null
+  const bookmarksSidebar = document.getElementById("bookmarks-sidebar") as HTMLElement | null
+
+  if (toggleBookmarksBtn && bookmarksSidebar) {
+    const showSidebar = () => {
+      bookmarksSidebar.classList.remove("sidebar-hidden")
+    }
+    toggleBookmarksBtn.addEventListener("click", showSidebar)
+    window.addCleanup(() => toggleBookmarksBtn.removeEventListener("click", showSidebar))
+  }
+
+  if (closeBookmarksBtn && bookmarksSidebar) {
+    const hideSidebar = () => {
+      bookmarksSidebar.classList.add("sidebar-hidden")
+    }
+    closeBookmarksBtn.addEventListener("click", hideSidebar)
+    window.addCleanup(() => closeBookmarksBtn.removeEventListener("click", hideSidebar))
+  }
+
+  // Clear all bookmarks for this page (from older logic if we keep a clear button, but it was removed, so just ignore or keep safe check)
   const clearBtn = document.getElementById("btn-clear-bookmarks") as HTMLButtonElement | null
   if (clearBtn) {
     const clearHandler = () => {

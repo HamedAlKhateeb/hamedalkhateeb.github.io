@@ -42,10 +42,6 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
         <>
           <div class="isolated-gear-dock">
             <button id="btn-settings-toggle" class="dock-btn" title="إعدادات القراءة">
-              <svg class="progress-ring" width="50" height="50">
-                <circle class="progress-ring-bg" stroke="rgba(0,0,0,0.05)" stroke-width="2" fill="transparent" r="23" cx="25" cy="25"/>
-                <circle class="progress-ring__circle" stroke="currentColor" stroke-width="2" fill="transparent" r="23" cx="25" cy="25" stroke-dasharray="144.5" stroke-dashoffset="144.5"/>
-              </svg>
               <svg class="gear-icon-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -175,32 +171,49 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
             <div class="toggle-row">
               <span class="toggle-label">الصوت</span>
               <button id="btn-toggle-audio" class="small-action-btn" title="تفعيل / إيقاف الصوت">
-                <span class="audio-on-text" style="display:none">إيقاف</span>
-                <span class="audio-off-text">تفعيل</span>
+                <span class="audio-on-text" style="display:none">مفعل</span>
+                <span class="audio-off-text">إيقاف</span>
               </button>
             </div>
             <div class="toggle-row">
               <span class="toggle-label">الفهرس</span>
               <button id="btn-toggle-toc" class="small-action-btn" title="تفعيل / إيقاف الفهرس">
-                <span>تفعيل</span>
+                <span>فتح</span>
+              </button>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">الإشارات</span>
+              <button id="btn-toggle-bookmarks-sidebar" class="small-action-btn" title="عرض الإشارات المرجعية">
+                <span>فتح</span>
+              </button>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">الاختصارات</span>
+              <button id="btn-toggle-shortcuts" class="small-action-btn" title="عرض الاختصارات">
+                <span>فتح</span>
               </button>
             </div>
           </div>
 
-          <div class="control-divider"></div>
-
-          {/* Bookmarks Section */}
-          <div class="control-group bookmarks-section">
-            <div class="bookmarks-header">
-              <span class="control-label">العلامات المرجعية</span>
-              <button id="btn-clear-bookmarks" class="small-action-btn" title="حذف الكل">تفريع</button>
-            </div>
-            <div id="bookmarks-container" class="bookmarks-list">
-              <div class="empty-bookmarks">لا توجد علامات مرجعية بعد. يمكنك حفظ أي فقرة عند القراءة.</div>
-            </div>
-          </div>
-
         </div>
+
+        {/* Left Sidebar for Bookmarks */}
+        <div id="bookmarks-sidebar" class="bookmarks-sidebar sidebar-hidden">
+          <div class="bookmarks-header">
+            <h3 class="control-label">الإشارات المرجعية</h3>
+            <button id="btn-close-bookmarks" class="close-sidebar-btn" title="إغلاق">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+          <div class="bookmarks-info-text">
+            <span>الرهان</span>
+            <p>هذه الفكرة - أن نتيجة اللعبة محسومة رياضيا منذ البداية لمن يعرف القاعدة - هي قلب...</p>
+          </div>
+          <div id="bookmarks-container" class="bookmarks-list">
+            <div class="empty-bookmarks">لا توجد علامات مرجعية بعد. يمكنك حفظ أي فقرة عند القراءة.</div>
+          </div>
+        </div>
+
         </>
       )}
 
