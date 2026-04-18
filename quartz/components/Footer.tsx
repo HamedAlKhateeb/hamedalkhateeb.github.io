@@ -29,12 +29,12 @@ export default ((opts?: Options) => {
     return (
       <footer class={`${displayClass ?? ""}`}>
         <p>
-          © {year}
+          &copy; {year}
         </p>
         <ul>
           {Object.entries(links).map(([text, link]) => (
             <li>
-              <a href={link} aria-label={text}>{getIcon(text) ?? text}</a>
+              <a href={link} aria-label={text} title={text}>{getIcon(text) ?? text}</a>
             </li>
           ))}
         </ul>

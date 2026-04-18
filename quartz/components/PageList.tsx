@@ -135,13 +135,18 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
 }
 
 PageList.css = `
-.page-grid, .cards-grid {
+.page-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   gap: 2rem;
   padding: 0;
   list-style: none;
   margin-top: 2rem;
+}
+
+.cards-grid {
+  /* wrapper styles if any, block by default */
+  width: 100%;
 }
 
 .page-card {
