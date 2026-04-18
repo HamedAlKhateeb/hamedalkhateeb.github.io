@@ -118,7 +118,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
     return (
       <section class="page-container">
         <header class="main-header">
-          {fileData.description && <p class="subtitle">{fileData.description}</p>}
+          {fileData.description && fileData.slug !== "About/index" && <p class="subtitle">{fileData.description}</p>}
 
           {options.showFolderCount && fileData.slug !== "About/index" && (
              <p class="meta-data">{allPagesInFolder.length} مقال</p>
