@@ -457,9 +457,21 @@
     background: var(--highlight);
     border-radius: 4px;
   }
-  p:hover > .bookmark-icon,
-  blockquote:hover > .bookmark-icon,
-  li:hover > .bookmark-icon {
+  .bookmark-container {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .bookmark-container > p,
+  .bookmark-container > blockquote,
+  .bookmark-container > li {
+    flex: 1;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .bookmark-container:hover .bookmark-icon {
     opacity: 0.8 !important;
     visibility: visible;
     transition: opacity 0.2s ease, visibility 0s, transform 0.2s ease;
