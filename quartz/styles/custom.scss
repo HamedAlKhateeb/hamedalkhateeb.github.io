@@ -1,4 +1,5 @@
 @use "./base.scss";
+@use "./variables.scss" as *;
 
 :root {
   direction: rtl;
@@ -31,7 +32,6 @@ label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
 }
 
 // Override the main grid layout so the article center column can expand to our dynamic width!
-@use "./variables.scss" as *;
 
 @media all and ($desktop) {
   .page > #quartz-body {
