@@ -420,15 +420,15 @@
 /* Paragraph Hover Bookmarks */
 .bookmark-icon {
   position: absolute;
-  right: -30px;
-  top: 4px;
+  right: -36px;
+  top: 0px;
   background: transparent;
   border: none;
-  color: var(--lightgray);
+  color: var(--tertiary);
   cursor: pointer;
   opacity: 0;
   transition: all 0.2s ease;
-  padding: 4px;
+  padding: 8px;
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -436,13 +436,13 @@
 }
 .bookmark-icon:hover {
   background: var(--highlight);
-  color: #8a252c;
-  opacity: 1;
+  color: #8a252c !important;
+  opacity: 1 !important;
 }
-p:hover .bookmark-icon,
-blockquote:hover .bookmark-icon,
-li:hover .bookmark-icon {
-  opacity: 0.5;
+p:hover > .bookmark-icon,
+blockquote:hover > .bookmark-icon,
+li:hover > .bookmark-icon {
+  opacity: 0.9;
 }
 .bookmark-active {
   color: #8a252c !important;

@@ -249,3 +249,61 @@ html[reader-mode="on"] .center > article {
   opacity: 0.85; 
   color: var(--light) !important; 
 }
+
+/* Home Page Enhancements */
+.continue-reading-banner {
+  background: var(--lightgray);
+  padding: 12px 20px;
+  border-radius: 25px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--darkgray);
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+.continue-reading-banner:hover {
+  background: var(--highlight);
+  border-color: var(--gray);
+}
+.continue-reading-banner strong {
+  color: var(--dark);
+  font-weight: bold;
+  margin: 0 5px;
+}
+
+.home-bookmarks-section {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--lightgray);
+}
+.home-bookmarks-title {
+  font-size: 1rem;
+  margin-bottom: 16px;
+  color: var(--gray);
+}
+.home-bookmarks-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.home-bookmark-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--lightgray);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: var(--darkgray);
+  text-decoration: none !important;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+.home-bookmark-pill:hover {
+  background: var(--highlight);
+  color: var(--dark);
+  border-color: var(--gray);
+}

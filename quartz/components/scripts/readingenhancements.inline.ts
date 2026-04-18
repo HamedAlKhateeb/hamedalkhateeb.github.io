@@ -1,10 +1,81 @@
 document.addEventListener("nav", () => {
-  // Only run on article/content pages (not home/index or tags)
+  const pageSlug = document.body.dataset.slug ?? ""
+  
+  if (pageSlug === "index" || pageSlug.endsWith("/index") || pageSlug.startsWith("tags/")) {
+    // Show Continue Reading
+    const lastReadData = localStorage.getItem("quartz-last-read")
+    if (lastReadData) {
+      try {
+        const lastRead = JSON.parse(lastReadData)
+        if (lastRead && lastRead.title && lastRead.path && lastRead.progress < 100) {
+          const cardsGrid = document.querySelector(".cards-grid")
+          if (cardsGrid) {
+            const continueReadingEl = document.createElement("div")
+            continueReadingEl.className = "continue-reading-banner"
+            continueReadingEl.innerHTML = `
+              <span>أكمل قراءة: <strong>${lastRead.title}</strong> (${lastRead.progress}%)</span>
+            `
+            continueReadingEl.addEventListener("click", () => {
+              window.location.href = lastRead.path
+            })
+            cardsGrid.parentNode?.insertBefore(continueReadingEl, cardsGrid)
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Show Bookmarks under Newsletter or at bottom
+    const BOOKMARK_KEY = "reader-bookmarks"
+    const bookmarksData = localStorage.getItem(BOOKMARK_KEY)
+    if (bookmarksData) {
+      try {
+        const allBms = JSON.parse(bookmarksData) as any[]
+        if (allBms.length > 0) {
+          const centerDiv = document.querySelector(".center")
+          if (centerDiv) {
+            const bmSection = document.createElement("div")
+            bmSection.className = "home-bookmarks-section"
+            bmSection.innerHTML = `
+              <h3 class="home-bookmarks-title">إشاراتك المرجعية</h3>
+              <div class="home-bookmarks-list">
+                ${allBms.map((bm: any) => `
+                  <a href="/${bm.slug}?bm=${bm.index}" class="home-bookmark-pill">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                    <span>${bm.text.substring(0, 40)}${bm.text.length > 40 ? "..." : ""}</span>
+                  </a>
+                `).join('')}
+              </div>
+            `
+            // Try to place it after newsletter, or at end of center
+            const footer = document.querySelector("footer")
+            centerDiv.appendChild(bmSection)
+          }
+        }
+      } catch (e) {}
+    }
+    
+    return
+  }
+
+  // Only run on article/content pages
   const articleContent = document.querySelector(".center article") as HTMLElement | null
   if (!articleContent) return
 
-  const pageSlug = document.body.dataset.slug ?? ""
-  if (pageSlug === "index" || pageSlug.endsWith("/index") || pageSlug.startsWith("tags/")) return
+  // Check if navigating from a bookmark link
+  const urlParams = new URLSearchParams(window.location.search);
+  const bmIndex = urlParams.get('bm');
+  if (bmIndex && articleContent) {
+    setTimeout(() => {
+      const idx = parseInt(bmIndex)
+      const paragraphs = articleContent.querySelectorAll("p, blockquote, li")
+      const target = paragraphs[idx] as HTMLElement | undefined
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" })
+        target.classList.add("bookmark-flash")
+        setTimeout(() => target.classList.remove("bookmark-flash"), 1200)
+      }
+    }, 500) // slight delay to allow rendering
+  }
 
   // =====================
   // Reading Progress & Time
@@ -28,6 +99,19 @@ document.addEventListener("nav", () => {
 
     const progress = Math.min(scrollTop / scrollHeight, 1)
     const progressPercent = Math.round(progress * 100)
+
+    // Save reading progress to localStorage
+    const articleTitle = document.querySelector(".article-title")?.textContent || ""
+    if (articleTitle && progressPercent > 0 && progressPercent < 100) {
+      localStorage.setItem("quartz-last-read", JSON.stringify({
+        title: articleTitle,
+        slug: pageSlug,
+        progress: progressPercent,
+        path: window.location.pathname
+      }))
+    } else if (progressPercent >= 100) {
+      localStorage.removeItem("quartz-last-read")
+    }
 
     // Update top progress bar
     if (topProgressBar) {
