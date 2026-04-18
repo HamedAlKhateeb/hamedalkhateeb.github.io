@@ -15,7 +15,11 @@ export const sharedPageComponents: SharedLayout = {
     Component.ControlPanel(),
   ],
   footer: Component.Footer({
-    links: {},
+    links: {
+      "LinkedIn": "https://www.linkedin.com/in/hamed-al-khateeb-756661302/",
+      "X": "https://x.com/HamedAlkhateeb5",
+      "Facebook": "https://www.facebook.com/profile.php?id=61570158555241"
+    },
   }),
 }
 
