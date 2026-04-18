@@ -187,12 +187,6 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
                 <span>فتح</span>
               </button>
             </div>
-            <div class="toggle-row">
-              <span class="toggle-label">الاختصارات</span>
-              <button id="btn-toggle-shortcuts" class="small-action-btn" title="عرض الاختصارات">
-                <span>فتح</span>
-              </button>
-            </div>
           </div>
 
         </div>
