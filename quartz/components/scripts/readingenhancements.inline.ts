@@ -1,6 +1,6 @@
 document.addEventListener("nav", () => {
   // Only run on article/content pages (not home/index or tags)
-  const articleContent = document.querySelector(".center.article") as HTMLElement | null
+  const articleContent = document.querySelector(".center article") as HTMLElement | null
   if (!articleContent) return
 
   const pageSlug = document.body.dataset.slug ?? ""
