@@ -5,8 +5,6 @@ import * as Component from "./quartz/components"
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [
-    
-    Component.Search(),
     Component.Darkmode(),
   ],
   afterBody: [
