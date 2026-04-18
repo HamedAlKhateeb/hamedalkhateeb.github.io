@@ -291,6 +291,9 @@ export function renderPage(
             <Footer {...componentData} />
           </Body>
         </div>
+        {/* Cloudflare Web Analytics */}
+        <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "c9e8fa2ad2ae4db3b20f1e87d3765481"}'></script>
+        {/* End Cloudflare Web Analytics */}
       </body>
       {pageResources.js
         .filter((resource) => resource.loadTime === "afterDOMReady")
