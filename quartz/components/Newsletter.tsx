@@ -71,26 +71,32 @@ Newsletter.css = `
   display: flex;
   justify-content: center;
   width: 100%;
-  max-width: 400px;
+  max-width: 320px;
   margin-bottom: 1rem;
   flex-direction: row-reverse;
 }
 .newsletter-form input {
-  padding: 0.8rem;
+  padding: 0.6rem 0.8rem;
   border: 1px solid var(--lightgray);
   background-color: var(--light);
   border-radius: 0 6px 6px 0;
   border-left: none;
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   flex: 1;
+  min-width: 0;
+}
+@media (max-width: 480px) {
+  .newsletter-form {
+    max-width: 280px;
+  }
 }
 .newsletter-form input:focus {
   outline: none;
   border-color: var(--gray);
 }
 .newsletter-form button {
-  padding: 0.8rem 1.5rem;
+  padding: 0.6rem 1.2rem;
   background-color: #8a252c;
   color: white;
   border: none;

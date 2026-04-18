@@ -57,17 +57,6 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
          <span class="separator-diamond">✧</span>
       </div>
 
-      {/* 3. Newsletter */}
-      <div class="newsletter-section">
-        <h3>ابق على اطلاع</h3>
-        <p>مقالات في الرياضيات والهندسة وأشياء من هذا القبيل</p>
-        <form action="#" method="POST" class="newsletter-form">
-          <button type="submit">اشتراك</button>
-          <input type="email" placeholder="بريدك الإلكتروني" required />
-        </form>
-        <small>لا رسائل مزعجة، إلغاء الاشتراك في أي وقت.</small>
-      </div>
-
       {/* 4. Separator */}
       <div class="footer-separator bottom-sep">
         <span>◇ ~ (x) ~ ◇</span>
@@ -169,66 +158,6 @@ ArticleFooter.css = `
 .separator-diamond {
   color: #8a252c;
   font-size: 1.5rem;
-}
-
-/* Newsletter Block */
-.newsletter-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  text-align: center;
-}
-.newsletter-section h3 {
-  font-family: var(--headerFont);
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #8a252c !important;
-}
-.newsletter-section p {
-  color: var(--gray);
-  margin-bottom: 1.5rem;
-}
-.newsletter-form {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 1rem;
-  flex-direction: row-reverse;
-}
-.newsletter-form input {
-  padding: 0.8rem;
-  border: 1px solid var(--lightgray);
-  background-color: var(--light);
-  border-radius: 0 6px 6px 0;
-  border-left: none;
-  font-family: inherit;
-  font-size: 0.95rem;
-  flex: 1;
-}
-.newsletter-form input:focus {
-  outline: none;
-  border-color: var(--gray);
-}
-.newsletter-form button {
-  padding: 0.8rem 1.5rem;
-  background-color: #8a252c;
-  color: white;
-  border: none;
-  border-radius: 6px 0 0 6px;
-  cursor: pointer;
-  font-family: inherit;
-  font-weight: bold;
-  font-size: 0.95rem;
-  transition: background-color 0.2s;
-}
-.newsletter-form button:hover {
-  background-color: #6d1c22;
-}
-.newsletter-section small {
-  color: var(--gray);
-  font-size: 0.85rem;
 }
 
 
