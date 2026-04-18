@@ -11,6 +11,7 @@ export const sharedPageComponents: SharedLayout = {
   ],
   afterBody: [
     Component.Newsletter(),
+    Component.Comments(),
     Component.ArticleFooter(),
     Component.ControlPanel(),
   ],

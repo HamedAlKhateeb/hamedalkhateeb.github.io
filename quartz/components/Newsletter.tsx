@@ -1,4 +1,36 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
+
+const Newsletter: QuartzComponent = ({ displayClass }: QuartzComponentProps) => {
+  return (
+    <div class={`newsletter ${displayClass ?? ""}`}>
+      <hr />
+      <h3>ابق على اطلاع</h3>
+      <p>مقالات في الرياضيات والهندسة وأشياء من هذا القبيل</p>
+      <form
+        action="https://buttondown.com/api/emails/embed-subscribe/al-khateeb"
+        method="post"
+        class="embeddable-buttondown-form"
+        target="_blank"
+      >
+        <div class="newsletter-inputs">
+          <input 
+            type="email" 
+            name="email" 
+            id="bd-email" 
+            placeholder="بريدك الإلكتروني" 
+            required 
+          />
+          <input type="submit" value="اشتراك" />
+        </div>
+      </form>
+      <p class="footer-text">
+        لا رسائل مزعجة، إلغاء الاشتراك في أي وقت.
+      </p>
+    </div>
+  )
+}
+
+export default (() => Newsletter) satisfies QuartzComponentConstructorimport { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { classNames } from "../util/lang"
 
 const Newsletter: QuartzComponent = ({ fileData, displayClass }: QuartzComponentProps) => {
