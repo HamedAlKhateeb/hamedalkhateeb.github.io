@@ -118,15 +118,20 @@ export default ((opts?: Partial<FolderContentOptions>) => {
     return (
       <section class="page-container">
         <header class="main-header">
-          <h1 class="title">
-            {fileData.frontmatter?.title || "مقالات"}
-          </h1>
           {fileData.description && <p class="subtitle">{fileData.description}</p>}
 
           {options.showFolderCount && (
              <p class="meta-data">{allPagesInFolder.length} مقال</p>
           )}
         </header>
+
+        <div class="folder-content-body">
+          {content}
+        </div>
+
+        <div class="folder-content-body">
+          {content}
+        </div>
 
         <div class="cards-grid">
           <PageList {...listProps} />

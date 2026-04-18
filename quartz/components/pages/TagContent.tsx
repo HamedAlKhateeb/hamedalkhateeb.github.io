@@ -117,7 +117,6 @@ export default ((opts?: Partial<TagContentOptions>) => {
       return (
         <section class="page-container">
           <header class="main-header">
-            <h1 class="title">{`الوسم: ${tag}`}</h1>
             {fileData.description && <p class="subtitle">{fileData.description}</p>}
 
             <p class="meta-data">{pages.length} مقال</p>
