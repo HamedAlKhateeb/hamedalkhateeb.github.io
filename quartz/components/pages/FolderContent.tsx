@@ -120,14 +120,10 @@ export default ((opts?: Partial<FolderContentOptions>) => {
         <header class="main-header">
           {fileData.description && <p class="subtitle">{fileData.description}</p>}
 
-          {options.showFolderCount && (
+          {options.showFolderCount && fileData.slug !== "About/index" && (
              <p class="meta-data">{allPagesInFolder.length} مقال</p>
           )}
         </header>
-
-        <div class="folder-content-body">
-          {content}
-        </div>
 
         <div class="folder-content-body">
           {content}
