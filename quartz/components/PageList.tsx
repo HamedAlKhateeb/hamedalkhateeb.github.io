@@ -137,7 +137,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
 PageList.css = `
 .page-grid, .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   gap: 2rem;
   padding: 0;
   list-style: none;
@@ -175,7 +175,7 @@ PageList.css = `
 }
 
 .card-content, .card-body {
-  padding: 2.5rem 2rem;
+  padding: clamp(1.2rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2rem);
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -232,9 +232,11 @@ PageList.css = `
   font-family: 'Aref Ruqaa', var(--headerFont);
 }
 
-.card-title a {
+.card-title a, .card-title a.internal {
   color: var(--dark);
   text-decoration: none;
+  background-color: transparent;
+  padding: 0;
 }
 
 .card-description {
