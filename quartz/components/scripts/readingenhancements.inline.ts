@@ -13,10 +13,10 @@ document.addEventListener("nav", () => {
             const continueReadingEl = document.createElement("div")
             continueReadingEl.className = "continue-reading-banner"
             continueReadingEl.innerHTML = `
-              <span>أكمل قراءة: <strong>${lastRead.title}</strong> (${lastRead.progress}%)</span>
+              <span>أكمل قراءة <strong>${lastRead.title}</strong> (${lastRead.progress}%)</span>
             `
             continueReadingEl.addEventListener("click", () => {
-              window.location.href = lastRead.path
+              window.location.href = lastRead.path + "?resume=true"
             })
             cardsGrid.parentNode?.insertBefore(continueReadingEl, cardsGrid)
           }
@@ -61,9 +61,11 @@ document.addEventListener("nav", () => {
   const articleContent = document.querySelector(".center article") as HTMLElement | null
   if (!articleContent) return
 
-  // Check if navigating from a bookmark link
+  // Check if navigating from a bookmark link or resume flag
   const urlParams = new URLSearchParams(window.location.search);
   const bmIndex = urlParams.get('bm');
+  const isResume = urlParams.get('resume') === 'true';
+
   if (bmIndex && articleContent) {
     setTimeout(() => {
       const idx = parseInt(bmIndex)
@@ -75,6 +77,18 @@ document.addEventListener("nav", () => {
         setTimeout(() => target.classList.remove("bookmark-flash"), 1200)
       }
     }, 500) // slight delay to allow rendering
+  } else if (isResume) {
+    const lastReadData = localStorage.getItem("quartz-last-read")
+    if (lastReadData) {
+      try {
+        const lastRead = JSON.parse(lastReadData)
+        if (lastRead && lastRead.slug === pageSlug && lastRead.scrollTop) {
+          setTimeout(() => {
+            window.scrollTo({ top: lastRead.scrollTop, behavior: "smooth" })
+          }, 500)
+        }
+      } catch(e) {}
+    }
   }
 
   // =====================
@@ -107,7 +121,8 @@ document.addEventListener("nav", () => {
         title: articleTitle,
         slug: pageSlug,
         progress: progressPercent,
-        path: window.location.pathname
+        path: window.location.pathname,
+        scrollTop: scrollTop
       }))
     } else if (progressPercent >= 100) {
       localStorage.removeItem("quartz-last-read")

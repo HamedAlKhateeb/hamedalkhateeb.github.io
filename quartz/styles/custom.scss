@@ -307,3 +307,9 @@ html[reader-mode="on"] .center > article {
   color: var(--dark);
   border-color: var(--gray);
 }
+.home-bookmarks-list .home-bookmark-pill svg {
+  min-width: 14px;
+}
+.continue-reading-banner {
+  margin: 0 auto 30px auto; 
+}
