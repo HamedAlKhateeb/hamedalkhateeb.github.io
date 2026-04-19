@@ -1,7 +1,7 @@
 document.addEventListener("nav", () => {
   const pageSlug = document.body.dataset.slug ?? ""
   
-  if (pageSlug === "index" || pageSlug.endsWith("/index") || pageSlug.startsWith("tags/")) {
+  if (pageSlug === "index" || pageSlug === "") {
     // Show Continue Reading
     const lastReadData = localStorage.getItem("quartz-last-read")
     if (lastReadData) {
