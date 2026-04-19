@@ -1,5 +1,5 @@
 ---
-title: How to choose colors of the house?
+title: كيف تختار ألوان المساحات المنزلية؟
 tags:
   - تصميم-داخلي
   - ديكور

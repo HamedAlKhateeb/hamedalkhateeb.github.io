@@ -1,5 +1,5 @@
 ---
-title: How to adjust lighting of your house in five steps?
+title: كيف تصمم إضاءة منزلك في 5 خطوات بسيطة؟
 image: /static/thumbnails/light-article-5-steps.png
 date: 2026-04-18
 tags:
