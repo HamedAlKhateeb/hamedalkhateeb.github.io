@@ -368,4 +368,64 @@ html[reader-mode="on"] .center > article {
 .poetry-navigation .nav-prev { text-align: right; flex: 1; }
 .poetry-navigation .nav-toc { text-align: center; flex: 1; }
 .poetry-navigation .nav-next { text-align: left; flex: 1; }
+
+/* Grid Table Formatting Overrides */
+.poem-line {
+  gap: 3rem !important;
+  margin-bottom: 1rem !important;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--gray);
+  position: relative;
+}
+
+/* عمود يفصل بين الشطرين */
+.poem-line::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background-color: var(--gray);
+  transform: translateX(-50%);
+  opacity: 0.5;
+}
+
+.poem-container > .poem-line:last-child {
+  border-bottom: none;
+}
+
+/* تحويل أزرار تصفح القصائد إلى أزرار واضحة */
+.poetry-navigation {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 1rem !important;
+  margin-top: 4rem !important;
+  padding-top: 2rem !important;
+  border-top: 2px dashed var(--lightgray) !important;
+}
+
+.poetry-navigation a {
+  display: inline-block !important;
+  padding: 0.7rem 1rem !important;
+  background-color: var(--secondary) !important;
+  color: var(--light) !important;
+  border-radius: 8px !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  font-size: 1rem !important;
+  transition: all 0.2s ease !important;
+  flex: 1;
+  text-align: center !important;
+  border: 1px solid var(--darkgray) !important;
+}
+
+.poetry-navigation a:hover {
+  background-color: var(--dark) !important;
+  transform: translateY(-2px);
+}
+
+.poetry-navigation .nav-empty {
+  flex: 1;
+}
 .poetry-navigation .nav-empty { flex: 1; }
