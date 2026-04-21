@@ -8,7 +8,7 @@ export default (() => {
 
     // Filter out index pages, tags, and poetry, then sort by date
     const pages = allFiles
-      .filter(page => page.slug && page.slug !== 'index' && !page.slug.endsWith('/index') && !page.slug.startsWith('tags/') && !page.slug.startsWith('poetry/'))
+      .filter(page => page.slug && page.slug !== 'index' && !page.slug.endsWith('/index') && !page.slug.startsWith('tags/') && !page.slug.toLowerCase().startsWith('poetry/'))
       .sort((a, b) => {
         const aDate = a.dates?.published ?? new Date('1970-01-01')
         const bDate = b.dates?.published ?? new Date('1970-01-01')
