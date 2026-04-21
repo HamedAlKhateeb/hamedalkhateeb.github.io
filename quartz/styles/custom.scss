@@ -313,3 +313,59 @@ html[reader-mode="on"] .center > article {
 .continue-reading-banner {
   margin: 0 auto 30px auto; 
 }
+
+/* ==================================
+   Poetry Viewer
+   ================================== */
+.poem-container {
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 2.2;
+  font-size: 1.2rem;
+}
+
+.poem-line {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+  direction: rtl;
+  margin-bottom: 0.5rem;
+}
+
+.poem-line span.first {
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.poem-line span.second {
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.poetry-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 700px;
+  margin: 3rem auto 1rem auto;
+  padding-top: 1.5rem;
+  border-top: 1px dotted var(--lightgray);
+}
+.poetry-navigation a {
+  text-decoration: none;
+  color: var(--secondary);
+  font-weight: bold;
+  transition: color 0.2s;
+  font-size: 1.1rem;
+}
+.poetry-navigation a:hover {
+  color: var(--dark);
+}
+.poetry-navigation .nav-prev { text-align: right; flex: 1; }
+.poetry-navigation .nav-toc { text-align: center; flex: 1; }
+.poetry-navigation .nav-next { text-align: left; flex: 1; }
+.poetry-navigation .nav-empty { flex: 1; }
