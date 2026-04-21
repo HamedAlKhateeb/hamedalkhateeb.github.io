@@ -429,3 +429,40 @@ html[reader-mode="on"] .center > article {
   flex: 1;
 }
 .poetry-navigation .nav-empty { flex: 1; }
+
+/* ==================================
+   New Poetry Layout
+   ================================== */
+.poem-wrapper {
+    width: 100%;
+    max-width: 650px;
+    margin: 2rem auto;
+    font-family: 'Amiri', serif;
+    direction: rtl;
+}
+.bayt {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+    gap: 1.5rem;
+}
+.shatr {
+    flex: 1;
+    font-size: clamp(18px, 4vw, 22px);
+    line-height: 1.8;
+}
+.shatr:first-child {
+    text-align: right;
+}
+.shatr:last-child {
+    text-align: left;
+}
+.shatr.center-shatr {
+    text-align: center;
+    flex: none;
+    width: 100%;
+}
+@media (max-width: 480px) {
+    .bayt { flex-direction: column; gap: 0.5rem; }
+    .shatr:first-child, .shatr:last-child { text-align: center; }
+}
