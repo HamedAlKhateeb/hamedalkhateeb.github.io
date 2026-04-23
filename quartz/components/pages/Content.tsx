@@ -32,14 +32,14 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
                   children: [
                     {
                       type: "element",
-                      tagName: "span",
-                      properties: { className: ["first"] },
+                      tagName: "div",
+                      properties: { className: ["hemistich", "first"] },
                       children: [{ type: "text", value: parts[0].trim() }],
                     },
                     {
                       type: "element",
-                      tagName: "span",
-                      properties: { className: ["second"] },
+                      tagName: "div",
+                      properties: { className: ["hemistich", "second"] },
                       children: [{ type: "text", value: parts[1].trim() }],
                     },
                   ],
