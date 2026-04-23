@@ -9,11 +9,11 @@ const Header: QuartzComponent = ({ children, displayName, fileData, cfg, tree }:
       <header class="poetry-header">
         <div class="header-inner">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", margin: "0", flexWrap: "wrap", gap: "1rem" }}>
-            <h1><a href={resolveRelative(fileData.slug!, "Poetry" as FullSlug)}>ديوان حامد الخطيب</a></h1>
+            <h1><a href={resolveRelative(fileData.slug!, "poetry" as FullSlug)}>ديوان حامد الخطيب</a></h1>
             <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>{children}</div>
           </div>
           <nav class="navbar poetry-navbar">
-            <a href={resolveRelative(fileData.slug!, "Poetry" as FullSlug)}>فهرس القصائد</a>
+            <a href={resolveRelative(fileData.slug!, "poetry" as FullSlug)}>فهرس القصائد</a>
             <a href="https://hamedalkhateeb.github.io/">المدونة</a>
           </nav>
         </div>
@@ -32,7 +32,7 @@ const Header: QuartzComponent = ({ children, displayName, fileData, cfg, tree }:
           <a href={resolveRelative(fileData.slug!, "Programming" as FullSlug)}>برمجة</a>
           <a href={resolveRelative(fileData.slug!, "Experiences" as FullSlug)}>تجارب</a>
           <a href={resolveRelative(fileData.slug!, "Personal" as FullSlug)}>شخصي</a>
-          <a href={resolveRelative(fileData.slug!, "Poetry" as FullSlug)}>أشعاري</a>
+          <a href={resolveRelative(fileData.slug!, "poetry" as FullSlug)}>أشعاري</a>
           <a href={resolveRelative(fileData.slug!, "Archive" as FullSlug)}>مقالات قديمة</a>
           <a href={resolveRelative(fileData.slug!, "About" as FullSlug)}>من أنا</a>
         </nav>
