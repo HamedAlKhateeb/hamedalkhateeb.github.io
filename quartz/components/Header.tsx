@@ -1,7 +1,26 @@
-﻿import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
+import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { FullSlug, joinSegments, resolveRelative } from "../util/path"
 
 const Header: QuartzComponent = ({ children, displayName, fileData, cfg, tree }: QuartzComponentProps) => {
+  const isPoetry = fileData.slug !== undefined && fileData.slug.startsWith("poetry/")
+
+  if (isPoetry) {
+    return (
+      <header class="poetry-header">
+        <div class="header-inner">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", margin: "0", flexWrap: "wrap", gap: "1rem" }}>
+            <h1><a href={resolveRelative(fileData.slug!, "Poetry" as FullSlug)}>ديوان حامد الخطيب</a></h1>
+            <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>{children}</div>
+          </div>
+          <nav class="navbar poetry-navbar">
+            <a href={resolveRelative(fileData.slug!, "Poetry" as FullSlug)}>فهرس القصائد</a>
+            <a href="https://hamedalkhateeb.github.io/">المدونة</a>
+          </nav>
+        </div>
+      </header>
+    )
+  }
+
   return (
     <header>
       <div class="header-inner">

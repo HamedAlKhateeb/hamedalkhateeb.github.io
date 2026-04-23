@@ -1,9 +1,12 @@
-﻿import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
+import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { classNames } from "../util/lang"
 
 const Newsletter: QuartzComponent = ({ fileData, displayClass }: QuartzComponentProps) => {
-  // Only render on the homepage or tag/list pages.
+  // Only render on the homepage or tag/list pages — not on poetry pages.
   if (fileData.slug !== "index" && !fileData.slug?.endsWith("/index") && !fileData.slug?.startsWith("tags/")) {
+    return null
+  }
+  if (fileData.slug?.startsWith("poetry/")) {
     return null
   }
 
