@@ -9,42 +9,34 @@
 
   & > .search-button {
     background-color: transparent;
-    border: none;
-    border-radius: 8px;
-    font-family: 'Aref Ruqaa', serif;
-    font-size: 1.1rem;
+    border: 1px var(--lightgray) solid;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: inherit;
     height: 2rem;
-    padding: 0 0.5rem;
+    padding: 0 1rem 0 0;
     display: flex;
     align-items: center;
     text-align: inherit;
     cursor: pointer;
     white-space: nowrap;
     width: 100%;
-    color: var(--darkgray);
-    transition: all 0.2s ease;
-
-    &:hover {
-      color: var(--dark);
-      background: rgba(201, 160, 108, 0.05);
-    }
 
     & > p {
       display: inline;
-      color: inherit;
+      color: var(--gray);
       text-wrap: unset;
-      margin: 0;
     }
 
     & svg {
       cursor: pointer;
       width: 18px;
       min-width: 18px;
-      margin: 0 0 0 0.5rem;
+      margin: 0 0.5rem;
 
       .search-path {
-        stroke: currentColor;
-        stroke-width: 2px;
+        stroke: var(--darkgray);
+        stroke-width: 1.5px;
         transition: stroke 0.5s ease;
       }
     }
@@ -78,41 +70,33 @@
 
       & > * {
         width: 100%;
-        border-radius: 12px;
+        border-radius: 7px;
         background: var(--light);
         box-shadow:
-          0 14px 50px rgba(0, 0, 0, 0.1),
-          0 10px 30px rgba(0, 0, 0, 0.08);
+          0 14px 50px rgba(27, 33, 48, 0.12),
+          0 10px 30px rgba(27, 33, 48, 0.16);
         margin-bottom: 2em;
-        direction: rtl;
-        border: 1px solid var(--lightgray);
       }
 
       & > input {
         box-sizing: border-box;
-        padding: 0.8em 1em;
-        font-family: 'Amiri', serif;
+        padding: 0.5em 1em;
+        font-family: var(--bodyFont);
         color: var(--dark);
-        font-size: 1.2em;
-        border: none;
-        border-bottom: 1px solid var(--lightgray);
-        border-radius: 12px 12px 0 0;
-        background: transparent;
+        font-size: 1.1em;
+        border: 1px solid var(--lightgray);
 
         &:focus {
           outline: none;
-          background: rgba(201, 160, 108, 0.02);
         }
       }
 
       & > .search-layout {
         display: none;
         flex-direction: row;
-        border: none;
+        border: 1px solid var(--lightgray);
         flex: 0 0 100%;
         box-sizing: border-box;
-        border-radius: 0 0 12px 12px;
-        background: var(--light);
 
         &.display-results {
           display: flex;
@@ -172,18 +156,16 @@
           flex-grow: 1;
           display: block;
           overflow: hidden;
-          font-family: 'Amiri', serif;
+          font-family: inherit;
           color: var(--dark);
-          line-height: 1.7em;
+          line-height: 1.5em;
           font-weight: $normalWeight;
           overflow-y: auto;
-          padding: 1.5rem 2rem;
-          text-align: right;
+          padding: 0 2rem;
 
           & .preview-inner {
             margin: 0 auto;
             width: min($pageWidth, 100%);
-            direction: rtl;
           }
 
           a[role="anchor"] {
@@ -193,12 +175,10 @@
 
         & > .results-container {
           overflow-y: auto;
-          text-align: right;
-          direction: rtl;
 
           & .result-card {
             overflow: hidden;
-            padding: 1.2em 1em;
+            padding: 1em;
             cursor: pointer;
             transition: background 0.2s ease;
             border-bottom: 1px solid var(--lightgray);
@@ -206,26 +186,24 @@
             display: block;
             box-sizing: border-box;
 
-            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            // normalize card props
+            font-family: inherit;
             font-size: 100%;
-            line-height: 1.5;
+            line-height: 1.15;
             margin: 0;
             text-transform: none;
-            text-align: right;
+            text-align: left;
             outline: none;
             font-weight: inherit;
 
             &:hover,
             &:focus,
             &.focus {
-              background: rgba(201, 160, 108, 0.08);
+              background: var(--lightgray);
             }
 
             & > h3 {
-              margin: 0 0 0.5rem 0;
-              font-family: 'Aref Ruqaa', serif;
-              font-size: 1.3rem;
-              color: var(--dark);
+              margin: 0;
             }
 
             @media all and not ($mobile) {
