@@ -74,20 +74,20 @@ label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
   display: flex;
   gap: 1.5rem;
   margin: 1rem 0;
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: 1px solid var(--lightgray);
   padding-bottom: 1rem;
   flex-wrap: wrap;
 }
 
 .navbar a {
   text-decoration: none;
-  color: #000000;
+  color: var(--dark);
   font-weight: bold;
   font-size: 1.1rem;
 }
 
 .navbar a:hover {
-  color: #666666;
+  color: var(--gray);
 }
 
 /* ==================================
@@ -367,7 +367,7 @@ html[reader-mode="on"] .center > article {
 .poem-page-title {
   font-family: 'Aref Ruqaa', serif !important;
   font-size: 2.2rem !important;
-  color: #4a3520;
+  color: var(--dark);
   margin: 0 0 0.5rem 0 !important;
   line-height: 1.4;
 }
@@ -381,12 +381,12 @@ html[reader-mode="on"] .center > article {
 .poem-page-poet {
   font-family: 'Amiri', serif;
   font-size: 1.1rem;
-  color: #8b7355;
+  color: var(--darkgray);
   margin-bottom: 0.5rem;
   letter-spacing: 0.05em;
 }
 :root[saved-theme="dark"] .poem-page-poet {
-  color: #b8a080;
+  color: #c8b8a0;
 }
 
 .poem-page-meta {
@@ -394,7 +394,7 @@ html[reader-mode="on"] .center > article {
   justify-content: center;
   gap: 1.5rem;
   font-size: 0.9rem;
-  color: #a89880;
+  color: var(--gray);
   margin-bottom: 0.8rem;
 }
 
@@ -402,14 +402,14 @@ html[reader-mode="on"] .center > article {
 .poem-meta-count {
   font-family: 'Amiri', serif;
   padding: 0.2rem 0.8rem;
-  border: 1px solid #d4c5a9;
+  border: 1px solid var(--lightgray);
   border-radius: 20px;
   font-size: 0.85rem;
 }
 :root[saved-theme="dark"] .poem-meta-meter,
 :root[saved-theme="dark"] .poem-meta-count {
-  border-color: #5a4a3a;
-  color: #9a8a70;
+  border-color: var(--lightgray);
+  color: var(--gray);
 }
 
 .poem-ornament-divider {
@@ -463,12 +463,12 @@ html[reader-mode="on"] .center > article {
   font-family: 'Amiri', serif;
   font-size: calc(var(--main-font-size, 18px) * 1.2);
   line-height: calc(var(--main-line-height, 1.7) * 1.2);
-  color: #3d2e1f;
+  color: var(--dark);
   transition: font-size 0.3s ease, line-height 0.3s ease;
 }
 :root[saved-theme="dark"] .poem-line span.first,
 :root[saved-theme="dark"] .poem-line span.second {
-  color: #ddd0c0;
+  color: var(--darkgray);
 }
 
 .poem-line span.first {
@@ -486,13 +486,13 @@ html[reader-mode="on"] .center > article {
   font-family: 'Amiri', serif;
   font-size: calc(var(--main-font-size, 18px) * 1.1);
   line-height: calc(var(--main-line-height, 1.7) * 1.1);
-  color: #5a4a3a;
+  color: var(--darkgray);
   padding: 0.8rem 0;
   direction: rtl;
   transition: font-size 0.3s ease, line-height 0.3s ease;
 }
 :root[saved-theme="dark"] .poem-text {
-  color: #b8a890;
+  color: var(--darkgray);
 }
 
 /* Poem End Ornament */
@@ -618,7 +618,7 @@ html[reader-mode="on"] .center > article {
 .poetry-index-title {
   font-family: 'Aref Ruqaa', serif !important;
   font-size: 2.5rem !important;
-  color: #4a3520;
+  color: var(--dark);
   margin: 0.5rem 0 !important;
   line-height: 1.3;
 }
@@ -629,7 +629,7 @@ html[reader-mode="on"] .center > article {
 .poetry-index-subtitle {
   font-family: 'Amiri', serif;
   font-size: 1.05rem;
-  color: #8b7355;
+  color: var(--darkgray);
   max-width: 500px;
   margin: 0.8rem auto;
   line-height: 1.8;
@@ -648,9 +648,9 @@ html[reader-mode="on"] .center > article {
 .poetry-index-stats span {
   font-family: 'Amiri', serif;
   font-size: 0.9rem;
-  color: #8b7355;
+  color: var(--darkgray);
   padding: 0.3rem 1rem;
-  border: 1px solid #d4c5a9;
+  border: 1px solid var(--lightgray);
   border-radius: 20px;
 }
 :root[saved-theme="dark"] .poetry-index-stats span {
@@ -704,7 +704,7 @@ html[reader-mode="on"] .center > article {
 .poetry-card-title {
   font-family: 'Aref Ruqaa', serif;
   font-size: 1.3rem;
-  color: #4a3520;
+  color: var(--dark);
   margin: 0 0 0.3rem 0;
 }
 :root[saved-theme="dark"] .poetry-card-title {
@@ -728,7 +728,7 @@ html[reader-mode="on"] .center > article {
 
 .poetry-card-desc {
   font-size: 0.85rem;
-  color: #8b7355;
+  color: var(--darkgray);
 }
 :root[saved-theme="dark"] .poetry-card-desc {
   color: #9a8a70;
