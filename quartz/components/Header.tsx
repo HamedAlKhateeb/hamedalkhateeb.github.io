@@ -2,7 +2,7 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 import { FullSlug, joinSegments, resolveRelative } from "../util/path"
 
 const Header: QuartzComponent = ({ children, displayName, fileData, cfg, tree }: QuartzComponentProps) => {
-  const isPoetry = fileData.slug !== undefined && fileData.slug.startsWith("poetry/")
+  const isPoetry = fileData.slug !== undefined && fileData.slug.toLowerCase().startsWith("poetry/")
 
   if (isPoetry) {
     return (

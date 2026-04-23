@@ -6,7 +6,7 @@ const Newsletter: QuartzComponent = ({ fileData, displayClass }: QuartzComponent
   if (fileData.slug !== "index" && !fileData.slug?.endsWith("/index") && !fileData.slug?.startsWith("tags/")) {
     return null
   }
-  if (fileData.slug?.startsWith("poetry/")) {
+  if (fileData.slug?.toLowerCase().startsWith("poetry/")) {
     return null
   }
 

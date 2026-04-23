@@ -7,8 +7,9 @@ import { Root } from "hast"
 
 const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentProps) => {
   let processedTree = tree as Root
-  const isPoetry = fileData.slug !== undefined && fileData.slug.startsWith("poetry/") && !fileData.slug.endsWith("index")
-  const isPoetryIndex = fileData.slug !== undefined && fileData.slug === "poetry/index"
+  const slug = fileData.slug?.toLowerCase() ?? ""
+  const isPoetry = slug.startsWith("poetry/") && !slug.endsWith("index")
+  const isPoetryIndex = slug === "poetry/index"
 
   if (isPoetry) {
     processedTree = JSON.parse(JSON.stringify(tree))
@@ -69,7 +70,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
   // --- Poetry Index: auto-list all poems ---
   if (isPoetryIndex) {
     const poems = allFiles
-      .filter(f => f.slug?.startsWith("poetry/") && !f.slug.endsWith("index"))
+      .filter(f => f.slug?.toLowerCase().startsWith("poetry/") && !f.slug.endsWith("index"))
     poems.sort((a, b) => (a.slug! > b.slug! ? 1 : -1))
 
     return (
@@ -119,7 +120,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
   if (isPoetry) {
     const uniquePoems = Array.from(
       new Map(
-        allFiles.filter(f => f.slug?.startsWith("poetry/") && !f.slug.endsWith("index")).map(item => [item.slug, item])
+        allFiles.filter(f => f.slug?.toLowerCase().startsWith("poetry/") && !f.slug.endsWith("index")).map(item => [item.slug, item])
       ).values()
     )
     uniquePoems.sort((a, b) => (a.slug! > b.slug! ? 1 : -1))

@@ -10,7 +10,7 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
   const text = fileData.text
   
   // Only render on actual articles — not on poetry pages
-  if (!text || fileData.slug === "index" || fileData.slug?.endsWith("/index") || fileData.slug?.startsWith("tags/") || fileData.slug?.startsWith("poetry/")) {
+  if (!text || fileData.slug === "index" || fileData.slug?.endsWith("/index") || fileData.slug?.startsWith("tags/") || fileData.slug?.toLowerCase().startsWith("poetry/")) {
     return null
   }
   
