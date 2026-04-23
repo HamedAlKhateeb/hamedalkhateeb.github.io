@@ -69,7 +69,7 @@ document.addEventListener("nav", () => {
   if (bmIndex && articleContent) {
     setTimeout(() => {
       const idx = parseInt(bmIndex)
-      const paragraphs = articleContent.querySelectorAll("p, blockquote, li")
+      const paragraphs = articleContent.querySelectorAll("p, blockquote, li, .poem-line")
       const target = paragraphs[idx] as HTMLElement | undefined
       if (target) {
         target.scrollIntoView({ behavior: "smooth", block: "center" })
@@ -211,7 +211,7 @@ document.addEventListener("nav", () => {
         item.addEventListener("click", (e) => {
           if ((e.target as HTMLElement).classList.contains("bookmark-remove") || (e.target as HTMLElement).closest(".bookmark-remove")) return
           const idx = parseInt(item.dataset.index ?? "0")
-          const paragraphs = articleContent.querySelectorAll("p, blockquote, li")
+          const paragraphs = articleContent.querySelectorAll("p, blockquote, li, .poem-line")
           const target = paragraphs[idx] as HTMLElement | undefined
           if (target) {
             target.scrollIntoView({ behavior: "smooth", block: "center" })
@@ -231,7 +231,7 @@ document.addEventListener("nav", () => {
         saveBookmarks(updated)
         renderBookmarkPanel()
         // Also remove icon from paragraph
-        const paragraphs = articleContent.querySelectorAll("p, blockquote, li")
+        const paragraphs = articleContent.querySelectorAll("p, blockquote, li, .poem-line")
         const para = paragraphs[idx] as HTMLElement | undefined
         if (para) {
           para.classList.remove("is-bookmarked")
@@ -243,7 +243,7 @@ document.addEventListener("nav", () => {
   }
 
   // Inject bookmark icons into paragraphs on hover
-  const allParagraphs = articleContent.querySelectorAll<HTMLElement>("p, blockquote, li")
+  const allParagraphs = articleContent.querySelectorAll<HTMLElement>("p, blockquote, li, .poem-line")
   const bookmarks = getBookmarks()
 
   allParagraphs.forEach((para, index) => {
