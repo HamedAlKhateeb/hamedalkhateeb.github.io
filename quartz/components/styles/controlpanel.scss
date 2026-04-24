@@ -384,6 +384,7 @@
 /* Text Selection Popover */
 .selection-popover {
   position: absolute;
+  display: none; /* مخفي افتراضيا لمنع الجليتش */
   background: var(--light);
   border: 1px solid var(--lightgray);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);

@@ -33,17 +33,9 @@ export default ((opts: Options) => {
       (!fileData.frontmatter?.comments || fileData.frontmatter?.comments === "false")
       
     const slug = fileData.slug
-    const isArticleOrPoetry = slug && (
-      slug.startsWith("Culture/") ||
-      slug.startsWith("Engineering/") ||
-      slug.startsWith("Experiences/") ||
-      slug.startsWith("Math/") ||
-      slug.startsWith("Personal/") ||
-      slug.startsWith("Programming/") ||
-      slug.startsWith("poetry/")
-    ) && !slug.endsWith("/index")
+    const isContentPage = slug && slug !== "index" && !slug.startsWith("tags/") && !slug.endsWith("/index")
 
-    if (disableComment || !isArticleOrPoetry) {
+    if (disableComment || !isContentPage) {
       return <></>
     }
 
