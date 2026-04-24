@@ -15,11 +15,11 @@ export const sharedPageComponents: SharedLayout = {
         // from data-repo
         repo: 'HamedAlKhateeb/HamedAlKhateeb.github.io', // أو [ضع رابط المستودع هنا] بصيغة (user/repo)
         // from data-repo-id
-        repoId: '[ضع معرف المستودع هنا]',
+        repoId: 'R_kgDORoY5zw',
         // from data-category
-        category: '[ضع اسم القسم هنا]',
+        category: 'Announcements',
         // from data-category-id
-        categoryId: '[ضع معرف القسم هنا]',
+        categoryId: 'DIC_kwDORoY5z84C7odJ',
         mapping: 'pathname',
         strict: false,
         reactionsEnabled: true,
