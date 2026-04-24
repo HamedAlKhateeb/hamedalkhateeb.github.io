@@ -31,7 +31,19 @@ export default ((opts: Options) => {
     const disableComment: boolean =
       typeof fileData.frontmatter?.comments !== "undefined" &&
       (!fileData.frontmatter?.comments || fileData.frontmatter?.comments === "false")
-    if (disableComment) {
+      
+    const slug = fileData.slug
+    const isArticleOrPoetry = slug && (
+      slug.startsWith("Culture/") ||
+      slug.startsWith("Engineering/") ||
+      slug.startsWith("Experiences/") ||
+      slug.startsWith("Math/") ||
+      slug.startsWith("Personal/") ||
+      slug.startsWith("Programming/") ||
+      slug.startsWith("poetry/")
+    ) && !slug.endsWith("/index")
+
+    if (disableComment || !isArticleOrPoetry) {
       return <></>
     }
 
