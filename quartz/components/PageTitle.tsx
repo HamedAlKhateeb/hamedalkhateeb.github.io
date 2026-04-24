@@ -9,7 +9,7 @@ const PageTitle: QuartzComponent = ({ fileData, cfg, displayClass }: QuartzCompo
   return (
     <div class={classNames(displayClass, "page-title-container")}>
       <h1 class="page-title">
-        <a href="https://hamedalkhateeb.github.io/">{title}</a>
+        <a href="https://hamedalkhateeb.github.io/">حامد</a>
       </h1>
       <p class="page-subtitle">ما صفحت الأقلام، ما طوى الطير، وما يروي العليل</p>
     </div>

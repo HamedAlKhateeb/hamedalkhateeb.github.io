@@ -9,6 +9,24 @@ export const sharedPageComponents: SharedLayout = {
     Component.Darkmode(),
   ],
   afterBody: [
+    Component.Comments({
+      provider: 'giscus',
+      options: {
+        // from data-repo
+        repo: 'HamedAlKhateeb/HamedAlKhateeb.github.io', // أو [ضع رابط المستودع هنا] بصيغة (user/repo)
+        // from data-repo-id
+        repoId: '[ضع معرف المستودع هنا]',
+        // from data-category
+        category: '[ضع اسم القسم هنا]',
+        // from data-category-id
+        categoryId: '[ضع معرف القسم هنا]',
+        mapping: 'pathname',
+        strict: false,
+        reactionsEnabled: true,
+        inputPosition: 'bottom',
+        lang: 'ar'
+      }
+    }),
     Component.Newsletter(),
     Component.ArticleFooter(),
     Component.ControlPanel(),
