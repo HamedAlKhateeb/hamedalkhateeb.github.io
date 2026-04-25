@@ -151,10 +151,25 @@ html[reader-mode="on"] .center > article {
     }
   }
 
-  // Code Blocks & Math
-  pre, code, mjx-container.MathJax, .katex, .katex-display {
+  // Code Blocks
+  pre, code {
     direction: ltr;
     text-align: left;
+  }
+
+  // General Block Math
+  .katex-display, mjx-container[display="true"] {
+    direction: ltr;
+    text-align: center;
+    unicode-bidi: embed;
+  }
+
+  // General Inline Math
+  .katex, mjx-container:not([display="true"]), .math {
+    direction: ltr;
+    text-align: left;
+    unicode-bidi: embed;
+    display: inline-block;
   }
   
   // Tag limits
