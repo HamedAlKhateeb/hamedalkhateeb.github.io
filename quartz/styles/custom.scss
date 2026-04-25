@@ -836,6 +836,7 @@ article.rtl-math {
   // Inline Math (Equations within Arabic text)
   .katex, mjx-container:not([display="true"]), .math {
     direction: ltr;
-    unicode-bidi: isolate;
+    unicode-bidi: embed;
+    display: inline-block;
   }
 }
