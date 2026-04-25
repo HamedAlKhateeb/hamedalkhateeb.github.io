@@ -826,8 +826,16 @@ article.rtl-math {
   text-align: right;
   font-family: 'Cairo', 'Amiri', sans-serif;
 
-  .katex-display, mjx-container, .math {
+  // Block Math (Equations on their own lines)
+  .katex-display, mjx-container[display="true"] {
     direction: ltr;
     text-align: center;
+    unicode-bidi: isolate;
+  }
+
+  // Inline Math (Equations within Arabic text)
+  .katex, mjx-container:not([display="true"]), .math {
+    direction: ltr;
+    unicode-bidi: isolate;
   }
 }
