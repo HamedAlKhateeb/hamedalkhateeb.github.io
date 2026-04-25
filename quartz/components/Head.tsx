@@ -97,6 +97,7 @@ export default (() => {
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
         <meta name="google-site-verification" content="RvjcbTmq75nTxaiEgp-3J8I6NuH6KvkhxUsITh_zUSU" />
+        <script src={joinSegments(baseDir, "static/math-canvas.js")} type="module" data-persist="true"></script>
 
         {css.map((resource) => CSSResourceToStyleElement(resource, true))}
         {js
