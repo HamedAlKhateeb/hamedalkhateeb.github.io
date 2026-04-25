@@ -820,3 +820,14 @@ html[reader-mode="on"] .center > article {
     align-items: center;
   }
 }
+
+article.rtl-math {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Cairo', 'Amiri', sans-serif;
+
+  .katex-display, mjx-container, .math {
+    direction: ltr;
+    text-align: center;
+  }
+}

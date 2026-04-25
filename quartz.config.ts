@@ -1,5 +1,6 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
+import { AutoRTL } from "./quartz/plugins/transformers/autoRTL"
 
 /**
  * Quartz 4 Configuration
@@ -72,6 +73,7 @@ const config: QuartzConfig = {
       Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
+      AutoRTL(),
     ],
     filters: [Plugin.RemoveDrafts()],
     emitters: [
