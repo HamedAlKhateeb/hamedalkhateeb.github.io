@@ -141,6 +141,7 @@ article.math-article {
     overflow-x: auto;
     overflow-y: hidden;
     direction: ltr;
+    white-space: nowrap;
     -webkit-overflow-scrolling: touch;
 
     /* Custom scrollbar for math blocks */
