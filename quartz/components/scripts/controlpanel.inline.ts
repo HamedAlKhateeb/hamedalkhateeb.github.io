@@ -265,8 +265,9 @@ document.addEventListener("nav", () => {
   // =====================
   const gearDock = document.querySelector(".isolated-gear-dock") as HTMLElement | null
   const backDock = document.querySelector(".back-to-prev-dock") as HTMLElement | null
+  const scrollTopDock = document.querySelector(".scroll-to-top-dock") as HTMLElement | null
   
-  if (gearDock || backDock) {
+  if (gearDock || backDock || scrollTopDock) {
     let lastScrollY = window.scrollY
     let ticking = false
 
@@ -280,15 +281,18 @@ document.addEventListener("nav", () => {
               // Scrolling down - hide
               if (gearDock) { gearDock.style.transform = "translateY(150%)"; gearDock.style.opacity = "0" }
               if (backDock) { backDock.style.transform = "translateY(-150%)"; backDock.style.opacity = "0" }
+              if (scrollTopDock) { scrollTopDock.style.transform = "translateY(150%)"; scrollTopDock.style.opacity = "0" }
             } else if (currentScrollY < lastScrollY && (lastScrollY - currentScrollY > 10)) {
               // Scrolling up - show
               if (gearDock) { gearDock.style.transform = "translateY(0)"; gearDock.style.opacity = "1" }
               if (backDock) { backDock.style.transform = "translateY(0)"; backDock.style.opacity = "1" }
+              if (scrollTopDock) { scrollTopDock.style.transform = "translateY(0)"; scrollTopDock.style.opacity = "1" }
             }
           } else {
             // At top - always show
             if (gearDock) { gearDock.style.transform = "translateY(0)"; gearDock.style.opacity = "1" }
             if (backDock) { backDock.style.transform = "translateY(0)"; backDock.style.opacity = "1" }
+            if (scrollTopDock) { scrollTopDock.style.transform = "translateY(0)"; scrollTopDock.style.opacity = "1" }
           }
           lastScrollY = currentScrollY
           ticking = false
@@ -300,6 +304,7 @@ document.addEventListener("nav", () => {
     // Add CSS transition for smooth hide/show
     if (gearDock) gearDock.style.transition = "transform 0.4s ease, opacity 0.4s ease"
     if (backDock) backDock.style.transition = "transform 0.4s ease, opacity 0.4s ease"
+    if (scrollTopDock) scrollTopDock.style.transition = "transform 0.4s ease, opacity 0.4s ease"
 
     window.addEventListener("scroll", handleScroll, { passive: true })
     window.addCleanup(() => window.removeEventListener("scroll", handleScroll))

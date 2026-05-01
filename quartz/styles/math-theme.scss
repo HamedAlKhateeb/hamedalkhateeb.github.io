@@ -30,6 +30,79 @@ body:has(.math-article) {
   font-size: 16px;
 }
 
+/* ===== DARK THEME for math articles ===== */
+:root[saved-theme="dark"] body:has(.math-article),
+body:has(.math-article):root[saved-theme="dark"] {
+  --bg: #1a1814;
+  --bg2: #22201a;
+  --bg3: #2c2922;
+  --bg4: #38352c;
+  --text: #e8e4dc;
+  --muted: #9a9488;
+  --soft: #c4bfb4;
+  --border: rgba(255, 255, 255, 0.07);
+  --border2: rgba(255, 255, 255, 0.13);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.25);
+  --amberbg: rgba(180, 140, 40, 0.14);
+  --amberb: rgba(180, 140, 40, 0.3);
+  --tealbg: rgba(30, 130, 110, 0.14);
+  --tealb: rgba(30, 130, 110, 0.3);
+  --redbg: rgba(180, 60, 40, 0.14);
+  --redb: rgba(180, 60, 40, 0.3);
+  --bluebg: rgba(60, 110, 190, 0.14);
+  --blueb: rgba(60, 110, 190, 0.3);
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.sidebar.right .toc .toc-header h3 {
+  color: #8a252c;
+  font-family: var(--headerFont);
+  font-size: 1.05rem;
+  margin-bottom: 0.4rem;
+}
+
+:root[saved-theme="dark"] .sidebar.right .toc .toc-header h3 {
+  color: #d1565e;
+}
+
+.sidebar.right .toc .toc-content a {
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+:root[saved-theme="dark"] body:has(.math-article) .math-display,
+:root[saved-theme="dark"] body:has(.math-article) .katex-display,
+:root[saved-theme="dark"] body:has(.math-article) .mblock {
+  background: #252220;
+  border-color: var(--border2);
+}
+
+:root[saved-theme="dark"] body:has(.math-article) .callout-content p:has(> .katex) {
+  background: #252220;
+  border-color: var(--border2);
+}
+
+:root[saved-theme="dark"] body:has(.math-article) .callout {
+  background: var(--bg2);
+  border-color: var(--border2);
+}
+
+/* ===== SEPIA THEME for math articles ===== */
+:root[saved-theme="sepia"] body:has(.math-article),
+body:has(.math-article):root[saved-theme="sepia"] {
+  --bg: #f7f1e6;
+  --bg2: #ede5d4;
+  --bg3: #e2d9c6;
+  --bg4: #d4c9b2;
+  --text: #2c2416;
+  --muted: #7a6e5a;
+  --border: rgba(0, 0, 0, 0.1);
+  --border2: rgba(0, 0, 0, 0.18);
+  background-color: var(--bg);
+  color: var(--text);
+}
+
 article.math-article {
   font-family: 'Cairo', sans-serif;
   line-height: 1.8;
@@ -105,6 +178,36 @@ article.math-article {
     border-radius: 12px;
     margin-bottom: 12px;
     text-transform: uppercase;
+  }
+
+  .sidebar.right {
+    position: fixed !important;
+    top: 56px !important;
+    left: 1.2vw !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column;
+    width: 220px !important;
+    height: calc(100vh - 56px);
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  .sidebar.right .toc {
+    pointer-events: auto;
+    background: var(--light);
+    border: 1px solid var(--lightgray);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    border-radius: 10px;
+    padding: 0.9rem;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;
+    overflow: hidden;
+  }
+
+  :root[saved-theme="dark"] .sidebar.right .toc {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 
   h2 {
