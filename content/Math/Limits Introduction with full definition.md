@@ -201,11 +201,8 @@ $$0 < |x - c| < \delta$$
   
 
 <div class="nlw">
-
-  <div style="font-family:'Cairo',sans-serif;font-size:12px;color:var(--muted);margin-bottom:12px;">الجوار المفرغ حول c = 2 مع δ = 0.8</div>
-
-  <canvas id="nlC" width="760" height="86" class="dc" style="cursor:default;"></canvas>
-
+  <div style="font-family:'Cairo',sans-serif;font-size:12px;color:var(--muted);margin-bottom:12px;">الجوار المفرغ حول c = 2 مع δ = 0.8</div>
+  <canvas id="nlC" width="760" height="86" class="dc" style="cursor:default;"></canvas>
 </div>
 
   
@@ -229,21 +226,13 @@ $$f(x) = x^2, \quad c = 2, \quad L = 4$$
   
 
 <div class="dw">
-
-  <div class="dtit">الشريط الأصفر = هامش ε في المحور الصادي · الشريط الأخضر = نطاق δ في المحور السيني</div>
-
-  <canvas id="ex1C" width="760" height="350" class="dc"></canvas>
-
-  <div class="cr"><span class="cl">الهامش ε</span><input type="range" id="ex1S" min="0.05" max="4" step="0.05" value="2"><span class="cn" id="ex1V">2.00</span></div>
-
-  <div class="ir">
-
-    <div class="ic"><div class="icl">هامش الخطأ في المخرج ε</div><div class="icv" style="color:var(--amber)" id="ex1E">2.0000</div></div>
-
-    <div class="ic"><div class="icl">النطاق المناسب في المدخل δ</div><div class="icv" style="color:var(--teal)" id="ex1D">0.7321</div></div>
-
-  </div>
-
+  <div class="dtit">الشريط الأصفر = هامش ε في المحور الصادي · الشريط الأخضر = نطاق δ في المحور السيني</div>
+  <canvas id="ex1C" width="760" height="350" class="dc"></canvas>
+  <div class="cr"><span class="cl">الهامش ε</span><input type="range" id="ex1S" min="0.05" max="4" step="0.05" value="2"><span class="cn" id="ex1V">2.00</span></div>
+  <div class="ir">
+    <div class="ic"><div class="icl">هامش الخطأ في المخرج ε</div><div class="icv" style="color:var(--amber)" id="ex1E">2.0000</div></div>
+    <div class="ic"><div class="icl">النطاق المناسب في المدخل δ</div><div class="icv" style="color:var(--teal)" id="ex1D">0.7321</div></div>
+  </div>
 </div>
 
   
@@ -261,21 +250,13 @@ $$\dfrac{x^2-4}{x-2} = \dfrac{(x-2)(x+2)}{x-2} = x+2 \qquad (x \neq 2)$$
   
 
 <div class="dw">
-
-  <div class="dtit">الدائرة البيضاء عند c = 2 — الدالة غير معرّفة هناك، لكن النهاية موجودة</div>
-
-  <canvas id="ex2C" width="760" height="310" class="dc"></canvas>
-
-  <div class="cr"><span class="cl">الهامش ε</span><input type="range" id="ex2S" min="0.05" max="3" step="0.05" value="1.5"><span class="cn" id="ex2V">1.50</span></div>
-
-  <div class="ir">
-
-    <div class="ic"><div class="icl">هامش الخطأ في المخرج ε</div><div class="icv" style="color:var(--amber)" id="ex2E">1.5000</div></div>
-
-    <div class="ic"><div class="icl">النطاق المناسب في المدخل δ</div><div class="icv" style="color:var(--teal)" id="ex2D">1.5000</div></div>
-
-  </div>
-
+  <div class="dtit">الدائرة البيضاء عند c = 2 — الدالة غير معرّفة هناك، لكن النهاية موجودة</div>
+  <canvas id="ex2C" width="760" height="310" class="dc"></canvas>
+  <div class="cr"><span class="cl">الهامش ε</span><input type="range" id="ex2S" min="0.05" max="3" step="0.05" value="1.5"><span class="cn" id="ex2V">1.50</span></div>
+  <div class="ir">
+    <div class="ic"><div class="icl">هامش الخطأ في المخرج ε</div><div class="icv" style="color:var(--amber)" id="ex2E">1.5000</div></div>
+    <div class="ic"><div class="icl">النطاق المناسب في المدخل δ</div><div class="icv" style="color:var(--teal)" id="ex2D">1.5000</div></div>
+  </div>
 </div>
 
   
@@ -293,21 +274,13 @@ $$\cos x \leq \dfrac{\sin x}{x} \leq 1 \qquad \forall\, x \neq 0$$
   
 
 <div class="dw">
-
-  <div class="dtit">الدائرة المفرغة عند الأصل — الدالة غير معرّفة عند 0 لكن النهاية = 1</div>
-
-  <canvas id="ex3C" width="760" height="310" class="dc"></canvas>
-
-  <div class="cr"><span class="cl">الهامش ε</span><input type="range" id="ex3S" min="0.02" max="0.9" step="0.02" value="0.4"><span class="cn" id="ex3V">0.40</span></div>
-
-  <div class="ir">
-
-    <div class="ic"><div class="icl">هامش الخطأ في المخرج ε</div><div class="icv" style="color:var(--amber)" id="ex3E">0.4000</div></div>
-
-    <div class="ic"><div class="icl">النطاق المناسب في المدخل δ</div><div class="icv" style="color:var(--teal)" id="ex3D">—</div></div>
-
-  </div>
-
+  <div class="dtit">الدائرة المفرغة عند الأصل — الدالة غير معرّفة عند 0 لكن النهاية = 1</div>
+  <canvas id="ex3C" width="760" height="310" class="dc"></canvas>
+  <div class="cr"><span class="cl">الهامش ε</span><input type="range" id="ex3S" min="0.02" max="0.9" step="0.02" value="0.4"><span class="cn" id="ex3V">0.40</span></div>
+  <div class="ir">
+    <div class="ic"><div class="icl">هامش الخطأ في المخرج ε</div><div class="icv" style="color:var(--amber)" id="ex3E">0.4000</div></div>
+    <div class="ic"><div class="icl">النطاق المناسب في المدخل δ</div><div class="icv" style="color:var(--teal)" id="ex3D">—</div></div>
+  </div>
 </div>
 
   
@@ -329,21 +302,13 @@ $$|L - 1| < \tfrac{1}{2} \quad \text{and} \quad |L - (-1)| < \tfrac{1}{2} \Right
   
 
 <div class="dw">
-
-  <div class="dtit">حرّك L — ستظل إحدى القيمتين (+1 أو −1) تخرج من الشريط الأصفر دائماً</div>
-
-  <canvas id="ex4C" width="760" height="290" class="dc"></canvas>
-
-  <div class="cr"><span class="cl">القيمة المقترحة L</span><input type="range" id="ex4S" min="-1.5" max="1.5" step="0.05" value="0"><span class="cn" id="ex4V">0.00</span></div>
-
-  <div class="ir">
-
-    <div class="ic"><div class="icl">الهامش الثابت ε = 0.5</div><div class="icv" style="color:var(--amber);">0.5000</div></div>
-
-    <div class="ic"><div class="icl">حالة الاختبار</div><div class="icv" id="ex4St">فاشل ✗</div></div>
-
-  </div>
-
+  <div class="dtit">حرّك L — ستظل إحدى القيمتين (+1 أو −1) تخرج من الشريط الأصفر دائماً</div>
+  <canvas id="ex4C" width="760" height="290" class="dc"></canvas>
+  <div class="cr"><span class="cl">القيمة المقترحة L</span><input type="range" id="ex4S" min="-1.5" max="1.5" step="0.05" value="0"><span class="cn" id="ex4V">0.00</span></div>
+  <div class="ir">
+    <div class="ic"><div class="icl">الهامش الثابت ε = 0.5</div><div class="icv" style="color:var(--amber);">0.5000</div></div>
+    <div class="ic"><div class="icl">حالة الاختبار</div><div class="icv" id="ex4St">فاشل ✗</div></div>
+  </div>
 </div>
 
   
