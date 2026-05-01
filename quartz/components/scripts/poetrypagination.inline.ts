@@ -12,6 +12,7 @@ document.addEventListener("nav", function() {
 
   var total = Math.ceil(cards.length / ITEMS);
   var cur = 1;
+  pgEl.style.display = "flex";
 
   var mkBtn = function(lbl: string, tip: string, dis: boolean, act: boolean, fn: (() => void) | null) {
     var b = document.createElement("button");
