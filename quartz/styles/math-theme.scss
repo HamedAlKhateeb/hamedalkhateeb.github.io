@@ -181,6 +181,37 @@ article.math-article {
     }
   }
 
+  /*
+   * KEY FIX: Inside callouts, Quartz renders $$...$$ as:
+   *   <p><span class="katex"><span class="katex-html">...</span></span></p>
+   * The <p> wraps and clips the formula on narrow screens.
+   * We turn that <p> into a scrollable box and keep the katex span together.
+   */
+  .callout-content p:has(> .katex),
+  .callout-content p:has(> .katex-display) {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    text-align: center;
+    padding: 14px 12px;
+    margin: 10px 0;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+
+    /* thin, subtle scrollbar */
+    &::-webkit-scrollbar { height: 4px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+    /* keep the katex span itself non-wrapping */
+    > .katex, > .katex-display {
+      display: inline-block;
+      white-space: nowrap;
+    }
+  }
+
   /* DIVIDER */
   hr {
     width: 100%;
