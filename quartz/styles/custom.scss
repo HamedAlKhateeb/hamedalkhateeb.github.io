@@ -855,3 +855,29 @@ article.rtl-math {
     display: inline-block;
   }
 }
+
+/* === Epsilon-Delta Interactive CSS === */
+#epsilon-diagrams, .dw, .nlw {
+  --bg:#f5f2ec;--bg2:#edeae2;--bg3:#e3dfd5;--bg4:#d4cfc3;
+  --text:#1c1a16;--muted:#857f72;--soft:#4a4640;
+  --amber:#8a6818;--amberd:#6a5010;--amberbg:rgba(138,104,24,.09);--amberb:rgba(138,104,24,.22);
+  --teal:#1a6e5c;--tealbg:rgba(26,110,92,.09);--tealb:rgba(26,110,92,.22);
+  --red:#8a2e20;--redbg:rgba(138,46,32,.09);--redb:rgba(138,46,32,.22);
+  --blue:#2a5a9a;--bluebg:rgba(42,90,154,.09);--blueb:rgba(42,90,154,.22);
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.14);
+  --shadow:0 1px 3px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+}
+.dw{background:var(--bg);border:1px solid var(--border2);border-radius:10px;padding:22px;margin:26px 0;box-shadow:var(--shadow);}
+.dtit{font-family:'Cairo',sans-serif;font-size:12px;color:var(--muted);margin-bottom:14px;text-align:center;direction:rtl;}
+.dc{display:block;width:100%;border-radius:5px;}
+.cr{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap;direction:rtl;}
+.cl{font-size:12px;color:var(--muted);font-family:'Cairo',sans-serif;min-width:80px;}
+.dw input[type=range]{flex:1;min-width:100px;-webkit-appearance:none;height:3px;background:var(--bg3);border-radius:2px;outline:none;border:none;}
+.dw input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--amber);cursor:pointer;border:2px solid var(--bg3);box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.cn{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--amberd);min-width:48px;text-align:left;direction:ltr;font-weight:500;}
+.ir{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;direction:rtl;}
+@media(max-width:480px){.ir{grid-template-columns:1fr;}}
+.ic{background:var(--bg2);border-radius:7px;padding:11px 14px;border:1px solid var(--border2);}
+.icl{font-size:11px;color:var(--muted);font-family:'Cairo',sans-serif;margin-bottom:3px;}
+.icv{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500;}
+.nlw{margin:22px 0;padding:18px 20px;background:var(--bg);border-radius:8px;border:1px solid var(--border2);box-shadow:var(--shadow);}
