@@ -1,5 +1,5 @@
 // Math Canvas Animations - Loaded globally, listens for Quartz SPA nav events
-document.addEventListener("nav", () => {
+function initMathCanvas() {
   // === Limit Animation ===
   const canvas = document.getElementById("limitAnimation");
   const btn = document.getElementById("limitRestartBtn");
@@ -366,4 +366,10 @@ document.addEventListener("nav", () => {
       sl.addEventListener('input',upd); upd();
     }
   }, 100);
-});
+}
+document.addEventListener("nav", initMathCanvas);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initMathCanvas);
+} else {
+  initMathCanvas();
+}
