@@ -1,10 +1,7 @@
 document.addEventListener("nav", function() {
-  var path = window.location.pathname.replace(/\/+$/, "");
-  if (path !== "/poetry" && !path.endsWith("/poetry")) { return; }
-
   var ITEMS = 8;
-  var grid = document.getElementById("poetry-cards-grid");
-  var pgEl = document.getElementById("poetry-nav-controls");
+  var grid = document.getElementById("article-cards-grid");
+  var pgEl = document.getElementById("article-pagination-controls");
   if (!grid || !pgEl) { return; }
 
   var cards = Array.from(grid.querySelectorAll("li.page-card"));

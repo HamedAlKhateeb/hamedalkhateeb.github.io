@@ -57,7 +57,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
 
   return (
     <>
-      <ul class="cards-grid page-grid" id="poetry-cards-grid">
+      <ul class="cards-grid page-grid" id="article-cards-grid">
         {list.map((page) => {
           const title = page.frontmatter?.title
           const tags = page.frontmatter?.tags ?? []
@@ -121,7 +121,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
           )
         })}
       </ul>
-      <div class="poetry-nav-grid" id="poetry-nav-controls"></div>
+      <div class="article-pagination" id="article-pagination-controls"></div>
     </>
   )
 }
@@ -273,9 +273,9 @@ PageList.css = `
 }
 
 /* ==============================
-   Poetry Pagination Controls
+   Article Pagination Controls
    ============================== */
-.poetry-nav-grid {
+.article-pagination {
   display: none;
   direction: rtl;
   justify-content: center;
@@ -286,11 +286,11 @@ PageList.css = `
   font-family: 'IBM Plex Sans Arabic', sans-serif;
 }
 
-.poetry-index .poetry-nav-grid {
-  display: flex;
+.article-pagination {
+  display: flex; /* overridden by inline styles but good as fallback if script enforces it */
 }
 
-.poetry-nav-grid button {
+.article-pagination button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -308,41 +308,41 @@ PageList.css = `
   white-space: nowrap;
 }
 
-.poetry-nav-grid button:hover:not(:disabled) {
+.article-pagination button:hover:not(:disabled) {
   background: rgba(201, 160, 108, 0.15);
   border-color: #c9a06c;
   color: #4a2e1a;
 }
 
-.poetry-nav-grid button:disabled {
+.article-pagination button:disabled {
   opacity: 0.35;
   cursor: not-allowed;
 }
 
-.poetry-nav-grid button.active {
+.article-pagination button.active {
   background: #6b4226;
   color: #fff;
   border-color: #6b4226;
   font-weight: bold;
 }
 
-.poetry-nav-grid .page-info {
+.article-pagination .page-info {
   font-size: 0.85rem;
   color: var(--gray);
   padding: 0 0.5rem;
   white-space: nowrap;
 }
 
-:root[saved-theme="dark"] .poetry-nav-grid button {
+:root[saved-theme="dark"] .article-pagination button {
   color: #c9a06c;
   border-color: rgba(90, 74, 58, 0.4);
 }
-:root[saved-theme="dark"] .poetry-nav-grid button:hover:not(:disabled) {
+:root[saved-theme="dark"] .article-pagination button:hover:not(:disabled) {
   background: rgba(90, 74, 58, 0.3);
   border-color: #c9a06c;
   color: #e0c090;
 }
-:root[saved-theme="dark"] .poetry-nav-grid button.active {
+:root[saved-theme="dark"] .article-pagination button.active {
   background: #5a3a1a;
   color: #f0d8b0;
   border-color: #8a6030;

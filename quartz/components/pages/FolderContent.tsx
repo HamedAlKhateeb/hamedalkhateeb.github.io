@@ -11,7 +11,7 @@ import { concatenateResources } from "../../util/resources"
 import { trieFromAllFiles } from "../../util/ctx"
 import { resolveRelative } from "../../util/path"
 // @ts-ignore
-import poetryPaginationScript from "../scripts/poetrypagination.inline"
+import paginationScript from "../scripts/pagination.inline"
 
 interface FolderContentOptions {
   /**
@@ -184,6 +184,6 @@ export default ((opts?: Partial<FolderContentOptions>) => {
 }
   `)
 
-  FolderContent.afterDOMLoaded = poetryPaginationScript
+  FolderContent.afterDOMLoaded = paginationScript
   return FolderContent
 }) satisfies QuartzComponentConstructor

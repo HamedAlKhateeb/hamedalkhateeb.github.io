@@ -1,5 +1,7 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { PageList } from "./PageList"
+// @ts-ignore
+import paginationScript from "./scripts/pagination.inline"
 
 export default (() => {
   const HomeArticles: QuartzComponent = (props: QuartzComponentProps) => {
@@ -24,5 +26,8 @@ export default (() => {
     )
   }
 
-  HomeArticles.css = PageList.css; return HomeArticles
+  HomeArticles.css = PageList.css
+  HomeArticles.afterDOMLoaded = paginationScript
+  
+  return HomeArticles
 }) satisfies QuartzComponentConstructor

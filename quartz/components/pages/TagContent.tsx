@@ -8,6 +8,8 @@ import { htmlToJsx } from "../../util/jsx"
 import { i18n } from "../../i18n"
 import { ComponentChildren } from "preact"
 import { concatenateResources } from "../../util/resources"
+// @ts-ignore
+import paginationScript from "../scripts/pagination.inline"
 
 interface TagContentOptions {
   sort?: SortFn
@@ -178,5 +180,6 @@ export default ((opts?: Partial<TagContentOptions>) => {
   }
 }
   `)
+  TagContent.afterDOMLoaded = paginationScript
   return TagContent
 }) satisfies QuartzComponentConstructor
