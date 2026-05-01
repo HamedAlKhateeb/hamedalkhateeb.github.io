@@ -22,15 +22,9 @@ const changeTheme = (e: CustomEventMap["themechange"]) => {
 }
 
 const getThemeName = (theme: string) => {
-  if (theme !== "dark" && theme !== "light") {
-    return theme
-  }
   const giscusContainer = document.querySelector(".giscus") as GiscusElement
-  if (!giscusContainer) {
-    return theme
-  }
-  const darkGiscus = giscusContainer.dataset.darkTheme ?? "dark"
-  const lightGiscus = giscusContainer.dataset.lightTheme ?? "light"
+  const darkGiscus = giscusContainer?.dataset.darkTheme ?? "dark"
+  const lightGiscus = giscusContainer?.dataset.lightTheme ?? "light"
   return theme === "dark" ? darkGiscus : lightGiscus
 }
 
