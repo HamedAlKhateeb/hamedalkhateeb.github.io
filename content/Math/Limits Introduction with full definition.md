@@ -106,12 +106,8 @@ description: تجربة لمحاولة شرح النهايات بشكل حدسي
 
   
 
-<div class="dstrip">
-  <div class="dtitle">التعريف الكامل — فايرشتراس</div>
-  <div class="mblock">
-    $$ \lim_{x \to c} f(x) = L \iff \forall\,\varepsilon > 0,\;\exists\,\delta > 0 \;\text{ s.t. }\; 0 < |x - c| < \delta \Rightarrow |f(x) - L| < \varepsilon $$
-  </div>
-</div>
+> [!example] التعريف الكامل — فايرشتراس
+> $$\lim_{x \to c} f(x) = L \iff \forall\,\varepsilon > 0,\;\exists\,\delta > 0 \;\text{ s.t. }\; 0 < |x - c| < \delta \Rightarrow |f(x) - L| < \varepsilon$$
 
   
 
@@ -184,8 +180,8 @@ $$0 < |x - c| < \delta$$
 
    $$\lim_{x \to 0} \dfrac{\sin x}{x} = 1$$
 
-   > [!note]
-   > الدالة غير معرّفة عند $x = 0$، والنهاية موجودة رغم ذلك
+> [!note]
+> الدالة غير معرّفة عند $x = 0$، والنهاية موجودة رغم ذلك
 
 3. **الجوار المفرغ — Punctured Neighborhood**
 
