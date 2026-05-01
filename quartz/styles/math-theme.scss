@@ -139,13 +139,45 @@ article.math-article {
     border: 1px solid var(--border2);
     box-shadow: var(--shadow);
     overflow-x: auto;
+    overflow-y: hidden;
     direction: ltr;
+    -webkit-overflow-scrolling: touch;
+
+    /* Custom scrollbar for math blocks */
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 4px;
+    }
+
+    @media(max-width: 600px) {
+      padding: 16px 12px;
+      margin: 18px 0;
+      /* On very small screens, scaling down the formula slightly helps prevent excessive scrolling */
+      font-size: 0.9em;
+    }
   }
 
   .math:not(.math-display), mjx-container:not([display="true"]), .minl {
     direction: ltr;
     display: inline-block;
     vertical-align: middle;
+  }
+
+  /* Math Blocks Inside Callouts */
+  .callout .math-display, .callout .katex-display, .callout .mblock {
+    margin: 10px 0;
+    box-shadow: none;
+    border-color: var(--border);
+    @media(max-width: 600px) {
+      margin: 8px 0;
+      padding: 12px 8px;
+    }
   }
 
   /* DIVIDER */
