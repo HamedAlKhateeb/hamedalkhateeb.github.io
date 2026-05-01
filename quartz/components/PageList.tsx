@@ -1,4 +1,4 @@
-import { FullSlug, isFolderPath, resolveRelative, slugifyFilePath } from "../util/path"
+import { FullSlug, isFolderPath, resolveRelative } from "../util/path"
 import { QuartzPluginData } from "../plugins/vfile"
 import { Date, getDate } from "./Date"
 import { QuartzComponent, QuartzComponentProps } from "./types"
@@ -10,18 +10,13 @@ export type SortFn = (f1: QuartzPluginData, f2: QuartzPluginData) => number
 
 export function byDateAndAlphabetical(cfg: GlobalConfiguration): SortFn {
   return (f1, f2) => {
-    // Sort by date/alphabetical
     if (f1.dates && f2.dates) {
-      // sort descending
       return getDate(cfg, f2)!.getTime() - getDate(cfg, f1)!.getTime()
     } else if (f1.dates && !f2.dates) {
-      // prioritize files with dates
       return -1
     } else if (!f1.dates && f2.dates) {
       return 1
     }
-
-    // otherwise, sort lexographically by title
     const f1Title = f1.frontmatter?.title.toLowerCase() ?? ""
     const f2Title = f2.frontmatter?.title.toLowerCase() ?? ""
     return f1Title.localeCompare(f2Title)
@@ -30,24 +25,18 @@ export function byDateAndAlphabetical(cfg: GlobalConfiguration): SortFn {
 
 export function byDateAndAlphabeticalFolderFirst(cfg: GlobalConfiguration): SortFn {
   return (f1, f2) => {
-    // Sort folders first
     const f1IsFolder = isFolderPath(f1.slug ?? "")
     const f2IsFolder = isFolderPath(f2.slug ?? "")
     if (f1IsFolder && !f2IsFolder) return -1
     if (!f1IsFolder && f2IsFolder) return 1
 
-    // If both are folders or both are files, sort by date/alphabetical
     if (f1.dates && f2.dates) {
-      // sort descending
       return getDate(cfg, f2)!.getTime() - getDate(cfg, f1)!.getTime()
     } else if (f1.dates && !f2.dates) {
-      // prioritize files with dates
       return -1
     } else if (!f1.dates && f2.dates) {
       return 1
     }
-
-    // otherwise, sort lexographically by title
     const f1Title = f1.frontmatter?.title.toLowerCase() ?? ""
     const f2Title = f2.frontmatter?.title.toLowerCase() ?? ""
     return f1Title.localeCompare(f2Title)
@@ -74,7 +63,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
           const tags = page.frontmatter?.tags ?? []
           const cover = (page.frontmatter?.cover ?? page.frontmatter?.image) as string | undefined
           const description = page.frontmatter?.description ?? page.description
-          
+
           let displayedTime = ""
           if (page.text) {
             const { minutes } = readingTime(page.text)
@@ -82,7 +71,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
               minutes: Math.ceil(minutes),
             })
           }
-    
+
           return (
             <li class="page-card">
               {cover && (
@@ -148,7 +137,6 @@ PageList.css = `
 }
 
 .cards-grid {
-  /* wrapper styles if any, block by default */
   width: 100%;
 }
 
@@ -187,7 +175,7 @@ PageList.css = `
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  align-items: center; /* Center horizontally */
+  align-items: center;
   text-align: center;
 }
 
@@ -273,7 +261,7 @@ PageList.css = `
   margin: auto 0 0 0;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Space out date and read time */
+  justify-content: space-between;
   flex-wrap: wrap;
   width: 100%;
   padding: 0;
@@ -281,14 +269,14 @@ PageList.css = `
 }
 
 .meta-dot {
-  display: none; /* Hide the dot since they are spaced apart */
+  display: none;
 }
 
 /* ==============================
    Poetry Pagination Controls
    ============================== */
 .poetry-pagination {
-  display: none; /* hidden by default, shown only on poetry-index */
+  display: none;
   direction: rtl;
   justify-content: center;
   align-items: center;
@@ -359,104 +347,4 @@ PageList.css = `
   color: #f0d8b0;
   border-color: #8a6030;
 }
-`
-
-PageList.afterDOMLoaded = `
-function initPoetryPagination() {
-  var ITEMS_PER_PAGE = 8;
-  var grid = document.getElementById('poetry-cards-grid');
-  var paginationEl = document.getElementById('poetry-pagination-controls');
-
-  if (!grid || !paginationEl) return;
-
-  var allCards = Array.from(grid.querySelectorAll('li.page-card'));
-  if (allCards.length <= ITEMS_PER_PAGE) return;
-
-  var totalPages = Math.ceil(allCards.length / ITEMS_PER_PAGE);
-  var currentPage = 1;
-
-  function showPage(page) {
-    currentPage = page;
-    var start = (page - 1) * ITEMS_PER_PAGE;
-    var end = start + ITEMS_PER_PAGE;
-    allCards.forEach(function(card, idx) {
-      card.style.display = (idx >= start && idx < end) ? '' : 'none';
-    });
-    renderControls();
-    // Scroll to top of grid area
-    var scrollTarget = grid.closest('.page-container') || grid;
-    scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  function btn(label, titleText, disabled, active, onClick) {
-    var b = document.createElement('button');
-    b.textContent = label;
-    b.title = titleText;
-    b.disabled = disabled;
-    if (active) b.classList.add('active');
-    if (!disabled && onClick) b.addEventListener('click', onClick);
-    return b;
-  }
-
-  function renderControls() {
-    paginationEl.innerHTML = '';
-    var maxVisible = 5;
-    var startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-    var endPage = Math.min(totalPages, startPage + maxVisible - 1);
-    if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
-
-    // First & Prev
-    paginationEl.appendChild(btn('«', 'الصفحة الأولى', currentPage === 1, false, function() { showPage(1); }));
-    paginationEl.appendChild(btn('‹', 'السابقة', currentPage === 1, false, function() { showPage(currentPage - 1); }));
-
-    // Leading ellipsis
-    if (startPage > 1) {
-      paginationEl.appendChild(btn('1', 'الصفحة 1', false, false, function() { showPage(1); }));
-      if (startPage > 2) {
-        var d1 = document.createElement('span');
-        d1.className = 'page-info';
-        d1.textContent = '…';
-        paginationEl.appendChild(d1);
-      }
-    }
-
-    // Page number buttons
-    for (var p = startPage; p <= endPage; p++) {
-      (function(pg) {
-        paginationEl.appendChild(btn(String(pg), 'صفحة ' + pg, false, pg === currentPage, function() { showPage(pg); }));
-      })(p);
-    }
-
-    // Trailing ellipsis
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) {
-        var d2 = document.createElement('span');
-        d2.className = 'page-info';
-        d2.textContent = '…';
-        paginationEl.appendChild(d2);
-      }
-      paginationEl.appendChild(btn(String(totalPages), 'الصفحة الأخيرة', false, false, function() { showPage(totalPages); }));
-    }
-
-    // Next & Last
-    paginationEl.appendChild(btn('›', 'التالية', currentPage === totalPages, false, function() { showPage(currentPage + 1); }));
-    paginationEl.appendChild(btn('»', 'الصفحة الأخيرة', currentPage === totalPages, false, function() { showPage(totalPages); }));
-
-    // Page counter
-    var info = document.createElement('span');
-    info.className = 'page-info';
-    info.textContent = '(' + currentPage + ' / ' + totalPages + ')';
-    paginationEl.appendChild(info);
-  }
-
-  showPage(1);
-}
-
-// Listen to Quartz SPA nav event
-document.addEventListener('nav', function() {
-  var isPoetryURL = window.location.pathname.replace(/\/+$/, '').endsWith('/poetry');
-  if (isPoetryURL) {
-    initPoetryPagination();
-  }
-});
 `

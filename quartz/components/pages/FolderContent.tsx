@@ -10,6 +10,8 @@ import { ComponentChildren } from "preact"
 import { concatenateResources } from "../../util/resources"
 import { trieFromAllFiles } from "../../util/ctx"
 import { resolveRelative } from "../../util/path"
+// @ts-ignore
+import poetryPaginationScript from "../scripts/poetrypagination.inline"
 
 interface FolderContentOptions {
   /**
@@ -181,6 +183,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
   margin-top: 1rem;
 }
   `)
-  FolderContent.afterDOMLoaded = PageList.afterDOMLoaded
+
+  FolderContent.afterDOMLoaded = poetryPaginationScript
   return FolderContent
 }) satisfies QuartzComponentConstructor
