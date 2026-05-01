@@ -425,9 +425,9 @@ p, blockquote, li {
 
 .bookmark-icon {
   position: absolute;
-  right: -76px;
+  right: -60px; /* Reduced slightly as 76px felt too far */
   top: 4px;
-  width: 90px;
+  width: 30px;
   height: 28px;
   background: transparent;
   border: none;
@@ -438,6 +438,17 @@ p, blockquote, li {
   z-index: 100;
   transition: opacity 0.2s ease, color 0.2s ease;
   padding: 0;
+}
+
+/* Hover bridge: an invisible extension that covers the gap to the paragraph 
+   so the mouse doesn't "fall out" of the hover state while moving towards the icon */
+.bookmark-icon::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  right: 100%;
+  width: 30px; /* Covers exactly the distance to the paragraph edge without overlapping text */
 }
 
 /* Make it visible when the paragraph OR the button itself is hovered */
