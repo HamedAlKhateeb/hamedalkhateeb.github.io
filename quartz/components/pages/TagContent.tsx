@@ -132,54 +132,7 @@ export default ((opts?: Partial<TagContentOptions>) => {
     }
   }
 
-  TagContent.css = concatenateResources(style, PageList.css, `
-.page-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
-
-.main-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.main-header .title {
-  margin-bottom: 0.5rem;
-  font-family: var(--headerFont);
-}
-
-.main-header .subtitle {
-  color: var(--gray);
-  margin-bottom: 1.5rem;
-}
-
-.headers-container {
-  margin: 20px 0;
-  width: 100%;
-}
-
-.meta-data {
-  color: var(--darkgray);
-  font-size: 0.95rem;
-  margin-top: 1rem;
-}
-
-.cards-grid .page-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: 30px !important;
-}
-
-@media (max-width: 768px) {
-  .cards-grid .page-grid {
-    grid-template-columns: 1fr !important;
-  }
-}
-  `)
+  TagContent.css = concatenateResources(style, PageList.css)
   TagContent.afterDOMLoaded = paginationScript
   return TagContent
 }) satisfies QuartzComponentConstructor

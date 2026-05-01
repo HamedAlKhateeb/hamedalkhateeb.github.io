@@ -138,51 +138,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
     )
   }
 
-  FolderContent.css = concatenateResources(style, PageList.css, `
-.page-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
-
-.main-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.main-header .title {
-  margin-bottom: 0.5rem;
-  font-family: var(--headerFont);
-}
-
-.title-link {
-  color: inherit;
-  text-decoration: none;
-}
-.title-link:hover {
-  text-decoration: none;
-  opacity: 0.8;
-}
-
-.main-header .subtitle {
-  color: var(--gray);
-  margin-bottom: 1.5rem;
-}
-
-.headers-container {
-  margin: 20px 0;
-  width: 100%;
-}
-
-.meta-data {
-  color: var(--darkgray);
-  font-size: 0.95rem;
-  margin-top: 1rem;
-}
-  `)
+  FolderContent.css = concatenateResources(style, PageList.css)
 
   FolderContent.afterDOMLoaded = paginationScript
   return FolderContent

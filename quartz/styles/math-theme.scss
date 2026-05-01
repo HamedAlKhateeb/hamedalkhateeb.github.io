@@ -294,7 +294,10 @@ article.math-article {
   .callout-content p:has(> .katex-display) {
     overflow-x: auto;
     overflow-y: hidden;
-    white-space: nowrap;
+    white-space: normal; /* Normal wrap for text on desktop */
+    @media(max-width: 768px) {
+      white-space: nowrap; /* Prevent wrap on mobile to allow scrolling */
+    }
     -webkit-overflow-scrolling: touch;
     text-align: center;
     padding: 14px 12px;
