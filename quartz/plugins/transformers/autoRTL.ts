@@ -1,7 +1,7 @@
 import { QuartzTransformerPlugin } from "../types"
 import { VFile } from "vfile"
 
-const RTL_FOLDERS = ["math", "رياضيات"]
+const RTL_FOLDERS = ["math", "رياضيات", "engineering", "هندسة"]
 
 export const AutoRTL: QuartzTransformerPlugin = () => ({
   name: "AutoRTL",
@@ -16,7 +16,7 @@ export const AutoRTL: QuartzTransformerPlugin = () => ({
         if (inRTLFolder) {
           file.data.frontmatter = file.data.frontmatter ?? {}
           const fm = file.data.frontmatter as Record<string, any>
-          fm.cssclasses = [...(fm.cssclasses ?? []), "rtl-math"]
+          fm.cssclasses = [...(fm.cssclasses ?? []), "rtl-math", "math-article"]
         }
       }
     ]
