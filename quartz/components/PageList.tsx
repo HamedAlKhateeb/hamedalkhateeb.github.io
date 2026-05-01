@@ -121,7 +121,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
           )
         })}
       </ul>
-      <div class="poetry-pagination" id="poetry-pagination-controls"></div>
+      <div class="poetry-nav-grid" id="poetry-nav-controls"></div>
     </>
   )
 }
@@ -275,7 +275,7 @@ PageList.css = `
 /* ==============================
    Poetry Pagination Controls
    ============================== */
-.poetry-pagination {
+.poetry-nav-grid {
   display: none;
   direction: rtl;
   justify-content: center;
@@ -286,11 +286,11 @@ PageList.css = `
   font-family: 'IBM Plex Sans Arabic', sans-serif;
 }
 
-.poetry-index .poetry-pagination {
+.poetry-index .poetry-nav-grid {
   display: flex;
 }
 
-.poetry-pagination button {
+.poetry-nav-grid button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -308,41 +308,41 @@ PageList.css = `
   white-space: nowrap;
 }
 
-.poetry-pagination button:hover:not(:disabled) {
+.poetry-nav-grid button:hover:not(:disabled) {
   background: rgba(201, 160, 108, 0.15);
   border-color: #c9a06c;
   color: #4a2e1a;
 }
 
-.poetry-pagination button:disabled {
+.poetry-nav-grid button:disabled {
   opacity: 0.35;
   cursor: not-allowed;
 }
 
-.poetry-pagination button.active {
+.poetry-nav-grid button.active {
   background: #6b4226;
   color: #fff;
   border-color: #6b4226;
   font-weight: bold;
 }
 
-.poetry-pagination .page-info {
+.poetry-nav-grid .page-info {
   font-size: 0.85rem;
   color: var(--gray);
   padding: 0 0.5rem;
   white-space: nowrap;
 }
 
-:root[saved-theme="dark"] .poetry-pagination button {
+:root[saved-theme="dark"] .poetry-nav-grid button {
   color: #c9a06c;
   border-color: rgba(90, 74, 58, 0.4);
 }
-:root[saved-theme="dark"] .poetry-pagination button:hover:not(:disabled) {
+:root[saved-theme="dark"] .poetry-nav-grid button:hover:not(:disabled) {
   background: rgba(90, 74, 58, 0.3);
   border-color: #c9a06c;
   color: #e0c090;
 }
-:root[saved-theme="dark"] .poetry-pagination button.active {
+:root[saved-theme="dark"] .poetry-nav-grid button.active {
   background: #5a3a1a;
   color: #f0d8b0;
   border-color: #8a6030;

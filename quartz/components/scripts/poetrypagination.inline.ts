@@ -4,7 +4,7 @@ document.addEventListener("nav", function() {
 
   var ITEMS = 8;
   var grid = document.getElementById("poetry-cards-grid");
-  var pgEl = document.getElementById("poetry-pagination-controls");
+  var pgEl = document.getElementById("poetry-nav-controls");
   if (!grid || !pgEl) { return; }
 
   var cards = Array.from(grid.querySelectorAll("li.page-card"));
