@@ -181,5 +181,6 @@ export default ((opts?: Partial<FolderContentOptions>) => {
   margin-top: 1rem;
 }
   `)
+  FolderContent.afterDOMLoaded = PageList.afterDOMLoaded
   return FolderContent
 }) satisfies QuartzComponentConstructor

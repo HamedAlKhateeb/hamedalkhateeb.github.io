@@ -67,70 +67,73 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
   }
 
   return (
-    <ul class="cards-grid page-grid">
-      {list.map((page) => {
-        const title = page.frontmatter?.title
-        const tags = page.frontmatter?.tags ?? []
-        const cover = (page.frontmatter?.cover ?? page.frontmatter?.image) as string | undefined
-        const description = page.frontmatter?.description ?? page.description
-        
-        let displayedTime = ""
-        if (page.text) {
-          const { minutes } = readingTime(page.text)
-          displayedTime = i18n(cfg.locale).components.contentMeta.readingTime({
-            minutes: Math.ceil(minutes),
-          })
-        }
-  
-        return (
-          <li class="page-card">
-            {cover && (
-              <a href={resolveRelative(fileData.slug!, page.slug!)} class="card-image-link">
-                <img src={cover} alt={title} class="card-image" />
-              </a>
-            )}
-            <div class="card-body card-content">
-              <div class="desc card-text-center">
-                <h3 class="card-title">
-                  <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
-                    {title}
-                  </a>
-                </h3>
-              </div>
-              {tags.length > 0 && (
-                <div class="card-tags-joined-container">
-                  <div class="card-tags-joined">
-                    {tags.slice(0, 4).map((tag, i) => (
-                      <span key={tag}>
-                        <a
-                          class="internal tag-link inline-tag"
-                          href={resolveRelative(fileData.slug!, `tags/${tag}` as FullSlug)}
-                        >
-                          {tag}
-                        </a>
-                        {i < Math.min(tags.length, 4) - 1 && <span class="tag-separator"> · </span>}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+    <>
+      <ul class="cards-grid page-grid" id="poetry-cards-grid">
+        {list.map((page) => {
+          const title = page.frontmatter?.title
+          const tags = page.frontmatter?.tags ?? []
+          const cover = (page.frontmatter?.cover ?? page.frontmatter?.image) as string | undefined
+          const description = page.frontmatter?.description ?? page.description
+          
+          let displayedTime = ""
+          if (page.text) {
+            const { minutes } = readingTime(page.text)
+            displayedTime = i18n(cfg.locale).components.contentMeta.readingTime({
+              minutes: Math.ceil(minutes),
+            })
+          }
+    
+          return (
+            <li class="page-card">
+              {cover && (
+                <a href={resolveRelative(fileData.slug!, page.slug!)} class="card-image-link">
+                  <img src={cover} alt={title} class="card-image" />
+                </a>
               )}
-              <div class="desc card-text-center">
-                {description && <p class="card-description">{description}</p>}
-              </div>
-              <div class="card-divider"></div>
-              <p class="meta card-meta-inline">
-                {page.dates && <Date date={getDate(cfg, page)!} locale={cfg.locale} />}
-                {displayedTime && (
-                  <span class="card-reading-time">
-                    <span class="meta-dot"> • </span>{displayedTime}
-                  </span>
+              <div class="card-body card-content">
+                <div class="desc card-text-center">
+                  <h3 class="card-title">
+                    <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
+                      {title}
+                    </a>
+                  </h3>
+                </div>
+                {tags.length > 0 && (
+                  <div class="card-tags-joined-container">
+                    <div class="card-tags-joined">
+                      {tags.slice(0, 4).map((tag, i) => (
+                        <span key={tag}>
+                          <a
+                            class="internal tag-link inline-tag"
+                            href={resolveRelative(fileData.slug!, `tags/${tag}` as FullSlug)}
+                          >
+                            {tag}
+                          </a>
+                          {i < Math.min(tags.length, 4) - 1 && <span class="tag-separator"> · </span>}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 )}
-              </p>
-            </div>
-          </li>
-        )
-      })}
-    </ul>
+                <div class="desc card-text-center">
+                  {description && <p class="card-description">{description}</p>}
+                </div>
+                <div class="card-divider"></div>
+                <p class="meta card-meta-inline">
+                  {page.dates && <Date date={getDate(cfg, page)!} locale={cfg.locale} />}
+                  {displayedTime && (
+                    <span class="card-reading-time">
+                      <span class="meta-dot"> • </span>{displayedTime}
+                    </span>
+                  )}
+                </p>
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+      <div class="poetry-pagination" id="poetry-pagination-controls"></div>
+    </>
   )
 }
 
@@ -280,4 +283,180 @@ PageList.css = `
 .meta-dot {
   display: none; /* Hide the dot since they are spaced apart */
 }
+
+/* ==============================
+   Poetry Pagination Controls
+   ============================== */
+.poetry-pagination {
+  display: none; /* hidden by default, shown only on poetry-index */
+  direction: rtl;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2.5rem 0 1rem;
+  flex-wrap: wrap;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+}
+
+.poetry-index .poetry-pagination {
+  display: flex;
+}
+
+.poetry-pagination button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.4rem;
+  height: 2.4rem;
+  padding: 0 0.8rem;
+  border: 1px solid rgba(180, 160, 130, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  color: #6b4226;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.poetry-pagination button:hover:not(:disabled) {
+  background: rgba(201, 160, 108, 0.15);
+  border-color: #c9a06c;
+  color: #4a2e1a;
+}
+
+.poetry-pagination button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.poetry-pagination button.active {
+  background: #6b4226;
+  color: #fff;
+  border-color: #6b4226;
+  font-weight: bold;
+}
+
+.poetry-pagination .page-info {
+  font-size: 0.85rem;
+  color: var(--gray);
+  padding: 0 0.5rem;
+  white-space: nowrap;
+}
+
+:root[saved-theme="dark"] .poetry-pagination button {
+  color: #c9a06c;
+  border-color: rgba(90, 74, 58, 0.4);
+}
+:root[saved-theme="dark"] .poetry-pagination button:hover:not(:disabled) {
+  background: rgba(90, 74, 58, 0.3);
+  border-color: #c9a06c;
+  color: #e0c090;
+}
+:root[saved-theme="dark"] .poetry-pagination button.active {
+  background: #5a3a1a;
+  color: #f0d8b0;
+  border-color: #8a6030;
+}
+`
+
+PageList.afterDOMLoaded = `
+function initPoetryPagination() {
+  var ITEMS_PER_PAGE = 8;
+  var grid = document.getElementById('poetry-cards-grid');
+  var paginationEl = document.getElementById('poetry-pagination-controls');
+
+  if (!grid || !paginationEl) return;
+
+  var allCards = Array.from(grid.querySelectorAll('li.page-card'));
+  if (allCards.length <= ITEMS_PER_PAGE) return;
+
+  var totalPages = Math.ceil(allCards.length / ITEMS_PER_PAGE);
+  var currentPage = 1;
+
+  function showPage(page) {
+    currentPage = page;
+    var start = (page - 1) * ITEMS_PER_PAGE;
+    var end = start + ITEMS_PER_PAGE;
+    allCards.forEach(function(card, idx) {
+      card.style.display = (idx >= start && idx < end) ? '' : 'none';
+    });
+    renderControls();
+    // Scroll to top of grid area
+    var scrollTarget = grid.closest('.page-container') || grid;
+    scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function btn(label, titleText, disabled, active, onClick) {
+    var b = document.createElement('button');
+    b.textContent = label;
+    b.title = titleText;
+    b.disabled = disabled;
+    if (active) b.classList.add('active');
+    if (!disabled && onClick) b.addEventListener('click', onClick);
+    return b;
+  }
+
+  function renderControls() {
+    paginationEl.innerHTML = '';
+    var maxVisible = 5;
+    var startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    var endPage = Math.min(totalPages, startPage + maxVisible - 1);
+    if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+
+    // First & Prev
+    paginationEl.appendChild(btn('«', 'الصفحة الأولى', currentPage === 1, false, function() { showPage(1); }));
+    paginationEl.appendChild(btn('‹', 'السابقة', currentPage === 1, false, function() { showPage(currentPage - 1); }));
+
+    // Leading ellipsis
+    if (startPage > 1) {
+      paginationEl.appendChild(btn('1', 'الصفحة 1', false, false, function() { showPage(1); }));
+      if (startPage > 2) {
+        var d1 = document.createElement('span');
+        d1.className = 'page-info';
+        d1.textContent = '…';
+        paginationEl.appendChild(d1);
+      }
+    }
+
+    // Page number buttons
+    for (var p = startPage; p <= endPage; p++) {
+      (function(pg) {
+        paginationEl.appendChild(btn(String(pg), 'صفحة ' + pg, false, pg === currentPage, function() { showPage(pg); }));
+      })(p);
+    }
+
+    // Trailing ellipsis
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        var d2 = document.createElement('span');
+        d2.className = 'page-info';
+        d2.textContent = '…';
+        paginationEl.appendChild(d2);
+      }
+      paginationEl.appendChild(btn(String(totalPages), 'الصفحة الأخيرة', false, false, function() { showPage(totalPages); }));
+    }
+
+    // Next & Last
+    paginationEl.appendChild(btn('›', 'التالية', currentPage === totalPages, false, function() { showPage(currentPage + 1); }));
+    paginationEl.appendChild(btn('»', 'الصفحة الأخيرة', currentPage === totalPages, false, function() { showPage(totalPages); }));
+
+    // Page counter
+    var info = document.createElement('span');
+    info.className = 'page-info';
+    info.textContent = '(' + currentPage + ' / ' + totalPages + ')';
+    paginationEl.appendChild(info);
+  }
+
+  showPage(1);
+}
+
+// Listen to Quartz SPA nav event
+document.addEventListener('nav', function() {
+  var isPoetryURL = window.location.pathname.replace(/\/+$/, '').endsWith('/poetry');
+  if (isPoetryURL) {
+    initPoetryPagination();
+  }
+});
 `
