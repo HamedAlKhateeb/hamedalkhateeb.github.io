@@ -12,6 +12,12 @@ export default (() => {
     const pages = allFiles
       .filter(page => page.slug && page.slug !== 'index' && !page.slug.endsWith('/index') && !page.slug.startsWith('tags/') && !page.slug.toLowerCase().startsWith('poetry/'))
       .sort((a, b) => {
+        const aPinned = a.frontmatter?.pinned ? 1 : 0
+        const bPinned = b.frontmatter?.pinned ? 1 : 0
+        if (aPinned !== bPinned) {
+          return bPinned - aPinned
+        }
+
         const aDate = a.dates?.published ?? new Date('1970-01-01')
         const bDate = b.dates?.published ?? new Date('1970-01-01')
         return bDate.getTime() - aDate.getTime()

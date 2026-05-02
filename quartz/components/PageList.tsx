@@ -129,8 +129,8 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
 PageList.css = `
 .page-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: 1.5rem;
   padding: 0;
   list-style: none;
   margin-top: 2rem;
@@ -171,7 +171,7 @@ PageList.css = `
 }
 
 .card-content, .card-body {
-  padding: clamp(1.2rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2rem);
+  padding: 1.5rem 1.2rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
