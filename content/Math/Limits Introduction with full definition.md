@@ -8,9 +8,9 @@ tags:
   - ε-δ
 author: حامد الخطيب
 description: تجربة لمحاولة شرح النهايات بشكل حدسي؛ وتغيير المفاهيم الخاطئة حول التفاضل
+image: /static/thumbnails/a635e4c0-562c-4115-8202-adc420dbc695.png
 ---
 
-<div class="sub">تحليل رياضي · فلسفة الدقة</div>
 
 
 
