@@ -29,11 +29,9 @@ const Header: QuartzComponent = ({ children, displayName, fileData, cfg, tree }:
           <a href={resolveRelative(fileData.slug!, "Math" as FullSlug)}>رياضيات</a>
           <a href={resolveRelative(fileData.slug!, "Culture" as FullSlug)}>ثقافة</a>
           <a href={resolveRelative(fileData.slug!, "Engineering" as FullSlug)}>هندسة</a>
-          <a href={resolveRelative(fileData.slug!, "Programming" as FullSlug)}>برمجة</a>
           <a href={resolveRelative(fileData.slug!, "Experiences" as FullSlug)}>تجارب</a>
           <a href={resolveRelative(fileData.slug!, "Personal" as FullSlug)}>شخصي</a>
           <a href={resolveRelative(fileData.slug!, "poetry" as FullSlug)}>أشعاري</a>
-          <a href={resolveRelative(fileData.slug!, "Archive" as FullSlug)}>مقالات قديمة</a>
           <a href={resolveRelative(fileData.slug!, "About" as FullSlug)}>من أنا</a>
         </nav>
       </div>
