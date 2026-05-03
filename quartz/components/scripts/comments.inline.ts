@@ -9,7 +9,7 @@ document.addEventListener("nav", async () => {
   const config = JSON.parse(configStr)
   const slug = container.dataset.slug || "unknown"
 
-  const EMOJIS = ["👍", "❤️", "🎉", "😄", "🤔"]
+  const EMOJIS = ["👍", "❤️", "🎉", "😄", "🤔", "😢"]
 
   const getAnonId = (): string => {
     let id = localStorage.getItem("fc-anon-id")
@@ -73,8 +73,8 @@ document.addEventListener("nav", async () => {
           ta.setSelectionRange(start + 1, start + 9)
         } else if (md === "## ") {
           const before = text.substring(0, start)
-          const needsNewline = before.length > 0 && !before.endsWith("n")
-          const prefix = needsNewline ? "n## " : "## "
+          const needsNewline = before.length > 0 && !before.endsWith("\n")
+          const prefix = needsNewline ? "\n## " : "## "
           ta.value = text.substring(0, start) + prefix + text.substring(start, end) + text.substring(end)
           ta.focus()
           ta.setSelectionRange(start + prefix.length, start + prefix.length + (end - start))
@@ -96,13 +96,13 @@ document.addEventListener("nav", async () => {
 
   const parseMarkdown = (text: string) => {
     let html = text.replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    html = html.replace(/**(.*?)**/g, '<strong>$1</strong>')
-    html = html.replace(/*(.*?)*/g, '<em>$1</em>')
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>')
     html = html.replace(/~~(.*?)~~/g, '<del>$1</del>')
-    html = html.replace(/\`([^`]+)\`/g, '<code>$1</code>')
-    html = html.replace(/[(.*?)]((.*?))/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>')
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     html = html.replace(/^## (.*?)$/gm, '<h3>$1</h3>')
-    html = html.replace(/n/g, '<br>')
+    html = html.replace(/\n/g, '<br>')
     return html
   }
 
@@ -165,7 +165,7 @@ document.addEventListener("nav", async () => {
         return `<button type="button" class="fc-reaction-btn${reacted ? " reacted" : ""}" data-emoji="${emoji}" title="${emoji}">${emoji}${reactors.length > 0 ? `<span class="fc-reaction-count">${reactors.length}</span>` : ""}</button>`
       }).join("")
 
-      reactionsEl.innerHTML = `<div class="fc-reactions-title">ما رأيك في هذا المقال؟</div><div class="fc-reactions">${reactionsHTML}</div>`
+      reactionsEl.innerHTML = `<div class="fc-reactions-title">ما رأيك؟</div><div class="fc-reactions">${reactionsHTML}</div>`
       
       reactionsEl.querySelectorAll<HTMLButtonElement>(".fc-reaction-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
