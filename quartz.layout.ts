@@ -10,21 +10,15 @@ export const sharedPageComponents: SharedLayout = {
   ],
   afterBody: [
     Component.Comments({
-      provider: 'giscus',
+      provider: 'firebase',
       options: {
-        // from data-repo
-        repo: 'HamedAlKhateeb/HamedAlKhateeb.github.io', // أو [ضع رابط المستودع هنا] بصيغة (user/repo)
-        // from data-repo-id
-        repoId: 'R_kgDORoY5zw',
-        // from data-category
-        category: 'Announcements',
-        // from data-category-id
-        categoryId: 'DIC_kwDORoY5z84C7odJ',
-        mapping: 'pathname',
-        strict: false,
-        reactionsEnabled: true,
-        inputPosition: 'bottom',
-        lang: 'ar'
+        apiKey: "AIzaSyAlNrI6ZSHNcQtlsgJP0pILiSd_RkBnxZY",
+        authDomain: "myblog-713fc.firebaseapp.com",
+        projectId: "myblog-713fc",
+        storageBucket: "myblog-713fc.firebasestorage.app",
+        messagingSenderId: "147793270885",
+        appId: "1:147793270885:web:e2b3b36914a06a25108e8c",
+        measurementId: "G-KDJLN0GLCH"
       }
     }),
     Component.Newsletter(),
