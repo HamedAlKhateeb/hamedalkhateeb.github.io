@@ -1,8 +1,10 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
-import { FullSlug, joinSegments, resolveRelative } from "../util/path"
+import { FullSlug, joinSegments, resolveRelative, pathToRoot } from "../util/path"
 
 const Header: QuartzComponent = ({ children, displayName, fileData, cfg, tree }: QuartzComponentProps) => {
   const isPoetry = fileData.slug !== undefined && fileData.slug.toLowerCase().startsWith("poetry/")
+
+  const baseDir = pathToRoot(fileData.slug!)
 
   if (isPoetry) {
     return (
@@ -14,7 +16,7 @@ const Header: QuartzComponent = ({ children, displayName, fileData, cfg, tree }:
           </div>
           <nav class="navbar poetry-navbar">
             <a href={resolveRelative(fileData.slug!, "poetry" as FullSlug)}>فهرس القصائد</a>
-            <a href="https://hamedalkhateeb.github.io/">المدونة</a>
+            <a href={baseDir}>المدونة</a>
           </nav>
         </div>
       </header>
@@ -24,7 +26,7 @@ const Header: QuartzComponent = ({ children, displayName, fileData, cfg, tree }:
   return (
     <header>
       <div class="header-inner">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", margin: "0", flexWrap: "wrap", gap: "1rem" }}><h1><a href="https://hamedalkhateeb.github.io/">مدونة حامد الخطيب</a></h1><div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>{children}</div></div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", margin: "0", flexWrap: "wrap", gap: "1rem" }}><h1><a href={baseDir}>مدونة حامد الخطيب</a></h1><div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>{children}</div></div>
         <nav class="navbar">
           <a href={resolveRelative(fileData.slug!, "Math" as FullSlug)}>رياضيات</a>
           <a href={resolveRelative(fileData.slug!, "Culture" as FullSlug)}>ثقافة</a>
