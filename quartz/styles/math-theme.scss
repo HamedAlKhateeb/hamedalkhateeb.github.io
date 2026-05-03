@@ -182,13 +182,13 @@ article.math-article {
 
   .sidebar.right {
     position: fixed !important;
-    top: 56px !important;
+    top: 16px !important;
     left: 1.2vw !important;
     padding: 0 !important;
     display: flex !important;
     flex-direction: column;
     width: 220px !important;
-    height: calc(100vh - 56px);
+    height: calc(100vh - 16px);
     z-index: 100;
     pointer-events: none;
   }
