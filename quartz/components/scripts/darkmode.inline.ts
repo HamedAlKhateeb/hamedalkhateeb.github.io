@@ -10,16 +10,24 @@ const emitThemeChangeEvent = (theme: "light" | "dark" | "sepia") => {
   document.dispatchEvent(event)
 }
 
+/** Temporarily disables all CSS transitions for one frame so theme changes are instant */
+const disableTransitions = () => {
+  document.documentElement.classList.add("no-transitions")
+  window.requestAnimationFrame(() => {
+    document.documentElement.classList.remove("no-transitions")
+  })
+}
+
 document.addEventListener("nav", () => {
   const themeOrder = ["light", "dark", "sepia", "auto"] as const
 
   const switchTheme = () => {
-    // Current saved theme, using 'auto' if none is stored
+    disableTransitions()
     const currentSaved = localStorage.getItem("theme") ?? "auto"
     const currentIndex = themeOrder.indexOf(currentSaved as (typeof themeOrder)[number])
     const nextIndex = (currentIndex + 1) % themeOrder.length
     const newTheme = themeOrder[nextIndex]
-    
+
     if (newTheme === "auto") {
       localStorage.removeItem("theme")
       const autoTheme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"
@@ -34,8 +42,8 @@ document.addEventListener("nav", () => {
 
   const themeChange = (e: MediaQueryListEvent) => {
     const savedTheme = localStorage.getItem("theme")
-    // Only apply system changes if in auto mode (no saved theme)
     if (savedTheme === null) {
+      disableTransitions()
       const newTheme = e.matches ? "dark" : "light"
       document.documentElement.setAttribute("saved-theme", newTheme)
       emitThemeChangeEvent(newTheme)
@@ -47,7 +55,6 @@ document.addEventListener("nav", () => {
     window.addCleanup(() => darkmodeButton.removeEventListener("click", switchTheme))
   }
 
-  // Listen for changes in prefers-color-scheme
   const colorSchemeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
   colorSchemeMediaQuery.addEventListener("change", themeChange)
   window.addCleanup(() => colorSchemeMediaQuery.removeEventListener("change", themeChange))

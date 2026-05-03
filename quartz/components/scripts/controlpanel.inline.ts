@@ -116,6 +116,10 @@ document.addEventListener("nav", () => {
   }
 
   const setTheme = (theme: string) => {
+    // Instantly switch — suppress transitions for one frame
+    document.documentElement.classList.add("no-transitions")
+    window.requestAnimationFrame(() => document.documentElement.classList.remove("no-transitions"))
+
     document.documentElement.setAttribute("saved-theme", theme)
     localStorage.setItem("theme", theme)
 
