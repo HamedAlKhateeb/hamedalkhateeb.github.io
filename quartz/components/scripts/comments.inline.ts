@@ -16,12 +16,12 @@ document.addEventListener("nav", async () => {
     <div class="fc-header">
       <div class="fc-title">التعليقات</div>
       <div id="fc-auth-section">
-        <button id="fc-login-btn" class="fc-login-btn">تسجيل الدخول باستخدام Google</button>
+        <button type="button" id="fc-login-btn" class="fc-login-btn">تسجيل الدخول باستخدام Google</button>
       </div>
     </div>
     <div id="fc-compose-section" class="fc-compose" style="display: none;">
       <textarea id="fc-textarea" class="fc-textarea" placeholder="اكتب تعليقك هنا..."></textarea>
-      <button id="fc-submit-btn" class="fc-submit-btn">إرسال التعليق</button>
+      <button type="button" id="fc-submit-btn" class="fc-submit-btn">إرسال التعليق</button>
     </div>
     <div id="fc-list" class="fc-list">
       <div class="fc-loading">جاري تحميل التعليقات...</div>
@@ -50,15 +50,17 @@ document.addEventListener("nav", async () => {
     const listContainer = document.getElementById("fc-list")!
 
     // Auth Handlers
-    loginBtn.addEventListener("click", () => {
+    loginBtn.addEventListener("click", (e) => {
+      e.preventDefault()
       const provider = new GoogleAuthProvider()
       signInWithPopup(auth, provider).catch(err => {
         console.error("Login failed", err)
-        alert("حدث خطأ أثناء تسجيل الدخول")
+        alert("حدث خطأ أثناء تسجيل الدخول: " + err.message)
       })
     })
 
-    const handleLogout = () => {
+    const handleLogout = (e: Event) => {
+      e.preventDefault()
       signOut(auth).catch(console.error)
     }
 
@@ -69,14 +71,15 @@ document.addEventListener("nav", async () => {
           <div class="fc-user-info">
             <img src="${user.photoURL}" alt="${user.displayName}" class="fc-user-avatar" referrerpolicy="no-referrer" />
             <span style="font-size: 0.9rem; color: var(--dark);">${user.displayName}</span>
-            <button id="fc-logout-btn" class="fc-logout-btn">تسجيل الخروج</button>
+            <button type="button" id="fc-logout-btn" class="fc-logout-btn">تسجيل الخروج</button>
           </div>
         `
         document.getElementById("fc-logout-btn")?.addEventListener("click", handleLogout)
         composeSection.style.display = "flex"
       } else {
-        authSection.innerHTML = `<button id="fc-login-btn" class="fc-login-btn">تسجيل الدخول باستخدام Google</button>`
-        document.getElementById("fc-login-btn")?.addEventListener("click", () => {
+        authSection.innerHTML = `<button type="button" id="fc-login-btn" class="fc-login-btn">تسجيل الدخول باستخدام Google</button>`
+        document.getElementById("fc-login-btn")?.addEventListener("click", (e) => {
+          e.preventDefault()
           const provider = new GoogleAuthProvider()
           signInWithPopup(auth, provider).catch(console.error)
         })
@@ -85,7 +88,8 @@ document.addEventListener("nav", async () => {
     })
 
     // Submit Comment Handler
-    submitBtn.addEventListener("click", async () => {
+    submitBtn.addEventListener("click", async (e) => {
+      e.preventDefault()
       const text = textarea.value.trim()
       if (!text || !currentUser) return
 
@@ -100,9 +104,9 @@ document.addEventListener("nav", async () => {
           createdAt: serverTimestamp()
         })
         textarea.value = ""
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error adding comment", err)
-        alert("حدث خطأ أثناء إرسال التعليق. تأكد من تفعيل Firestore واعداد قواعد الحماية (Rules).")
+        alert("حدث خطأ أثناء إرسال التعليق: " + err.message)
       }
       submitBtn.disabled = false
     })
@@ -129,7 +133,7 @@ document.addEventListener("nav", async () => {
         commentEl.className = "fc-comment"
         
         const isOwner = currentUser && currentUser.uid === data.userId
-        const deleteHtml = isOwner ? `<button class="fc-delete-btn" data-id="${commentDoc.id}">حذف التعليق</button>` : ""
+        const deleteHtml = isOwner ? `<button type="button" class="fc-delete-btn" data-id="${commentDoc.id}">حذف التعليق</button>` : ""
 
         commentEl.innerHTML = `
           <img src="${data.userPhoto || 'https://www.gravatar.com/avatar/0?d=mp'}" alt="${data.userName}" class="fc-comment-avatar" referrerpolicy="no-referrer" />
@@ -145,13 +149,14 @@ document.addEventListener("nav", async () => {
 
         if (isOwner) {
           const deleteBtn = commentEl.querySelector(".fc-delete-btn")
-          deleteBtn?.addEventListener("click", async () => {
+          deleteBtn?.addEventListener("click", async (e) => {
+            e.preventDefault()
             if (confirm("هل أنت متأكد من حذف هذا التعليق؟")) {
               try {
                 await deleteDoc(doc(db, "comments", commentDoc.id))
-              } catch (err) {
+              } catch (err: any) {
                 console.error("Error deleting comment", err)
-                alert("لم يتم الحذف، تأكد من صلاحياتك.")
+                alert("لم يتم الحذف: " + err.message)
               }
             }
           })
