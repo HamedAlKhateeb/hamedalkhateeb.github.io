@@ -46,6 +46,7 @@ document.addEventListener("nav", async () => {
         ${toolbarHTML}
         <textarea id="fc-textarea" class="fc-textarea" placeholder="اكتب تعليقك هنا..."></textarea>
       </div>
+      <div id="fc-preview" class="fc-comment-text" style="display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"></div>
       <button type="button" id="fc-submit-btn" class="fc-submit-btn">إرسال التعليق</button>
     </div>
     <div id="fc-list" class="fc-list"><div class="fc-loading">جاري تحميل التعليقات...</div></div>
@@ -57,6 +58,7 @@ document.addEventListener("nav", async () => {
   const submitBtn      = document.getElementById("fc-submit-btn") as HTMLButtonElement
   const listEl         = document.getElementById("fc-list")!
   const reactionsEl    = document.getElementById("fc-article-reactions")!
+  const previewEl      = document.getElementById("fc-preview")!
 
   // Helper to insert markdown at cursor
   const bindToolbar = (wrap: HTMLElement, ta: HTMLTextAreaElement) => {
@@ -88,6 +90,7 @@ document.addEventListener("nav", async () => {
             ta.setSelectionRange(start + md.length, end + md.length)
           }
         }
+        ta.dispatchEvent(new Event("input")) // Trigger update preview
       })
     })
   }
@@ -105,6 +108,19 @@ document.addEventListener("nav", async () => {
     html = html.replace(/\n/g, '<br>')
     return html
   }
+
+  const updatePreview = (ta: HTMLTextAreaElement, preview: HTMLElement) => {
+    const text = ta.value.trim()
+    if (text) {
+      preview.style.display = "block"
+      preview.innerHTML = `<div style="font-size:0.85em;opacity:0.7;margin-bottom:0.4rem;border-bottom:1px solid var(--lightgray);padding-bottom:0.2rem;">معاينة:</div>` + parseMarkdown(text)
+    } else {
+      preview.style.display = "none"
+      preview.innerHTML = ""
+    }
+  }
+
+  textarea.addEventListener("input", () => updatePreview(textarea, previewEl))
 
   try {
     // @ts-ignore
@@ -221,6 +237,12 @@ document.addEventListener("nav", async () => {
       editTA.className = "fc-edit-textarea"
       editTA.value = originalText
 
+      const editPreview = document.createElement("div")
+      editPreview.className = "fc-comment-text"
+      editPreview.style.cssText = "display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"
+
+      editTA.addEventListener("input", () => updatePreview(editTA, editPreview))
+
       const editActions = document.createElement("div")
       editActions.className = "fc-edit-actions"
 
@@ -237,11 +259,12 @@ document.addEventListener("nav", async () => {
       fullWrap.style.display = "flex"
       fullWrap.style.flexDirection = "column"
       fullWrap.style.gap = "0.5rem"
-      fullWrap.append(wrap, editActions)
+      fullWrap.append(wrap, editPreview, editActions)
 
       textDiv.innerHTML = ""
       textDiv.appendChild(fullWrap)
       editTA.focus()
+      updatePreview(editTA, editPreview)
       
       bindToolbar(wrap, editTA)
 
@@ -273,6 +296,7 @@ document.addEventListener("nav", async () => {
           ${toolbarHTML}
           <textarea class="fc-reply-textarea" placeholder="اكتب ردك هنا..."></textarea>
         </div>
+        <div class="fc-reply-preview fc-comment-text" style="display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"></div>
         <div class="fc-reply-actions">
           <button type="button" class="fc-submit-btn fc-reply-submit-btn">إرسال الرد</button>
           <button type="button" class="fc-logout-btn fc-reply-cancel-btn">إلغاء</button>
@@ -280,6 +304,9 @@ document.addEventListener("nav", async () => {
       container.appendChild(form)
       
       const ta = form.querySelector(".fc-reply-textarea") as HTMLTextAreaElement
+      const rpPreview = form.querySelector(".fc-reply-preview") as HTMLElement
+      ta.addEventListener("input", () => updatePreview(ta, rpPreview))
+      
       ta.focus()
       bindToolbar(form.querySelector(".fc-editor-wrap") as HTMLElement, ta)
 
@@ -395,6 +422,7 @@ document.addEventListener("nav", async () => {
           likes:     []
         })
         textarea.value = ""
+        updatePreview(textarea, previewEl)
       } catch (err: any) {
         alert("خطأ في الإرسال: " + err.message)
       }
