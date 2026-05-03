@@ -149,7 +149,8 @@ document.addEventListener("nav", async () => {
 
     // ── Article Reactions ──────────────────────────────────────────────────
 
-    const articleReactionsRef = doc(db, "articleReactions", slug)
+    const safeSlug = slug.replace(/\//g, "___")
+    const articleReactionsRef = doc(db, "articleReactions", safeSlug)
     
     // Ensure document exists
     setDoc(articleReactionsRef, { init: true }, { merge: true }).catch(() => {})
@@ -168,13 +169,27 @@ document.addEventListener("nav", async () => {
       
       reactionsEl.querySelectorAll<HTMLButtonElement>(".fc-reaction-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
-          const emoji = btn.dataset.emoji!
-          const currentReactors: string[] = data[emoji] || []
+          const clickedEmoji = btn.dataset.emoji!
+          const currentReactors: string[] = data[clickedEmoji] || []
+          
           try {
-            if (currentReactors.includes(currentReactor)) {
-              await updateDoc(articleReactionsRef, { [emoji]: arrayRemove(currentReactor) })
-            } else {
-              await updateDoc(articleReactionsRef, { [emoji]: arrayUnion(currentReactor) })
+            const isAlreadyReacted = currentReactors.includes(currentReactor)
+            const updates: any = {}
+            
+            // Remove user from ALL emojis to ensure only one reaction at a time
+            EMOJIS.forEach(e => {
+              if ((data[e] || []).includes(currentReactor)) {
+                updates[e] = arrayRemove(currentReactor)
+              }
+            })
+            
+            // If they clicked a new emoji, add it
+            if (!isAlreadyReacted) {
+              updates[clickedEmoji] = arrayUnion(currentReactor)
+            }
+            
+            if (Object.keys(updates).length > 0) {
+              await setDoc(articleReactionsRef, updates, { merge: true })
             }
           } catch (err: any) {
             console.error("Reaction error:", err)
