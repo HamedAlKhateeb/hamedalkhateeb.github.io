@@ -22,7 +22,7 @@ export default {
       let message = "";
 
       if (data.actionType === "reaction") {
-        message = `تفاعل جديد ${data.emoji} 🎭\nالمقال: ${data.articleTitle || "غير معروف"}\nالرابط: ${data.articleUrl || "غير معروف"}`;
+        message = `تفاعل جديد ${data.emoji} 🎭\nبواسطة: ${data.author || "مجهول"}\nالمقال: ${data.articleTitle || "غير معروف"}\nالرابط: ${data.articleUrl || "غير معروف"}`;
       } else if (data.actionType === "like") {
         message = `إعجاب جديد 👍\nبواسطة: ${data.author || "مجهول"}\nالمقال: ${data.articleTitle || "غير معروف"}\nالرابط: ${data.articleUrl || "غير معروف"}\n\nالتعليق المُعجب به:\n${data.content}`;
       } else if (data.actionType === "delete") {

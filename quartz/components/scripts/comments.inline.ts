@@ -185,6 +185,10 @@ document.addEventListener("nav", async () => {
       
       reactionsEl.querySelectorAll<HTMLButtonElement>(".fc-reaction-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
+          if (!currentUser) {
+            alert("عذراً، يجب تسجيل الدخول أولاً للتفاعل مع المقال.");
+            return;
+          }
           const clickedEmoji = btn.dataset.emoji!
           const currentReactors: string[] = data[clickedEmoji] || []
           
@@ -214,6 +218,7 @@ document.addEventListener("nav", async () => {
                   body: JSON.stringify({
                     actionType: "reaction",
                     emoji: clickedEmoji,
+                    author: currentUser.displayName || "مجهول",
                     articleTitle: document.title,
                     articleUrl: window.location.href
                   })
@@ -231,6 +236,11 @@ document.addEventListener("nav", async () => {
     // ── Helpers ────────────────────────────────────────────────────────────
 
     const toggleLike = async (commentId: string, currentReactor: string, snap: any) => {
+      if (!currentUser) {
+        alert("عذراً، يجب تسجيل الدخول للإعجاب بالتعليقات.");
+        return;
+      }
+      
       const ref = doc(db, "comments", commentId)
       const current = snap.likes || []
       if (current.includes(currentReactor)) {
@@ -425,6 +435,10 @@ document.addEventListener("nav", async () => {
       // Wire reply
       if (!isReply) {
         el.querySelector(".fc-reply-btn")?.addEventListener("click", () => {
+          if (!currentUser) {
+            alert("عذراً، يجب تسجيل الدخول للرد على التعليقات.");
+            return;
+          }
           const area = el.querySelector(".fc-replies-area") as HTMLElement
           showReplyForm(area, cdoc.id)
         })
