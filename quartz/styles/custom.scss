@@ -41,7 +41,7 @@ label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
     transition: grid-template-columns 0.3s ease;
   }
   body.is-list .page > #quartz-body {
-    grid-template-columns: 1fr minmax(auto, 800px) 1fr !important;
+    grid-template-columns: 1fr minmax(auto, 580px) 1fr !important;
   }
 }
 
