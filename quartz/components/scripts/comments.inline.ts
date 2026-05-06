@@ -206,6 +206,19 @@ document.addEventListener("nav", async () => {
             
             if (Object.keys(updates).length > 0) {
               await setDoc(articleReactionsRef, updates, { merge: true })
+              
+              if (!isAlreadyReacted) {
+                fetch('https://telegram-notify.hsmefh.workers.dev', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    actionType: "reaction",
+                    emoji: clickedEmoji,
+                    articleTitle: document.title,
+                    articleUrl: window.location.href
+                  })
+                }).catch(() => {})
+              }
             }
           } catch (err: any) {
             console.error("Reaction error:", err)
@@ -217,10 +230,26 @@ document.addEventListener("nav", async () => {
 
     // ── Helpers ────────────────────────────────────────────────────────────
 
-    const toggleLike = async (commentId: string, currentReactor: string, current: string[]) => {
+    const toggleLike = async (commentId: string, currentReactor: string, snap: any) => {
       const ref = doc(db, "comments", commentId)
-      if (current.includes(currentReactor)) await updateDoc(ref, { likes: arrayRemove(currentReactor) })
-      else await updateDoc(ref, { likes: arrayUnion(currentReactor) })
+      const current = snap.likes || []
+      if (current.includes(currentReactor)) {
+        await updateDoc(ref, { likes: arrayRemove(currentReactor) })
+      } else {
+        await updateDoc(ref, { likes: arrayUnion(currentReactor) })
+        
+        fetch('https://telegram-notify.hsmefh.workers.dev', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            actionType: "like",
+            author: currentUser?.displayName || "زائر",
+            content: snap.text,
+            articleTitle: document.title,
+            articleUrl: window.location.href
+          })
+        }).catch(() => {})
+      }
     }
 
     const startEdit = (commentContent: HTMLElement, commentId: string, originalText: string) => {
@@ -390,7 +419,7 @@ document.addEventListener("nav", async () => {
       // Wire like
       el.querySelector(".fc-like-btn")?.addEventListener("click", async () => {
         const snap = cdoc.data()
-        await toggleLike(cdoc.id, currentReactor, snap.likes || [])
+        await toggleLike(cdoc.id, currentReactor, snap)
       })
 
       // Wire reply
@@ -408,7 +437,20 @@ document.addEventListener("nav", async () => {
         })
         el.querySelector(".fc-delete-btn")?.addEventListener("click", async () => {
           if (confirm("هل أنت متأكد من حذف هذا التعليق؟")) {
-            try { await deleteDoc(doc(db, "comments", cdoc.id)) }
+            try { 
+              await deleteDoc(doc(db, "comments", cdoc.id))
+
+              fetch('https://telegram-notify.hsmefh.workers.dev', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  actionType: "delete",
+                  articleTitle: document.title,
+                  articleUrl: window.location.href
+                })
+              }).catch(() => {})
+              
+            }
             catch (err: any) { alert("فشل الحذف: " + err.message) }
           }
         })
