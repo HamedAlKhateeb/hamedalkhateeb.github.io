@@ -334,7 +334,9 @@ document.addEventListener("nav", async () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               author: currentUser?.displayName || "زائر (رد)",
-              content: text
+              content: text,
+              articleTitle: document.title,
+              articleUrl: window.location.href
             })
           }).catch(err => console.error("Telegram notification failed", err))
 
@@ -439,7 +441,9 @@ document.addEventListener("nav", async () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             author: currentUser.displayName || "زائر",
-            content: text
+            content: text,
+            articleTitle: document.title,
+            articleUrl: window.location.href
           })
         }).catch(err => console.error("Telegram notification failed", err))
 
