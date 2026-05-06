@@ -165,6 +165,8 @@ document.addEventListener("nav", async () => {
     }
 
     document.getElementById("fc-login-btn")?.addEventListener("click", doLogin)
+    
+    let onAuthUpdateForReactions: () => void = () => {}
 
     const unsubAuth = onAuthStateChanged(auth, (user: any) => {
       currentUser = user
@@ -182,6 +184,7 @@ document.addEventListener("nav", async () => {
         document.getElementById("fc-login-btn")?.addEventListener("click", doLogin)
         composeSection.style.display = "none"
       }
+      onAuthUpdateForReactions()
     })
     window.addCleanup?.(() => unsubAuth())
 
@@ -193,8 +196,15 @@ document.addEventListener("nav", async () => {
     // Ensure document exists
     setDoc(articleReactionsRef, { init: true }, { merge: true }).catch(() => {})
 
-    const unsubReactions = onSnapshot(articleReactionsRef, (snap: any) => {
-      const data = snap.exists() ? snap.data() : {}
+    let latestReactionData: any = null
+    let latestCommentsSnapshot: any = null
+    
+    // forward declarations
+    let renderCommentsList: () => void = () => {}
+
+    const renderReactions = () => {
+      const data = latestReactionData
+      if (!data) return; // Not initialized yet
       const currentReactor = currentUser ? currentUser.uid : getAnonId()
       
       const reactionsHTML = EMOJIS.map((emoji) => {
@@ -211,23 +221,24 @@ document.addEventListener("nav", async () => {
             alert("عذراً، يجب تسجيل الدخول أولاً للتفاعل مع المقال.");
             return;
           }
+          const activeReactor = currentUser.uid
           const clickedEmoji = btn.dataset.emoji!
-          const currentReactors: string[] = data[clickedEmoji] || []
+          const currentReactors: string[] = latestReactionData[clickedEmoji] || []
           
           try {
-            const isAlreadyReacted = currentReactors.includes(currentReactor)
+            const isAlreadyReacted = currentReactors.includes(activeReactor)
             const updates: any = {}
             
             // Remove user from ALL emojis to ensure only one reaction at a time
             EMOJIS.forEach(e => {
-              if ((data[e] || []).includes(currentReactor)) {
-                updates[e] = arrayRemove(currentReactor)
+              if ((latestReactionData[e] || []).includes(activeReactor)) {
+                updates[e] = arrayRemove(activeReactor)
               }
             })
             
             // If they clicked a new emoji, add it
             if (!isAlreadyReacted) {
-              updates[clickedEmoji] = arrayUnion(currentReactor)
+              updates[clickedEmoji] = arrayUnion(activeReactor)
             }
             
             if (Object.keys(updates).length > 0) {
@@ -252,23 +263,34 @@ document.addEventListener("nav", async () => {
           }
         })
       })
+    }
+
+    const unsubReactions = onSnapshot(articleReactionsRef, (snap: any) => {
+      latestReactionData = snap.exists() ? snap.data() : {}
+      renderReactions()
     })
+    
+    onAuthUpdateForReactions = () => {
+      renderReactions()
+      renderCommentsList()
+    }
     window.addCleanup?.(() => unsubReactions())
 
     // ── Helpers ────────────────────────────────────────────────────────────
 
-    const toggleLike = async (commentId: string, currentReactor: string, snap: any) => {
+    const toggleLike = async (commentId: string, snap: any) => {
       if (!currentUser) {
         alert("عذراً، يجب تسجيل الدخول للإعجاب بالتعليقات.");
         return;
       }
       
+      const activeReactor = currentUser.uid
       const ref = doc(db, "comments", commentId)
       const current = snap.likes || []
-      if (current.includes(currentReactor)) {
-        await updateDoc(ref, { likes: arrayRemove(currentReactor) })
+      if (current.includes(activeReactor)) {
+        await updateDoc(ref, { likes: arrayRemove(activeReactor) })
       } else {
-        await updateDoc(ref, { likes: arrayUnion(currentReactor) })
+        await updateDoc(ref, { likes: arrayUnion(activeReactor) })
         
         fetch('https://telegram-notify.hsmefh.workers.dev', {
           method: 'POST',
@@ -451,7 +473,7 @@ document.addEventListener("nav", async () => {
       // Wire like
       el.querySelector(".fc-like-btn")?.addEventListener("click", async () => {
         const snap = cdoc.data()
-        await toggleLike(cdoc.id, currentReactor, snap)
+        await toggleLike(cdoc.id, snap)
       })
 
       // Wire reply
@@ -541,14 +563,14 @@ document.addEventListener("nav", async () => {
       orderBy("createdAt", "asc"),
     )
 
-    const unsubSnap = onSnapshot(q,
-      (snapshot: any) => {
+    renderCommentsList = () => {
+        if (!latestCommentsSnapshot) return;
         const currentReactor = currentUser ? currentUser.uid : getAnonId()
 
         const topLevel: any[] = []
         const repliesMap = new Map<string, any[]>()
 
-        snapshot.forEach((cdoc: any) => {
+        latestCommentsSnapshot.forEach((cdoc: any) => {
           const d = cdoc.data()
           if (!d.parentId) topLevel.push(cdoc)
           else {
@@ -573,6 +595,12 @@ document.addEventListener("nav", async () => {
           })
           listEl.appendChild(el)
         })
+    }
+
+    const unsubSnap = onSnapshot(q,
+      (snapshot: any) => {
+        latestCommentsSnapshot = snapshot
+        renderCommentsList()
       },
       (err: any) => {
         console.error("Firestore error:", err)
