@@ -219,6 +219,48 @@ export default ((opts: Options) => {
     :root[saved-theme="dark"] .fc-reaction-btn.reacted { border-color: #d1565e; background: rgba(209,86,94,0.1); }
     .fc-reaction-count { font-size: 0.8rem; color: var(--darkgray); font-weight: 600; }
 
+    /* ── Share Buttons ── */
+    .fc-share-wrapper {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--lightgray);
+    }
+    .fc-share-title {
+      font-family: var(--headerFont);
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: var(--dark);
+      margin-bottom: 0.8rem;
+    }
+    .fc-share-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .fc-share-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--lightgray);
+      color: var(--darkgray);
+      transition: transform 0.2s, background-color 0.2s, color 0.2s;
+    }
+    .fc-share-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    .fc-share-btn.fb:hover { background-color: #1877F2; color: #fff; transform: translateY(-3px); }
+    .fc-share-btn.li:hover { background-color: #0A66C2; color: #fff; transform: translateY(-3px); }
+    .fc-share-btn.tg:hover { background-color: #26A5E4; color: #fff; transform: translateY(-3px); }
+    .fc-share-btn.wa:hover { background-color: #25D366; color: #fff; transform: translateY(-3px); }
+    .fc-share-btn.x:hover { background-color: #000; color: #fff; transform: translateY(-3px); }
+    :root[saved-theme="dark"] .fc-share-btn.x:hover { background-color: #fff; color: #000; }
+
     /* ── Action bar ── */
     .fc-comment-actions {
       display: flex; align-items: center;
