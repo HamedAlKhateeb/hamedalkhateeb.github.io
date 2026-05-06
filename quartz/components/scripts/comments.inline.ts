@@ -327,6 +327,17 @@ document.addEventListener("nav", async () => {
             createdAt: serverTimestamp(),
             likes:     []
           })
+          
+          // إشعار تيليجرام للردود
+          fetch('https://telegram-notify.hsmefh.workers.dev', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              author: currentUser?.displayName || "زائر (رد)",
+              content: text
+            })
+          }).catch(err => console.error("Telegram notification failed", err))
+
           form.remove()
         } catch (err: any) {
           alert("خطأ في الإرسال: " + err.message)
@@ -421,6 +432,17 @@ document.addEventListener("nav", async () => {
           createdAt: serverTimestamp(),
           likes:     []
         })
+        
+        // إشعار تيليجرام
+        fetch('https://telegram-notify.hsmefh.workers.dev', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            author: currentUser.displayName || "زائر",
+            content: text
+          })
+        }).catch(err => console.error("Telegram notification failed", err))
+
         textarea.value = ""
         updatePreview(textarea, previewEl)
       } catch (err: any) {
