@@ -46,7 +46,12 @@ label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
 .center > article,
 .center > article p,
 .center > article li,
-.center > article blockquote {
+.center > article blockquote,
+.center > article table,
+.center > article th,
+.center > article td,
+.center > article figcaption,
+.center > article dd {
   font-size: var(--main-font-size);
   line-height: var(--main-line-height) !important;
   transition: font-size 0.3s ease, line-height 0.3s ease;
