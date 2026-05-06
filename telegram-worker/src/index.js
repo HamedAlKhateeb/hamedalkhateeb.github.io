@@ -25,9 +25,13 @@ export default {
       }
 
       const message = `
-تعليق جديد:
+تعليق جديد 📝:
 الاسم: ${data.author || "مجهول"}
-المحتوى: ${data.content}
+المقال: ${data.articleTitle || "غير معروف"}
+الرابط: ${data.articleUrl || "غير معروف"}
+
+المحتوى:
+${data.content}
 `;
 
       const token = "8545535543:AAEBfap1FHrHtSVDHk-ndS0RyKiMqvrICb0";
