@@ -259,10 +259,11 @@ export function renderPage(
 
   const lang = componentData.fileData.frontmatter?.lang ?? cfg.locale?.split("-")[0] ?? "en"
   const direction = i18n(cfg.locale).direction ?? "ltr"
+  const isArticle = !slug.endsWith("index")
   const doc = (
     <html lang={lang} dir={direction}>
       <Head {...componentData} />
-      <body data-slug={slug}>
+      <body data-slug={slug} class={isArticle ? "is-article" : "is-list"}>
         <div id="quartz-root" class="page">
           <Body {...componentData}>
             {LeftComponent}

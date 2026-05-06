@@ -36,22 +36,25 @@ label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
 // Override the main grid layout so the article center column can expand to our dynamic width!
 
 @media all and ($desktop) {
-  .page > #quartz-body {
+  body.is-article .page > #quartz-body {
     grid-template-columns: 1fr minmax(auto, var(--content-width, 580px)) 1fr !important;
     transition: grid-template-columns 0.3s ease;
+  }
+  body.is-list .page > #quartz-body {
+    grid-template-columns: 1fr minmax(auto, 800px) 1fr !important;
   }
 }
 
 // Content article respects reading settings
-.center > article,
-.center > article p,
-.center > article li,
-.center > article blockquote,
-.center > article table,
-.center > article th,
-.center > article td,
-.center > article figcaption,
-.center > article dd {
+body.is-article .center > article,
+body.is-article .center > article p,
+body.is-article .center > article li,
+body.is-article .center > article blockquote,
+body.is-article .center > article table,
+body.is-article .center > article th,
+body.is-article .center > article td,
+body.is-article .center > article figcaption,
+body.is-article .center > article dd {
   font-size: var(--main-font-size);
   line-height: var(--main-line-height) !important;
   transition: font-size 0.3s ease, line-height 0.3s ease;
@@ -113,7 +116,7 @@ html[reader-mode="on"] hr {
 }
 
 @media all and ($desktop) {
-  html[reader-mode="on"] .page > #quartz-body {
+  html[reader-mode="on"] body.is-article .page > #quartz-body {
     grid-template-columns: 1fr minmax(auto, var(--content-width, 800px)) 1fr !important;
   }
 }
