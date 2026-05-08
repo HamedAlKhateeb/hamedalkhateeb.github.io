@@ -291,6 +291,7 @@ html[reader-mode="on"] .center > article {
   color: var(--darkgray);
   border: 1px solid transparent;
   transition: all 0.2s;
+  text-decoration: none;
 }
 .continue-reading-banner:hover {
   background: var(--highlight);

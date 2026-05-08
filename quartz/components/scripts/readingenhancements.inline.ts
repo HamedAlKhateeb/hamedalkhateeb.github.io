@@ -2,6 +2,10 @@ document.addEventListener("nav", () => {
   const pageSlug = document.body.dataset.slug ?? ""
   
   if (pageSlug === "index" || pageSlug === "" || window.location.pathname === "/") {
+    // Clean up any previously injected elements to prevent duplicates after SPA navigation
+    document.querySelectorAll(".continue-reading-banner").forEach(el => el.remove())
+    document.querySelectorAll(".home-bookmarks-section").forEach(el => el.remove())
+
     // Show Continue Reading
     const lastReadData = localStorage.getItem("quartz-last-read")
     if (lastReadData) {
@@ -10,14 +14,14 @@ document.addEventListener("nav", () => {
         if (lastRead && lastRead.title && lastRead.path && lastRead.progress < 100) {
           const cardsGrid = document.querySelector(".cards-grid")
           if (cardsGrid) {
-            const continueReadingEl = document.createElement("div")
+            // Use an <a> tag so the SPA router handles navigation properly
+            const continueReadingEl = document.createElement("a")
             continueReadingEl.className = "continue-reading-banner"
+            continueReadingEl.href = lastRead.path
+            continueReadingEl.dataset.routerNoscroll = ""
             continueReadingEl.innerHTML = `
               <span>أكمل قراءة <strong>${lastRead.title}</strong> (${lastRead.progress}%)</span>
             `
-            continueReadingEl.addEventListener("click", () => {
-              window.location.href = lastRead.path + "?resume=true"
-            })
             cardsGrid.parentNode?.insertBefore(continueReadingEl, cardsGrid)
           }
         }
