@@ -431,7 +431,7 @@ document.addEventListener("nav", async () => {
       })
     }
 
-    const renderComment = (cdoc: any, currentReactor: string, isReply = false): HTMLElement => {
+    const renderComment = (cdoc: any, currentReactor: string, isReply = false, depth = 0): HTMLElement => {
       const d = cdoc.data()
       const date = d.createdAt
         ? new Date(d.createdAt.toDate()).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })
@@ -446,7 +446,9 @@ document.addEventListener("nav", async () => {
       const likeCount = likes.length
 
       const el = document.createElement("div")
-      el.className = isReply ? "fc-comment fc-reply" : "fc-comment"
+      // Limit the reply indentation to avoid shrinking too much on deep levels
+      const replyClass = isReply ? (depth > 3 ? "fc-comment fc-reply fc-reply-max-depth" : "fc-comment fc-reply") : "fc-comment"
+      el.className = replyClass
       el.dataset.commentId = cdoc.id
 
       el.innerHTML = `
@@ -462,12 +464,12 @@ document.addEventListener("nav", async () => {
               <button type="button" class="fc-like-btn${liked ? " liked" : ""}" data-id="${cdoc.id}" title="إعجاب">
                 ${liked ? "👍" : "👍🏻"}<span class="fc-like-count">${likeCount > 0 ? " " + likeCount : ""}</span>
               </button>
-              ${!isReply ? `<button type="button" class="fc-reply-btn" data-id="${cdoc.id}">💬 <span>رد</span></button>` : ""}
+              ${!isOwner ? `<button type="button" class="fc-reply-btn" data-id="${cdoc.id}">💬 <span>رد</span></button>` : ""}
               ${isOwner ? `<button type="button" class="fc-edit-btn" data-id="${cdoc.id}">✏️ تعديل</button>` : ""}
               ${isOwner ? `<button type="button" class="fc-delete-btn" data-id="${cdoc.id}">🗑️ حذف</button>` : ""}
             </div>
           </div>
-          ${!isReply ? `<div class="fc-replies-area"></div>` : ""}
+          <div class="fc-replies-area"></div>
         </div>`
 
       // Wire like
@@ -477,16 +479,14 @@ document.addEventListener("nav", async () => {
       })
 
       // Wire reply
-      if (!isReply) {
-        el.querySelector(".fc-reply-btn")?.addEventListener("click", () => {
-          if (!currentUser) {
-            alert("عذراً، يجب تسجيل الدخول للرد على التعليقات.");
-            return;
-          }
-          const area = el.querySelector(".fc-replies-area") as HTMLElement
-          showReplyForm(area, cdoc.id)
-        })
-      }
+      el.querySelector(".fc-reply-btn")?.addEventListener("click", () => {
+        if (!currentUser) {
+          alert("عذراً، يجب تسجيل الدخول للرد على التعليقات.");
+          return;
+        }
+        const area = el.querySelector(".fc-replies-area") as HTMLElement
+        showReplyForm(area, cdoc.id)
+      })
 
       // Wire edit / delete
       if (isOwner) {
@@ -586,15 +586,21 @@ document.addEventListener("nav", async () => {
           return
         }
 
-        ;[...topLevel].reverse().forEach((cdoc: any) => {
-          const el = renderComment(cdoc, currentReactor, false)
-          const repliesContainer = el.querySelector(".fc-replies-area") as HTMLElement
-          const replies = repliesMap.get(cdoc.id) || []
-          replies.forEach((replyDoc: any) => {
-            repliesContainer.appendChild(renderComment(replyDoc, currentReactor, true))
+        const renderTree = (docs: any[], isNested: boolean, depth: number) => {
+          const frag = document.createDocumentFragment()
+          docs.forEach(doc => {
+            const el = renderComment(doc, currentReactor, isNested, depth)
+            const area = el.querySelector(".fc-replies-area")
+            const children = repliesMap.get(doc.id)
+            if (children && children.length > 0 && area) {
+              area.appendChild(renderTree(children, true, depth + 1))
+            }
+            frag.appendChild(el)
           })
-          listEl.appendChild(el)
-        })
+          return frag
+        }
+        
+        listEl.appendChild(renderTree([...topLevel].reverse(), false, 0))
     }
 
     const unsubSnap = onSnapshot(q,

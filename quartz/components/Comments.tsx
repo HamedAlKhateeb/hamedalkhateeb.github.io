@@ -68,7 +68,14 @@ export default ((opts: Options) => {
       align-items: center;
       margin-bottom: 1.5rem;
     }
-    .fc-title { font-size: 1.4rem; font-weight: bold; color: var(--dark); }
+    .fc-title { 
+      font-size: 1.4rem; 
+      font-weight: bold; 
+      color: var(--dark); 
+    }
+    @media (max-width: 600px) {
+      .fc-title { font-size: 1.1rem; }
+    }
 
     /* ── Auth ── */
     .fc-login-btn {
@@ -152,6 +159,17 @@ export default ((opts: Options) => {
     .fc-comment {
       display: flex;
       gap: 0.75rem;
+    }
+    .fc-reply {
+      margin-top: 1rem;
+      border-right: 2px solid var(--lightgray);
+      padding-right: 0.75rem;
+    }
+    .fc-reply-max-depth {
+      margin-right: 0rem;
+    }
+    .fc-reply-avatar {
+      width: 28px; height: 28px;
     }
     .fc-comment-avatar {
       width: 38px; height: 38px;
