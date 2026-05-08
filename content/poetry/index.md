@@ -1,5 +1,5 @@
 ---
-title: فهرس القصائد
+title: "فهرس القصائد"
 description: مجموعة القصائد والشعر
 cssclasses:
   - poetry-index
