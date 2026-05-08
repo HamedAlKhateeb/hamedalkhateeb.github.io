@@ -37,7 +37,7 @@ export default (() => {
     const frontmatterImage = fileData.frontmatter?.cover ?? fileData.frontmatter?.image;
     const ogImageDefaultPath = frontmatterImage
       ? `https://${cfg.baseUrl}${frontmatterImage}`
-      : `https://${cfg.baseUrl}/static/thumbnails/og-image.png`
+      : `https://${cfg.baseUrl}/static/thumbnails/og-image.jpg`
 
     return (
       <head>
