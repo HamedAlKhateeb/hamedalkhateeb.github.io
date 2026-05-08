@@ -464,7 +464,7 @@ document.addEventListener("nav", async () => {
               <button type="button" class="fc-like-btn${liked ? " liked" : ""}" data-id="${cdoc.id}" title="إعجاب">
                 ${liked ? "👍" : "👍🏻"}<span class="fc-like-count">${likeCount > 0 ? " " + likeCount : ""}</span>
               </button>
-              ${!isOwner ? `<button type="button" class="fc-reply-btn" data-id="${cdoc.id}">💬 <span>رد</span></button>` : ""}
+              <button type="button" class="fc-reply-btn" data-id="${cdoc.id}">💬 <span>رد</span></button>
               ${isOwner ? `<button type="button" class="fc-edit-btn" data-id="${cdoc.id}">✏️ تعديل</button>` : ""}
               ${isOwner ? `<button type="button" class="fc-delete-btn" data-id="${cdoc.id}">🗑️ حذف</button>` : ""}
             </div>
