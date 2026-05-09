@@ -8,9 +8,9 @@ export default (() => {
     const { fileData, allFiles } = props
     if (fileData.slug !== 'index' && fileData.slug !== 'feed') return null
 
-    // Filter out index pages, tags, and poetry, then sort by date
+    // Filter out index pages, tags, feed, and poetry, then sort by date
     const pages = allFiles
-      .filter(page => page.slug && page.slug !== 'index' && !page.slug.endsWith('/index') && !page.slug.startsWith('tags/') && !page.slug.toLowerCase().startsWith('poetry/'))
+      .filter(page => page.slug && page.slug !== 'index' && page.slug !== 'feed' && !page.slug.endsWith('/index') && !page.slug.startsWith('tags/') && !page.slug.toLowerCase().startsWith('poetry/'))
       .sort((a, b) => {
         const aPinned = a.frontmatter?.pinned ? 1 : 0
         const bPinned = b.frontmatter?.pinned ? 1 : 0
