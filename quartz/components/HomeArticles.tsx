@@ -6,7 +6,7 @@ import paginationScript from "./scripts/pagination.inline"
 export default (() => {
   const HomeArticles: QuartzComponent = (props: QuartzComponentProps) => {
     const { fileData, allFiles } = props
-    if (fileData.slug !== 'index') return null
+    if (fileData.slug !== 'index' && fileData.slug !== 'feed') return null
 
     // Filter out index pages, tags, and poetry, then sort by date
     const pages = allFiles
