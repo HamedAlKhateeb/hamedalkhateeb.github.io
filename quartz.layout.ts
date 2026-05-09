@@ -29,7 +29,8 @@ export const sharedPageComponents: SharedLayout = {
     links: {
       "LinkedIn": "https://www.linkedin.com/in/hamed-al-khateeb-756661302/",
       "X": "https://x.com/HamedAlkhateeb5",
-      "Facebook": "https://www.facebook.com/profile.php?id=61570158555241"
+      "Facebook": "https://www.facebook.com/profile.php?id=61570158555241",
+      "RSS": "/index.xml"
     },
   }),
 }
