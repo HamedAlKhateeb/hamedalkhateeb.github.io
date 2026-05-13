@@ -66,6 +66,15 @@ document.addEventListener("nav", () => {
         el.setAttribute("title", el.getAttribute("data-lang-en-title") || "")
       })
 
+      // Swap article title
+      const h1 = document.querySelector("h1.article-title")
+      if (h1 && h1.hasAttribute("data-title-en")) {
+        if (!h1.hasAttribute("data-title-ar")) {
+          h1.setAttribute("data-title-ar", h1.textContent || "")
+        }
+        h1.textContent = h1.getAttribute("data-title-en") || ""
+      }
+
       // Swap placeholders
       document.querySelectorAll("[data-lang-en-placeholder]").forEach((el) => {
         if (!el.getAttribute("data-lang-ar-placeholder")) {
@@ -95,6 +104,12 @@ document.addEventListener("nav", () => {
       document.querySelectorAll("[data-lang-ar-title]").forEach((el) => {
         el.setAttribute("title", el.getAttribute("data-lang-ar-title") || "")
       })
+
+      // Restore article title
+      const h1 = document.querySelector("h1.article-title")
+      if (h1 && h1.hasAttribute("data-title-ar")) {
+        h1.textContent = h1.getAttribute("data-title-ar") || ""
+      }
 
       // Restore placeholders
       document.querySelectorAll("[data-lang-ar-placeholder]").forEach((el) => {

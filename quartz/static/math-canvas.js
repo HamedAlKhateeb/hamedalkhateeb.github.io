@@ -181,8 +181,7 @@ function initMathCanvas() {
       ctx.setLineDash([]);
     }
   
-    if(document.getElementById('nlC')) {
-      const cv = document.getElementById('nlC');
+    document.querySelectorAll('[id="nlC"]').forEach(cv => {
       const ctx = cv.getContext('2d');
       const W = cv.width, H = cv.height;
       const c = 2, d = 0.8, xMn = 0, xMx = 4;
@@ -213,12 +212,11 @@ function initMathCanvas() {
       ctx.fillText('c = 2', cx_, y - 21);
       ctx.fillStyle = 'rgba(138,104,24,.55)'; ctx.font = '10px sans-serif';
       ctx.fillText('(مستبعدة)', cx_, y - 11);
-    }
+    });
   
-    if(document.getElementById('ex1C')) {
-      const cv = document.getElementById('ex1C');
+    document.querySelectorAll('[id="ex1C"]').forEach(cv => {
       const ctx = cv.getContext('2d');
-      const sl = document.getElementById('ex1S');
+      const sl = cv.parentElement.querySelector('[id="ex1S"]');
       const C = 2, L = 4, xMn = 0, xMx = 4.4, yMn = 0, yMx = 20;
       const M = {l: 50, r: 16, t: 16, b: 40};
       function dlt(e) { const dr = Math.sqrt(4+e)-2, dl = e<4?2-Math.sqrt(4-e):2; return Math.min(dl,dr); }
@@ -236,19 +234,23 @@ function initMathCanvas() {
         ctx.fillStyle=P.muted;ctx.font='11px sans-serif';ctx.textAlign='right';ctx.fillText('f(x) = x²',W-M.r-4,M.t+13);
       }
       function upd() {
+        if(!sl) return;
         const e=+sl.value, d=dlt(e);
-        document.getElementById('ex1V').textContent=e.toFixed(2);
-        document.getElementById('ex1E').textContent=e.toFixed(4);
-        document.getElementById('ex1D').textContent=d.toFixed(4);
+        const vDisp = cv.parentElement.querySelector('[id="ex1V"]');
+        const eDisp = cv.parentElement.querySelector('[id="ex1E"]');
+        const dDisp = cv.parentElement.querySelector('[id="ex1D"]');
+        if(vDisp) vDisp.textContent=e.toFixed(2);
+        if(eDisp) eDisp.textContent=e.toFixed(4);
+        if(dDisp) dDisp.textContent=d.toFixed(4);
         draw(e);
       }
-      sl.addEventListener('input',upd); upd();
-    }
+      if(sl) sl.addEventListener('input',upd); 
+      upd();
+    });
   
-    if(document.getElementById('ex2C')) {
-      const cv=document.getElementById('ex2C');
+    document.querySelectorAll('[id="ex2C"]').forEach(cv => {
       const ctx=cv.getContext('2d');
-      const sl=document.getElementById('ex2S');
+      const sl=cv.parentElement.querySelector('[id="ex2S"]');
       const C=2,L=4,xMn=-0.5,xMx=4.5,yMn=-1,yMx=8;
       const M={l:44,r:16,t:16,b:38};
       function draw(eps) {
@@ -266,19 +268,23 @@ function initMathCanvas() {
         ctx.fillStyle=P.muted;ctx.font='11px sans-serif';ctx.textAlign='right';ctx.fillText('f(x) = (x²−4)/(x−2)',W-M.r-2,M.t+13);
       }
       function upd() {
+        if(!sl) return;
         const e=+sl.value;
-        document.getElementById('ex2V').textContent=e.toFixed(2);
-        document.getElementById('ex2E').textContent=e.toFixed(4);
-        document.getElementById('ex2D').textContent=e.toFixed(4);
+        const vDisp = cv.parentElement.querySelector('[id="ex2V"]');
+        const eDisp = cv.parentElement.querySelector('[id="ex2E"]');
+        const dDisp = cv.parentElement.querySelector('[id="ex2D"]');
+        if(vDisp) vDisp.textContent=e.toFixed(2);
+        if(eDisp) eDisp.textContent=e.toFixed(4);
+        if(dDisp) dDisp.textContent=e.toFixed(4);
         draw(e);
       }
-      sl.addEventListener('input',upd); upd();
-    }
+      if(sl) sl.addEventListener('input',upd); 
+      upd();
+    });
   
-    if(document.getElementById('ex3C')) {
-      const cv=document.getElementById('ex3C');
+    document.querySelectorAll('[id="ex3C"]').forEach(cv => {
       const ctx=cv.getContext('2d');
-      const sl=document.getElementById('ex3S');
+      const sl=cv.parentElement.querySelector('[id="ex3S"]');
       const C=0,L=1,xMn=-4,xMx=4,yMn=-.3,yMx=1.4;
       const M={l:44,r:16,t:16,b:38};
       function cmpDelta(eps) {
@@ -300,21 +306,25 @@ function initMathCanvas() {
         ctx.fillStyle=P.amber;ctx.font='italic 12px serif';ctx.textAlign='right';ctx.fillText('L=1',M.l-3,pCL.y+4);
         ctx.textAlign='center';ctx.fillText('c=0',pCL.x,H-M.b+13);
         ctx.fillStyle=P.muted;ctx.font='11px sans-serif';ctx.textAlign='right';ctx.fillText('f(x) = sin(x)/x',W-M.r-2,M.t+13);
-        document.getElementById('ex3D').textContent=d.toFixed(4);
+        const dDisp = cv.parentElement.querySelector('[id="ex3D"]');
+        if(dDisp) dDisp.textContent=d.toFixed(4);
       }
       function upd() {
+        if(!sl) return;
         const e=+sl.value;
-        document.getElementById('ex3V').textContent=e.toFixed(2);
-        document.getElementById('ex3E').textContent=e.toFixed(4);
+        const vDisp = cv.parentElement.querySelector('[id="ex3V"]');
+        const eDisp = cv.parentElement.querySelector('[id="ex3E"]');
+        if(vDisp) vDisp.textContent=e.toFixed(2);
+        if(eDisp) eDisp.textContent=e.toFixed(4);
         draw(e);
       }
-      sl.addEventListener('input',upd); upd();
-    }
+      if(sl) sl.addEventListener('input',upd); 
+      upd();
+    });
   
-    if(document.getElementById('ex4C')) {
-      const cv=document.getElementById('ex4C');
+    document.querySelectorAll('[id="ex4C"]').forEach(cv => {
       const ctx=cv.getContext('2d');
-      const sl=document.getElementById('ex4S');
+      const sl=cv.parentElement.querySelector('[id="ex4S"]');
       const C=0,EPS=.5,xMn=-2,xMx=2,yMn=-1.8,yMx=1.8;
       const M={l:44,r:16,t:16,b:36};
       function draw(L) {
@@ -352,19 +362,24 @@ function initMathCanvas() {
           ctx.fillStyle=P.red;ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText('خارج',pm.x,pm.y+18);
         }
         const ok=plusIn&&minusIn;
-        const st=document.getElementById('ex4St');
-        st.textContent=ok?'ناجح ✓':'فاشل ✗';
-        st.style.color=ok?'var(--teal)':'var(--red)';
+        const st=cv.parentElement.querySelector('[id="ex4St"]');
+        if(st) {
+          st.textContent=ok?'ناجح ✓':'فاشل ✗';
+          st.style.color=ok?'var(--teal)':'var(--red)';
+        }
         ctx.fillStyle=P.muted;ctx.font='11px sans-serif';ctx.textAlign='right';
         ctx.fillText('f(x) = |x|/x',W-M.r-2,M.t+13);
       }
       function upd() {
+        if(!sl) return;
         const L=+sl.value;
-        document.getElementById('ex4V').textContent=L.toFixed(2);
+        const vDisp = cv.parentElement.querySelector('[id="ex4V"]');
+        if(vDisp) vDisp.textContent=L.toFixed(2);
         draw(L);
       }
-      sl.addEventListener('input',upd); upd();
-    }
+      if(sl) sl.addEventListener('input',upd); 
+      upd();
+    });
   }, 100);
 }
 document.addEventListener("nav", initMathCanvas);
