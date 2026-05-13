@@ -20,7 +20,7 @@ document.addEventListener("nav", () => {
             continueReadingEl.href = lastRead.path
             continueReadingEl.dataset.routerNoscroll = ""
             continueReadingEl.innerHTML = `
-              <span>أكمل قراءة <strong>${lastRead.title}</strong> (${lastRead.progress}%)</span>
+              <span data-lang-en="Continue reading " data-lang-ar="أكمل قراءة ">أكمل قراءة </span><strong>${lastRead.title}</strong><span> (${lastRead.progress}%)</span>
             `
             cardsGrid.parentNode?.insertBefore(continueReadingEl, cardsGrid)
           }
@@ -40,7 +40,7 @@ document.addEventListener("nav", () => {
             const bmSection = document.createElement("div")
             bmSection.className = "home-bookmarks-section"
             bmSection.innerHTML = `
-              <h3 class="home-bookmarks-title">إشاراتك المرجعية</h3>
+              <h3 class="home-bookmarks-title" data-lang-en="Your Bookmarks" data-lang-ar="إشاراتك المرجعية">إشاراتك المرجعية</h3>
               <div class="home-bookmarks-list">
                 ${allBms.map((bm: any) => `
                   <a href="/${bm.slug}?bm=${bm.index}" class="home-bookmark-pill">
@@ -144,12 +144,13 @@ document.addEventListener("nav", () => {
 
       if (scrollTop > 100) {
         readingTimeInfo.style.display = "flex"
+        const isEn = document.documentElement.classList.contains("lang-en")
         if (minutesLeft <= 0) {
-          readingTimeRemaining.textContent = "انتهيت ✓"
+          readingTimeRemaining.textContent = isEn ? "Done ✓" : "انتهيت ✓"
         } else if (minutesLeft === 1) {
-          readingTimeRemaining.textContent = "دقيقة"
+          readingTimeRemaining.textContent = isEn ? "1 min" : "دقيقة"
         } else {
-          readingTimeRemaining.textContent = `${minutesLeft} د`
+          readingTimeRemaining.textContent = isEn ? `${minutesLeft} m` : `${minutesLeft} د`
         }
       } else {
         readingTimeInfo.style.display = "none"

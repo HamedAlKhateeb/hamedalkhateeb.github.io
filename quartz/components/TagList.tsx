@@ -2,6 +2,19 @@ import { FullSlug, resolveRelative } from "../util/path"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { classNames } from "../util/lang"
 
+const tagTranslations: Record<string, string> = {
+  "رياضيات": "Math",
+  "تحليل_رياضي": "Math Analysis",
+  "فلسفة": "Philosophy",
+  "نهايات": "Limits",
+  "ثقافة": "Culture",
+  "هندسة": "Engineering",
+  "تجارب": "Experiences",
+  "شخصي": "Personal",
+  "شعر": "Poetry",
+  "أشعاري": "Poetry"
+}
+
 const TagList: QuartzComponent = ({ fileData, displayClass }: QuartzComponentProps) => {
   const tags = fileData.frontmatter?.tags
   if (tags && tags.length > 0) {
@@ -11,7 +24,7 @@ const TagList: QuartzComponent = ({ fileData, displayClass }: QuartzComponentPro
           const linkDest = resolveRelative(fileData.slug!, `tags/${tag}` as FullSlug)
           return (
             <li>
-              <a href={linkDest} class="internal tag-link">
+              <a href={linkDest} class="internal tag-link" data-lang-en={tagTranslations[tag] || tag} data-lang-ar={tag}>
                 {tag}
               </a>
             </li>
