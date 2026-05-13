@@ -166,30 +166,23 @@ document.addEventListener("nav", () => {
 
     if (textsToTranslate.length === 0) return
 
-    // Translate in batches (combine paragraphs with separator)
-    const separator = " ||| "
-    const batchSize = 3
+    // Translate individually to avoid translation engine breaking separators
     const translations: Record<string, string> = {}
 
-    for (let i = 0; i < textsToTranslate.length; i += batchSize) {
-      const batch = textsToTranslate.slice(i, i + batchSize)
-      const combined = batch.map((b) => b.text).join(separator)
-
+    for (const item of textsToTranslate) {
       try {
         const response = await fetch(
-          `https://api.mymemory.translated.net/get?q=${encodeURIComponent(combined)}&langpair=ar|en`,
+          `https://api.mymemory.translated.net/get?q=${encodeURIComponent(item.text)}&langpair=ar|en&de=hsmefh@gmail.com`,
         )
-        if (!response.ok) break
+        if (!response.ok) continue
 
         const data = await response.json()
-        const translatedCombined = data?.responseData?.translatedText || ""
-        const parts = translatedCombined.split(/\s*\|\|\|\s*/)
-
-        batch.forEach((b, idx) => {
-          translations[b.text] = parts[idx] || b.text
-        })
+        const translatedText = data?.responseData?.translatedText
+        if (translatedText) {
+          translations[item.text] = translatedText
+        }
       } catch {
-        break
+        continue
       }
     }
 
@@ -209,7 +202,11 @@ document.addEventListener("nav", () => {
     elements.forEach((el) => {
       const text = (el.textContent || "").trim()
       if (translations[text]) {
-        el.textContent = translations[text]
+        // preserve <br> tags if they exist by replacing the text but keeping inner HTML structure if possible
+        // Since it's complex to map translated text to <br> separated lines, we'll just set textContent
+        // For poetry, we can try to restore line breaks by replacing newlines with <br>
+        const translated = translations[text]
+        el.innerHTML = translated.replace(/\n/g, "<br>")
       }
     })
   }
