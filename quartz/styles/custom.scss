@@ -1,4 +1,4 @@
-﻿
+
 @use "./base.scss";
 @use "./variables.scss" as *;
 @use "./math-theme.scss";
@@ -800,6 +800,25 @@ html[reader-mode="on"] .center > article {
   display: none !important;
 }
 
+/* ---- Translation & LTR Overrides ---- */
+html.lang-en,
+html.translated-ltr,
+html[dir="ltr"] {
+  .poem-container,
+  .poem-line,
+  .poem-text,
+  .poetry-navigation,
+  .poetry-index-wrapper {
+    direction: ltr !important;
+  }
+  
+  .poem-line .hemistich {
+    text-align: left !important;
+    text-align-last: left !important;
+    -moz-text-align-last: left !important;
+  }
+}
+
 /* ---- Mobile Responsive ---- */
 @media (max-width: 600px) {
   .poem-page-title {
@@ -820,6 +839,14 @@ html[reader-mode="on"] .center > article {
     padding: 0;
     font-size: calc(var(--main-font-size, 18px) * 1.1);
     line-height: calc(var(--main-line-height, 1.7) * 1.1);
+  }
+  
+  html.lang-en .poem-line .hemistich,
+  html.translated-ltr .poem-line .hemistich,
+  html[dir="ltr"] .poem-line .hemistich {
+    text-align: left !important;
+    text-align-last: left !important;
+    -moz-text-align-last: left !important;
   }
   
   .poetry-navigation {
