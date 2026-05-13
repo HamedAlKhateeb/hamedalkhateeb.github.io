@@ -58,6 +58,22 @@ document.addEventListener("nav", () => {
         el.textContent = el.getAttribute("data-lang-en") || ""
       })
 
+      // Swap titles
+      document.querySelectorAll("[data-lang-en-title]").forEach((el) => {
+        if (!el.getAttribute("data-lang-ar-title")) {
+          el.setAttribute("data-lang-ar-title", el.getAttribute("title") || "")
+        }
+        el.setAttribute("title", el.getAttribute("data-lang-en-title") || "")
+      })
+
+      // Swap placeholders
+      document.querySelectorAll("[data-lang-en-placeholder]").forEach((el) => {
+        if (!el.getAttribute("data-lang-ar-placeholder")) {
+          el.setAttribute("data-lang-ar-placeholder", el.getAttribute("placeholder") || "")
+        }
+        el.setAttribute("placeholder", el.getAttribute("data-lang-en-placeholder") || "")
+      })
+
       // Update toggle button label
       const label = document.getElementById("lang-label-show")
       if (label) label.textContent = "ع"
@@ -73,6 +89,16 @@ document.addEventListener("nav", () => {
       // Restore Arabic text
       document.querySelectorAll("[data-lang-ar]").forEach((el) => {
         el.textContent = el.getAttribute("data-lang-ar") || ""
+      })
+
+      // Restore titles
+      document.querySelectorAll("[data-lang-ar-title]").forEach((el) => {
+        el.setAttribute("title", el.getAttribute("data-lang-ar-title") || "")
+      })
+
+      // Restore placeholders
+      document.querySelectorAll("[data-lang-ar-placeholder]").forEach((el) => {
+        el.setAttribute("placeholder", el.getAttribute("data-lang-ar-placeholder") || "")
       })
 
       // Update toggle button label

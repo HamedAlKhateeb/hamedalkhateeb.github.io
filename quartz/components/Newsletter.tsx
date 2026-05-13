@@ -17,18 +17,18 @@ const Newsletter: QuartzComponent = ({ fileData, displayClass }: QuartzComponent
          <span class="separator-diamond">✧</span>
       </div>
       
-      <h3>ابق على اطلاع</h3>
-      <p>مقالات في الرياضيات والهندسة وأشياء من هذا القبيل</p>
+      <h3 data-lang-en="Stay Updated">ابق على اطلاع</h3>
+      <p data-lang-en="Articles on math, engineering, and similar topics">مقالات في الرياضيات والهندسة وأشياء من هذا القبيل</p>
       <form 
         action="https://buttondown.email/api/emails/embed-subscribe/al-khateeb" 
         method="POST" 
         class="newsletter-form"
         target="popupwindow"
       >
-        <button type="submit">اشتراك</button>
-        <input type="email" name="email" placeholder="بريدك الإلكتروني" required />
+        <button type="submit" data-lang-en="Subscribe">اشتراك</button>
+        <input type="email" name="email" placeholder="بريدك الإلكتروني" data-lang-en-placeholder="Your Email" required />
       </form>
-      <small>لا رسائل مزعجة، إلغاء الاشتراك في أي وقت.</small>
+      <small data-lang-en="No spam, unsubscribe at any time.">لا رسائل مزعجة، إلغاء الاشتراك في أي وقت.</small>
 
       {/* 4. Separator */}
       <div class="footer-separator bottom-sep">
