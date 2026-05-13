@@ -151,6 +151,8 @@ declare module "vfile" {
         enableToc: string
         cssclasses: string[]
         socialImage: string
+        title_en: string
+        content_en: boolean
         comments: boolean | string
       }>
   }

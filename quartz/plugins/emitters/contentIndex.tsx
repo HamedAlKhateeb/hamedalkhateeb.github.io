@@ -41,15 +41,18 @@ const defaultOptions: Options = {
 
 function generateSiteMap(cfg: GlobalConfiguration, idx: ContentIndexMap): string {
   const base = cfg.baseUrl ?? ""
-  const createURLEntry = (slug: SimpleSlug, content: ContentDetails): string => `<url>
+  const createURLEntry = (slug: SimpleSlug, content: ContentDetails): string => `  <url>
     <loc>https://${joinSegments(base, encodeURI(slug))}</loc>
-    ${content.date && `<lastmod>${content.date.toISOString()}</lastmod>`}
+    ${content.date ? `<lastmod>${content.date.toISOString()}</lastmod>` : ""}
   </url>`
   const urls = Array.from(idx)
+    .filter(([slug]) => !slug.endsWith(".en"))
     .map(([slug, content]) => createURLEntry(simplifySlug(slug), content))
-    .join("")
-  return `<?xml version="1.0" encoding="UTF-8" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urls}</urlset>`
+    .join("\n")
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${urls}
+</urlset>`
 }
 
 function generateRSSFeed(cfg: GlobalConfiguration, idx: ContentIndexMap, limit?: number): string {
@@ -64,6 +67,7 @@ function generateRSSFeed(cfg: GlobalConfiguration, idx: ContentIndexMap, limit?:
   </item>`
 
   const items = Array.from(idx)
+    .filter(([slug]) => !slug.endsWith(".en"))
     .sort(([_, f1], [__, f2]) => {
       if (f1.date && f2.date) {
         return f2.date.getTime() - f1.date.getTime()

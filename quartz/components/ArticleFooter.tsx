@@ -39,7 +39,7 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
       {/* 1. Recommendations */}
       {recommendations.length > 0 && (
         <div class="recommendations-section">
-          <h3 class="recommendations-title">إقرأ أيضاً</h3>
+          <h3 class="recommendations-title" data-lang-en="Read Also">إقرأ أيضاً</h3>
           <div class="recommendations-grid">
             {recommendations.map((page, idx) => (
               <a href={resolveRelative(fileData.slug!, page.slug!)} class="recommendation-card internal" key={idx}>
@@ -65,21 +65,21 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
       {/* 5. Meta Block */}
       <div class="article-end-meta">
         <h2 class="footer-article-title">{fileData.frontmatter?.title}</h2>
-        <p class="footer-category">من المقالات في نفس التصنيف</p>
+        <p class="footer-category" data-lang-en="Related articles in the same category">من المقالات في نفس التصنيف</p>
         
         <div class="footer-info">
-          <a href="/" class="internal author-link">مدونة حامد الخطيب</a>
+          <a href="/" class="internal author-link" data-lang-en="Hamed Al-Khateeb's Blog">مدونة حامد الخطيب</a>
           <span class="dot">|</span>
           <span>{date ? date.toLocaleDateString('ar-SA', { day: 'numeric', month: 'long', year: 'numeric' }) : ""}</span>
           <span class="dot">|</span>
           <span>{time}</span>
         </div>
         
-        <button class="back-to-start" id="btn-footer-top">
+        <button class="back-to-start" id="btn-footer-top" data-lang-en="↑ Back to Top">
           ↑ العودة للبداية
         </button>
 
-        <a href="/" class="all-articles-link">-- جميع المقالات --</a>
+        <a href="/" class="all-articles-link" data-lang-en="-- All Articles --">-- جميع المقالات --</a>
       </div>
     </div>
   )

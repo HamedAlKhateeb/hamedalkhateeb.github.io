@@ -3,12 +3,13 @@ import { classNames } from "../util/lang"
 
 const ArticleTitle: QuartzComponent = ({ fileData, displayClass }: QuartzComponentProps) => {
   const title = fileData.frontmatter?.title
+  const titleEn = (fileData.frontmatter as any)?.title_en as string | undefined
   const cover = (fileData.frontmatter?.cover ?? fileData.frontmatter?.image) as string | undefined;
   
   if (title && title !== "الرئيسية") {
     return (
       <div class={classNames(displayClass, "article-title-container")}>
-        <h1 class="article-title">{title}</h1>
+        <h1 class="article-title" {...(titleEn ? { "data-title-en": titleEn } : {})}>{title}</h1>
         {cover && <img src={cover} alt={title} class="article-cover" />}
       </div>
     )
