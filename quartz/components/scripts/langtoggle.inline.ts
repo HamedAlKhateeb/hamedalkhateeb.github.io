@@ -105,9 +105,8 @@ document.addEventListener("nav", () => {
       const label = document.getElementById("lang-label-show")
       if (label) label.textContent = "EN"
 
-      // Remove translation notices and restore content
+      // Remove translation notices
       document.querySelectorAll(".translation-notice").forEach((el) => el.remove())
-      restoreOriginalContent()
     }
   }
 
@@ -119,153 +118,9 @@ document.addEventListener("nav", () => {
       !slug.endsWith("/index")
 
     if (isPoetry) {
-      autoTranslatePoetry(slug)
-    } else if (slug && slug !== "index" && !slug.endsWith("/index") && !slug.startsWith("tags/")) {
-      loadEnglishArticle(slug)
-    }
-  }
-
-  // ── Poetry auto-translation via MyMemory API ──
-  async function autoTranslatePoetry(slug: string) {
-    const articleEl = document.querySelector("article") as HTMLElement
-    if (!articleEl) return
-
-    // Store original HTML
-    if (!articleEl.getAttribute("data-original-html")) {
-      articleEl.setAttribute("data-original-html", articleEl.innerHTML)
-    }
-
-    // Show disclaimer banner
-    addTranslationNotice(
-      "🤖 This is a machine translation of the original Arabic poetry. The beauty of the original may not be fully captured.",
-    )
-
-    // Check cache
-    const cacheKey = TRANSLATE_CACHE_PREFIX + slug
-    const cached = localStorage.getItem(cacheKey)
-    if (cached) {
-      try {
-        const translated = JSON.parse(cached) as Record<string, string>
-        applyPoetryTranslation(articleEl, translated)
-        return
-      } catch {
-        localStorage.removeItem(cacheKey)
-      }
-    }
-
-    // Collect paragraphs to translate
-    const paragraphs = articleEl.querySelectorAll("p, h2, h3, h4, h5, h6, li, blockquote")
-    const textsToTranslate: { el: Element; text: string }[] = []
-
-    paragraphs.forEach((p) => {
-      const text = (p.textContent || "").trim()
-      if (text && text.length > 1 && /[\u0600-\u06FF]/.test(text)) {
-        textsToTranslate.push({ el: p, text })
-      }
-    })
-
-    if (textsToTranslate.length === 0) return
-
-    // Translate individually to avoid translation engine breaking separators
-    const translations: Record<string, string> = {}
-
-    for (const item of textsToTranslate) {
-      try {
-        const response = await fetch(
-          `https://api.mymemory.translated.net/get?q=${encodeURIComponent(item.text)}&langpair=ar|en&de=hsmefh@gmail.com`,
-        )
-        if (!response.ok) continue
-
-        const data = await response.json()
-        const translatedText = data?.responseData?.translatedText
-        if (translatedText) {
-          translations[item.text] = translatedText
-        }
-      } catch {
-        continue
-      }
-    }
-
-    // Cache and apply
-    if (Object.keys(translations).length > 0) {
-      try {
-        localStorage.setItem(cacheKey, JSON.stringify(translations))
-      } catch {
-        // localStorage full, ignore
-      }
-      applyPoetryTranslation(articleEl, translations)
-    }
-  }
-
-  function applyPoetryTranslation(articleEl: HTMLElement, translations: Record<string, string>) {
-    const elements = articleEl.querySelectorAll("p, h2, h3, h4, h5, h6, li, blockquote")
-    elements.forEach((el) => {
-      const text = (el.textContent || "").trim()
-      if (translations[text]) {
-        // preserve <br> tags if they exist by replacing the text but keeping inner HTML structure if possible
-        // Since it's complex to map translated text to <br> separated lines, we'll just set textContent
-        // For poetry, we can try to restore line breaks by replacing newlines with <br>
-        const translated = translations[text]
-        el.innerHTML = translated.replace(/\n/g, "<br>")
-      }
-    })
-  }
-
-  // ── Article English content loading ──
-  async function loadEnglishArticle(slug: string) {
-    // Try to fetch companion .en page
-    const enUrl = `/${slug}.en`
-    try {
-      const response = await fetch(enUrl)
-      if (!response.ok) {
-        addTranslationNotice("English translation is not available for this article yet.")
-        return
-      }
-
-      const html = await response.text()
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(html, "text/html")
-
-      const enArticle = doc.querySelector("article")
-      const enTitle = doc.querySelector(".article-title")
-      const currentArticle = document.querySelector("article")
-      const currentTitle = document.querySelector(".article-title")
-
-      if (enArticle && currentArticle) {
-        if (!currentArticle.getAttribute("data-original-html")) {
-          currentArticle.setAttribute("data-original-html", currentArticle.innerHTML)
-        }
-        currentArticle.innerHTML = enArticle.innerHTML
-      }
-
-      if (enTitle && currentTitle) {
-        if (!currentTitle.getAttribute("data-original-text")) {
-          currentTitle.setAttribute("data-original-text", currentTitle.textContent || "")
-        }
-        currentTitle.textContent = enTitle.textContent
-      }
-    } catch {
-      addTranslationNotice("English translation is not available for this article yet.")
-    }
-  }
-
-  function restoreOriginalContent() {
-    const article = document.querySelector("article") as HTMLElement
-    if (article) {
-      const original = article.getAttribute("data-original-html")
-      if (original) {
-        article.innerHTML = original
-        article.removeAttribute("data-original-html")
-      }
-    }
-
-    const title = document.querySelector(".article-title") as HTMLElement
-    if (title) {
-      const original = title.getAttribute("data-original-text")
-      if (original) {
-        title.textContent = original
-        title.removeAttribute("data-original-text")
-      }
+      addTranslationNotice(
+        `🤖 Poetry is not manually translated. <a href="https://translate.google.com/translate?sl=ar&tl=en&u=${encodeURIComponent(window.location.href)}" target="_blank" style="text-decoration: underline; color: var(--tertiary);">Translate via Google</a>`
+      )
     }
   }
 

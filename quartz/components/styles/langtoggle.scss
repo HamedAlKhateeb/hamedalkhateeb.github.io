@@ -286,3 +286,12 @@ html.lang-en {
     text-align: left !important;
   }
 }
+
+/* ── Content Visibility Toggle ── */
+html:not(.lang-en) [lang="en"] {
+  display: none !important;
+}
+
+html.lang-en [lang="ar"] {
+  display: none !important;
+}
