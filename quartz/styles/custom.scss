@@ -44,6 +44,11 @@ figure,
   padding: 0 16px;
   box-sizing: border-box;
   margin: 0 auto;
+  @media all and (max-width: 800px) {
+    max-width: 100vw;
+    padding: 0 8px;
+    overflow-x: hidden;
+  }
 }
 
 // Override the main grid layout so the article center column can expand to our dynamic width!
