@@ -1,15 +1,17 @@
 ---
-title: من أنا
+title: About Me
 ---
 
-<div dir="rtl" style="text-align: right; margin-bottom: 2rem;">
+I am a structural engineer from Egypt, currently pursuing a Master's degree in Applied Mathematics.
 
-مهندس إنشائي من مصر على الله حكايته، أدرس ماستر رياضيات تطبيقية.
+My interests lie at the intersection of engineering mechanics, analytical mathematics, and digital writing.
 
-</div>
+### Contact Me
 
-<div class="contact-section" dir="rtl" style="text-align: right;">
+Feel free to reach out to me for academic discussions, professional inquiries, or just to say hello!
 
-[تواصل معي على البريد](mailto:hsmefh@gmail.com)
+<div class="contact-section">
+
+[Email Me](mailto:hsmefh@gmail.com)
 
 </div>

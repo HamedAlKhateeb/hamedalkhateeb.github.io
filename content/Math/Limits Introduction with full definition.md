@@ -14,33 +14,20 @@ image: /static/thumbnails/a635e4c0-562c-4115-8202-adc420dbc695.png
 
 <div lang="ar" dir="rtl">
 
-
-
-
 ## تعريف النهاية من الحدس إلى الصرامة
 
 كيف حوّل فايرشتراس "الاقتراب" إلى اختبار منطقي محصّن — وما الثمن الذي دفعته الرياضيات
 
-  
-
 ---
-
-  
 
 ## التناقض المدفون في dt
 
 نيوتن وليبنتز حسبا المشتقات وحصلا على نتائج صحيحة تجريبياً. لكنهما بنيا الأساس على جملة فيها تناقض منطقي صريح: "نقسم على التغيير في الزمن، ثم نجعل هذا التغيير يقترب من الصفر."
 
-  
-
 > [!example] صيغة نيوتن — القول الأصلي
 > $$\dfrac{ds}{dt} = \lim_{dt \to 0} \dfrac{s(t + dt) - s(t)}{dt}$$
 
-  
-
 التناقض ظاهر في حالتين ولا مخرج منهما:
-
-  
 
 - **الحالة الأولى — dt يساوي صفر:**
 
@@ -48,38 +35,26 @@ image: /static/thumbnails/a635e4c0-562c-4115-8202-adc420dbc695.png
 
   `s(t+0) - s(t) / 0  →  undefined (0/0)`
 
-  
-
 - **الحالة الثانية — dt لا يساوي صفر:**
 
   لو أبقينا dt صغيراً لكن غير صفري، النتيجة تقريبية. الخطأ موجود مهما صغُر.
 
   `result = exact + error(dt)  →  not exact`
 
-  
-
 - **المخرج المستخدم — الكميات المتلاشية:**
 
   نيوتن سمّاها كميات في حالة وسيطة بين الصفر وغير الصفر. الرياضيون في القرن الثامن عشر هاجموا هذا المفهوم بشدة، وكان الهجوم مُحقاً.
-
-  
 
 <div class="epq">
   <p>هل هذه الكميات المتلاشية شيء أم لا شيء؟ لو كانت شيئاً فكيف نجعلها صفراً؟ ولو كانت لا شيء فكيف نقسم عليها؟</p>
   <div class="att">— بيركلي، ١٧٣٤</div>
 </div>
 
-  
-
 ---
-
-  
 
 ## استبدال الحركة بالاختبار
 
 كوشي ثم فايرشتراس فعلا شيئاً بسيطاً في ظاهره وعميقاً في جوهره: **غيّرا السؤال.**
-
-  
 
 - **السؤال القديم:**
 
@@ -89,30 +64,18 @@ image: /static/thumbnails/a635e4c0-562c-4115-8202-adc420dbc695.png
 
   "هل يمكنني ضبط المدخل بدقة كافية لضمان أي دقة أريدها في المخرج؟" لا حركة — فقط ضمان.
 
-  
-
-الفرق ليس صياغياً. الفرق *فلسفي*: الأول يصف، والثاني يضمن. النهاية لم تعد "نتيجة رحلة" — صارت "اجتياز اختبار."
-
-  
+الفرق ليس صياغياً. الفرق _فلسفي_: الأول يصف، والثاني يضمن. النهاية لم تعد "نتيجة رحلة" — صارت "اجتياز اختبار."
 
 > [!info] المنطق المعكوس
 > الاتجاه الطبيعي: أتحكم في المدخل وأرى ما يخرج.
 > الاتجاه الجديد معكوس تماماً: تبدأ من المخرج — تحدد هامش خطأ حول النتيجة، ثم تُثبت أن هناك نطاقاً في المدخل يضمن أن كل نواتجه تقع داخل هامشك.
 
-  
-
 ---
-
-  
 
 ## ما معنى كل جزء في تعريف ε–δ؟
 
-  
-
 > [!example] التعريف الكامل — فايرشتراس
 > $$\lim_{x \to c} f(x) = L \iff \forall\,\varepsilon > 0,\;\exists\,\delta > 0 \;\text{ s.t. }\; 0 < |x - c| < \delta \Rightarrow |f(x) - L| < \varepsilon$$
-
-  
 
 1. **∀ε > 0 — "لأي هامش خطأ تختاره"**
 
@@ -128,17 +91,11 @@ image: /static/thumbnails/a635e4c0-562c-4115-8202-adc420dbc695.png
 
 4. **ضمان المخرج — |f(x) − L| < ε**
 
-   إذا كانت $x$ داخل النطاق بـ $\delta$، فنتيجة الدالة يجب أن تقع داخل هامش $\varepsilon$ من $L$. ليست وصفاً للاقتراب — هي *مطالبة جبرية قابلة للتحقق*.
-
-  
+   إذا كانت $x$ داخل النطاق بـ $\delta$، فنتيجة الدالة يجب أن تقع داخل هامش $\varepsilon$ من $L$. ليست وصفاً للاقتراب — هي _مطالبة جبرية قابلة للتحقق_.
 
 ---
 
-  
-
 ## لعبة الخصم — أسهل طريقة لفهم ∀∃
-
-  
 
 - **الخصم — يختار ε:**
 
@@ -148,34 +105,22 @@ image: /static/thumbnails/a635e4c0-562c-4115-8202-adc420dbc695.png
 
   بعد اختيار الخصم لـ $\varepsilon$، تجد $\delta$ يعتمد على $\varepsilon$ يجعل الشرط محققاً. إذا نجحت دائماً فالنهاية موجودة.
 
-  
-
 > [!warning] لماذا الترتيب $\forall\varepsilon$ ثم $\exists\delta$ مهم
 > لو كان الترتيب معكوساً $\exists\delta\;\forall\varepsilon$ لعنى: "يوجد $\delta$ واحد يعمل لكل $\varepsilon$" — شرط أقوى وخاطئ في الغالب.
 > الترتيب الصحيح: لكل $\varepsilon$ تختاره يمكنني إيجاد $\delta$ يناسبه — وقد يتغير $\delta$ مع كل اختيار لـ $\varepsilon$.
 
-  
-
 ---
-
-  
 
 ## الجوار المفرغ — لماذا يُستبعد c من الاختبار؟
 
-  
-
 $$0 < |x - c| < \delta$$
-
-  
 
 > [!note]
 > الجزء الذي يُستبعد فيه **x = c** هو الشرط الأول: **0 < |x − c|**
 
-  
-
 1. **النهاية تتعلق بالسلوك القريب لا بالقيمة في النقطة**
 
-   النهاية $\lim_{x\to c}f(x)$ سؤال عن ما يحدث *قرب* $c$ — ليس *في* $c$. الدالة قد تكون غير معرّفة عند $c$ ومع ذلك تكون لها نهاية.
+   النهاية $\lim_{x\to c}f(x)$ سؤال عن ما يحدث _قرب_ $c$ — ليس _في_ $c$. الدالة قد تكون غير معرّفة عند $c$ ومع ذلك تكون لها نهاية.
 
 2. **المثال الكلاسيكي**
 
@@ -190,32 +135,20 @@ $$0 < |x - c| < \delta$$
 
    النطاق $(c-\delta,\,c+\delta)$ بعد استبعاد $c$ ذاتها يُسمى الجوار المفرغ. $c$ معلّقة في الهواء — لا تؤثر في النهاية ولا يؤثر فيها.
 
-  
-
 <div class="nlw">
   <div style="font-family:'Cairo',sans-serif;font-size:12px;color:var(--muted);margin-bottom:12px;">الجوار المفرغ حول c = 2 مع δ = 0.8</div>
   <canvas id="nlC" width="760" height="86" class="dc" style="cursor:default;"></canvas>
 </div>
 
-  
-
 ---
-
-  
 
 ## أمثلة
 
-  
-
 ### مثال ١ — دالة مستمرة تماماً
-
-  
 
 $$f(x) = x^2, \quad c = 2, \quad L = 4$$
 
 إثبات: $\delta = \min\!\left(1,\,\tfrac{\varepsilon}{5}\right)$ تنجح لكل $\varepsilon$ صغير.
-
-  
 
 <div class="dw">
   <div class="dtit">الشريط الأصفر = هامش ε في المحور الصادي · الشريط الأخضر = نطاق δ في المحور السيني</div>
@@ -227,19 +160,13 @@ $$f(x) = x^2, \quad c = 2, \quad L = 4$$
   </div>
 </div>
 
-  
-
 ### مثال ٢ — ثقب في الدالة
-
-  
 
 $$f(x) = \dfrac{x^2 - 4}{x - 2},\quad c = 2,\quad L = 4$$
 
 $$\dfrac{x^2-4}{x-2} = \dfrac{(x-2)(x+2)}{x-2} = x+2 \qquad (x \neq 2)$$
 
 الدالة هي $x+2$ مع ثقب عند $x = 2$. النهاية = $4$ رغم عدم وجود قيمة للدالة هناك.
-
-  
 
 <div class="dw">
   <div class="dtit">الدائرة البيضاء عند c = 2 — الدالة غير معرّفة هناك، لكن النهاية موجودة</div>
@@ -251,19 +178,13 @@ $$\dfrac{x^2-4}{x-2} = \dfrac{(x-2)(x+2)}{x-2} = x+2 \qquad (x \neq 2)$$
   </div>
 </div>
 
-  
-
 ### مثال ٣ — النهاية الكلاسيكية sin(x)/x
-
-  
 
 $$\lim_{x \to 0} \dfrac{\sin x}{x} = 1$$
 
 $$\cos x \leq \dfrac{\sin x}{x} \leq 1 \qquad \forall\, x \neq 0$$
 
 وبما أن $\cos x \to 1$ فإن النهاية $1$ بالضرورة.
-
-  
 
 <div class="dw">
   <div class="dtit">الدائرة المفرغة عند الأصل — الدالة غير معرّفة عند 0 لكن النهاية = 1</div>
@@ -275,11 +196,7 @@ $$\cos x \leq \dfrac{\sin x}{x} \leq 1 \qquad \forall\, x \neq 0$$
   </div>
 </div>
 
-  
-
 ### مثال ٤ — نهاية غير موجودة
-
-  
 
 $$\lim_{x \to 0} \dfrac{|x|}{x}$$
 
@@ -291,8 +208,6 @@ $$|L - 1| < \tfrac{1}{2} \quad \text{and} \quad |L - (-1)| < \tfrac{1}{2} \Right
 
 الشرطان معاً يستلزمان $2 < 1$ — تناقض، إذن النهاية غير موجودة.
 
-  
-
 <div class="dw">
   <div class="dtit">حرّك L — ستظل إحدى القيمتين (+1 أو −1) تخرج من الشريط الأصفر دائماً</div>
   <canvas id="ex4C" width="760" height="290" class="dc"></canvas>
@@ -303,15 +218,9 @@ $$|L - 1| < \tfrac{1}{2} \quad \text{and} \quad |L - (-1)| < \tfrac{1}{2} \Right
   </div>
 </div>
 
-  
-
 ---
 
-  
-
 ## مقارنة
-
-  
 
 <table class="ctbl">
   <tr><th>الجانب</th><th>نيوتن / ليبنتز</th><th>فايرشتراس</th></tr>
@@ -324,19 +233,11 @@ $$|L - 1| < \tfrac{1}{2} \quad \text{and} \quad |L - (-1)| < \tfrac{1}{2} \Right
   <tr><td>الصرامة المنطقية</td><td>ضعيفة — قابلة للهجوم</td><td>محصّنة تماماً</td></tr>
 </table>
 
-  
-
 ---
-
-  
 
 ## الثمن المدفوع
 
-  
-
 هذا التصويب لم يكن مجانياً. الرياضيات ربحت الصرامة التامة، وفي المقابل:
-
-  
 
 > [!danger] الخسارة
 > **الصورة الذهنية الحركية اختفت من التعريف.**
@@ -344,32 +245,20 @@ $$|L - 1| < \tfrac{1}{2} \quad \text{and} \quad |L - (-1)| < \tfrac{1}{2} \Right
 > النتائج العددية لم تتغير — مشتقة $x^2$ لا تزال $2x$.
 > لكن الطريق تغيّر: لم يعد رسم صورة وحساب ميل — صار إثبات وجود $\delta$ مناسب لكل $\varepsilon$ ممكن.
 
-  
-
 لهذا السبب يبدو التعريف معقداً في أول وهلة: هو مُصمَّم لمنع أي خداع ذهني ممكن، وليس لتسهيل الفهم. الدقة المطلقة والحدس المباشر نادراً ما يجتمعان.
-
-  
 
 > [!success] الحل الحديث — التحليل غير القياسي
 > أبراهام روبنسون عام 1960 أعاد الأعداد المتناهية الصغر (Infinitesimals) إلى الرياضيات بصرامة تامة — داخل بنية تسمى حقل الأعداد الهايبررياضية.
 > أثبت روبنسون أن حدس نيوتن كان صحيحاً في جوهره، لكنه كان يحتاج إطاراً رياضياً أكثر ثراءً مما كان موجوداً في القرن السابع عشر.
-
-  
 
 <div class="epq">
   <p>الرياضيات الحديثة فنٌّ من فنون الاشتقاق الصارم — تعريف دقيق يليه دقيق يليه دقيق، حتى لا يتسرب وهمٌ واحد.</p>
   <div class="att">— بول هالموس</div>
 </div>
 
-  
-
 ---
 
-  
-
 كوشي 1821 · فايرشتراس 1861 · روبنسون 1960
-
-  
 
 تعريف ε–δ — التحليل الرياضي الحديث
 
@@ -420,7 +309,7 @@ Cauchy and then Weierstrass did something seemingly simple but fundamentally pro
 - **The New Question:**
   "Can I control the input with enough precision to guarantee any desired precision in the output?" No movement — just a guarantee.
 
-The difference is not merely syntactic. The difference is *philosophical*: the former describes, the latter guarantees. The limit is no longer "the result of a journey" — it has become "passing a test."
+The difference is not merely syntactic. The difference is _philosophical_: the former describes, the latter guarantees. The limit is no longer "the result of a journey" — it has become "passing a test."
 
 > [!info] Reversed Logic
 > Natural direction: I control the input and see what comes out.
@@ -443,7 +332,7 @@ The difference is not merely syntactic. The difference is *philosophical*: the f
    The part $0 < |x-c|$ prevents $x$ from equaling $c$. The test is only evaluated at points surrounding $c$, not at $c$ itself. What happens at $c$ is irrelevant to the limit.
 
 4. **Output Guarantee — |f(x) − L| < ε**
-   If $x$ is within the $\delta$ range, then the function's result must fall within the $\varepsilon$ margin of $L$. This isn't a description of approaching — it's an *algebraic demand that can be verified*.
+   If $x$ is within the $\delta$ range, then the function's result must fall within the $\varepsilon$ margin of $L$. This isn't a description of approaching — it's an _algebraic demand that can be verified_.
 
 ---
 
@@ -469,7 +358,7 @@ $$0 < |x - c| < \delta$$
 > The part where **x = c** is excluded is the first condition: **0 < |x − c|**
 
 1. **The limit relates to the nearby behavior, not the value at the point**
-   The limit $\lim_{x\to c}f(x)$ is a question about what happens *near* $c$ — not *at* $c$. The function might be undefined at $c$ and yet still have a limit.
+   The limit $\lim_{x\to c}f(x)$ is a question about what happens _near_ $c$ — not _at_ $c$. The function might be undefined at $c$ and yet still have a limit.
 
 2. **The Classic Example**
    The function $\frac{\sin x}{x}$ is undefined at $x = 0$ (division by zero). But its limit exists and equals $1$:
