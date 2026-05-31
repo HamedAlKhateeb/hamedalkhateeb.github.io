@@ -46,7 +46,8 @@ figure,
   margin: 0 auto;
   @media all and (max-width: 800px) {
     max-width: 100vw;
-    padding: 0 8px;
+    padding: 0 16px;
+    padding-bottom: 90px;
     overflow-x: hidden;
   }
 }
@@ -163,7 +164,7 @@ html[reader-mode="on"] .center > article {
   }
 
   // Blockquotes
-  blockquote {
+  blockquote:not(.callout) {
     border-left: none;
     border-right: 3px solid var(--secondary);
     padding-left: 0;
@@ -306,22 +307,21 @@ html[reader-mode="on"] .center > article {
 }
 
 /* Home Page Enhancements */
-/* Arabic Portal Capsule in English Header */
-.arabic-portal-capsule {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.2rem 0.8rem;
-  background-color: var(--highlight);
-  border: 1px dashed var(--secondary);
-  border-radius: 50px;
-  font-size: 0.85rem !important;
-  color: var(--secondary) !important;
-  font-weight: 600;
-  transition: all 0.2s ease;
-  margin-left: 0.5rem;
-}
-.arabic-portal-capsule:hover {
+/* Language Portal Capsule in Header */
+  .language-portal-capsule {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem 0.8rem !important;
+    background-color: var(--highlight);
+    border: 1px dashed var(--secondary);
+    border-radius: 50px;
+    font-size: 0.85rem !important;
+    color: var(--secondary) !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease;
+  }
+  .language-portal-capsule:hover {
   background-color: var(--secondary);
   color: var(--light) !important;
   border-color: var(--secondary);

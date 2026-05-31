@@ -39,17 +39,17 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
             <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}>أشعاري</a>
             <a
               href={resolveRelative(fileData.slug!, "index" as FullSlug)}
+              class="language-portal-capsule"
               data-router-ignore
               style={{
                 marginRight: "auto",
                 marginLeft: "0",
-                fontSize: "0.95rem",
-                color: "var(--gray)",
-                fontWeight: "normal",
                 fontFamily: "var(--bodyFont)",
+                direction: "ltr",
               }}
+              title="English Version"
             >
-              English ↗
+              English
             </a>
           </nav>
         </div>
@@ -84,8 +84,8 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           <a href={resolveRelative(fileData.slug!, "Culture" as FullSlug)}>Culture</a>
           <a href={resolveRelative(fileData.slug!, "Experiences" as FullSlug)}>Experiences</a>
           <a href={resolveRelative(fileData.slug!, "About" as FullSlug)}>About</a>
-          <a href={resolveRelative(fileData.slug!, "ar" as FullSlug)} class="arabic-portal-capsule">
-            العربية ↗
+          <a href={resolveRelative(fileData.slug!, "ar" as FullSlug)} class="language-portal-capsule" style={{ marginLeft: "auto", marginRight: "0" }} title="النسخة العربية">
+            العربية
           </a>
         </nav>
       </div>
