@@ -49,7 +49,7 @@ figure,
   max-width: 100%;
   overflow-x: hidden;
   @media all and (max-width: 800px) {
-    padding: 0 12px;
+    padding: 0;
     padding-bottom: 90px;
   }
 }
@@ -1389,9 +1389,11 @@ html[lang="ar"] {
   // Mobile card styling responsiveness
   @media (max-width: 600px) {
     .center > article {
-      padding: 1.2rem 1rem !important;
-      margin: 0.5rem auto !important;
-      border-radius: 8px !important;
+      padding: 1.5rem 1rem !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      border-left: none !important;
+      border-right: none !important;
       max-width: 100% !important;
       width: 100% !important;
     }
@@ -1399,7 +1401,7 @@ html[lang="ar"] {
 
   @media (max-width: 400px) {
     .center > article {
-      padding: 1rem 0.75rem !important;
+      padding: 1.2rem 0.8rem !important;
     }
   }
 
