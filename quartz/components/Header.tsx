@@ -39,6 +39,7 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
             <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}>أشعاري</a>
             <a
               href={resolveRelative(fileData.slug!, "index" as FullSlug)}
+              data-router-ignore
               style={{
                 marginRight: "auto",
                 marginLeft: "0",
