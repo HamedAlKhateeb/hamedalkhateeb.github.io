@@ -47,10 +47,10 @@ figure,
   margin: 0 auto;
   width: 100%;
   max-width: 100%;
+  overflow-x: hidden;
   @media all and (max-width: 800px) {
-    padding: 0 16px;
+    padding: 0 12px;
     padding-bottom: 90px;
-    overflow-x: hidden;
   }
 }
 
@@ -87,7 +87,14 @@ body.is-article .center > article dd {
   max-width: 100%;
   margin: 0 auto;
   overflow-x: hidden;
+  overflow-wrap: break-word;
   word-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.center {
+  max-width: 100%;
+  overflow-x: hidden;
   box-sizing: border-box;
 }
 
@@ -1368,6 +1375,8 @@ html[lang="ar"] {
     box-sizing: border-box;
     text-align: justify; // Enforce justified body text!
     text-justify: inter-word;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
     transition:
       background-color 0.3s ease,
       border-color 0.3s ease;
@@ -1380,9 +1389,17 @@ html[lang="ar"] {
   // Mobile card styling responsiveness
   @media (max-width: 600px) {
     .center > article {
-      padding: 1.5rem 1.2rem !important;
-      margin: 1rem auto !important;
+      padding: 1.2rem 1rem !important;
+      margin: 0.5rem auto !important;
       border-radius: 8px !important;
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .center > article {
+      padding: 1rem 0.75rem !important;
     }
   }
 

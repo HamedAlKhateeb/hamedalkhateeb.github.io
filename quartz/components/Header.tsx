@@ -37,7 +37,7 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           <nav class="navbar arabic-navbar">
             <a href={resolveRelative(fileData.slug!, "ar/articles" as FullSlug)}>مقالاتي</a>
             <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}>أشعاري</a>
-            {slug.toLowerCase() === "ar" && (
+            {!slug.endsWith("index") && slug.toLowerCase() !== "ar" ? null : (
               <a href={baseDir} class="language-portal-capsule" style={{ marginRight: "auto", marginLeft: "0" }} title="English Version">
                 English
               </a>
