@@ -55,6 +55,61 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
     list = list.slice(0, limit)
   }
 
+  const slug = fileData.slug ?? ""
+  const isArabic = slug.toLowerCase().startsWith("ar/") || slug.toLowerCase() === "ar"
+
+  if (isArabic) {
+    return (
+      <>
+        <ul class="article-magazine-grid" id="article-magazine-grid">
+          {list.map((page) => {
+            const title = page.frontmatter?.title ?? "بدون عنوان"
+            const cover = (page.frontmatter?.cover ??
+              page.frontmatter?.image ??
+              "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=600&auto=format&fit=crop") as string
+            const description = page.frontmatter?.description ?? page.description
+
+            let displayedTime = ""
+            if (page.text) {
+              const { minutes } = readingTime(page.text)
+              displayedTime = i18n(cfg.locale).components.contentMeta.readingTime({
+                minutes: Math.ceil(minutes),
+              })
+            }
+
+            return (
+              <li class="magazine-card" key={page.slug}>
+                <a
+                  href={resolveRelative(fileData.slug!, page.slug!)}
+                  class="card-thumbnail-link internal"
+                >
+                  <img src={cover} alt={title} class="card-thumbnail" />
+                </a>
+                <div class="card-content-area">
+                  <h3 class="card-title">
+                    <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
+                      {title}
+                    </a>
+                  </h3>
+                  {description && <p class="card-excerpt">{description}</p>}
+                  <div class="card-meta-bottom">
+                    {page.dates && (
+                      <span class="card-date">
+                        <Date date={getDate(cfg, page)!} locale={cfg.locale} />
+                      </span>
+                    )}
+                    {displayedTime && <span class="card-time-span">{displayedTime}</span>}
+                  </div>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+        <div class="article-pagination" id="article-pagination-controls"></div>
+      </>
+    )
+  }
+
   return (
     <>
       <ul class="page-list" id="article-list">

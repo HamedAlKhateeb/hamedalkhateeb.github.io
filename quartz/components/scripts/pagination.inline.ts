@@ -1,13 +1,17 @@
 document.addEventListener("nav", function () {
-  var ITEMS = 8
-  var grid = document.getElementById("article-cards-grid")
+  var ITEMS = 10
+  var grid =
+    document.getElementById("article-magazine-grid") ||
+    document.getElementById("article-list") ||
+    document.getElementById("article-cards-grid")
   var pgEl = document.getElementById("article-pagination-controls")
   if (!grid || !pgEl) {
     return
   }
 
-  var cards = Array.from(grid.querySelectorAll("li.page-card"))
+  var cards = Array.from(grid.querySelectorAll("li.magazine-card, li.page-item, li.page-card"))
   if (cards.length <= ITEMS) {
+    pgEl.style.display = "none"
     return
   }
 
@@ -44,20 +48,29 @@ document.addEventListener("nav", function () {
       sp = Math.max(1, ep - mv + 1)
     }
 
+    // Standard LTR pagination markers in English pages, and dynamic RTL translations
+    var isRTL = document.documentElement.dir === "rtl"
+
     pgEl!.appendChild(
-      mkBtn("«", "الصفحة الأولى", cur === 1, false, function () {
-        go(1)
-      }),
+      mkBtn(
+        isRTL ? "«" : "«",
+        isRTL ? "الصفحة الأولى" : "First Page",
+        cur === 1,
+        false,
+        function () {
+          go(1)
+        },
+      ),
     )
     pgEl!.appendChild(
-      mkBtn("‹", "السابقة", cur === 1, false, function () {
+      mkBtn(isRTL ? "‹" : "‹", isRTL ? "السابقة" : "Previous", cur === 1, false, function () {
         go(cur - 1)
       }),
     )
 
     if (sp > 1) {
       pgEl!.appendChild(
-        mkBtn("1", "الصفحة 1", false, false, function () {
+        mkBtn("1", isRTL ? "الصفحة 1" : "Page 1", false, false, function () {
           go(1)
         }),
       )
@@ -72,7 +85,7 @@ document.addEventListener("nav", function () {
     for (var i = sp; i <= ep; i++) {
       ;(function (n: number) {
         pgEl!.appendChild(
-          mkBtn(String(n), "صفحة " + n, false, n === cur, function () {
+          mkBtn(String(n), (isRTL ? "صفحة " : "Page ") + n, false, n === cur, function () {
             go(n)
           }),
         )
@@ -87,21 +100,27 @@ document.addEventListener("nav", function () {
         pgEl!.appendChild(d2)
       }
       pgEl!.appendChild(
-        mkBtn(String(total), "الصفحة الأخيرة", false, false, function () {
+        mkBtn(String(total), isRTL ? "الصفحة الأخيرة" : "Last Page", false, false, function () {
           go(total)
         }),
       )
     }
 
     pgEl!.appendChild(
-      mkBtn("›", "التالية", cur === total, false, function () {
+      mkBtn(isRTL ? "›" : "›", isRTL ? "التالية" : "Next", cur === total, false, function () {
         go(cur + 1)
       }),
     )
     pgEl!.appendChild(
-      mkBtn("»", "الصفحة الأخيرة", cur === total, false, function () {
-        go(total)
-      }),
+      mkBtn(
+        isRTL ? "»" : "»",
+        isRTL ? "الصفحة الأخيرة" : "Last Page",
+        cur === total,
+        false,
+        function () {
+          go(total)
+        },
+      ),
     )
 
     var inf = document.createElement("span")

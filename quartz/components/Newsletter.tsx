@@ -2,17 +2,31 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 import { classNames } from "../util/lang"
 
 const Newsletter: QuartzComponent = ({ fileData, displayClass }: QuartzComponentProps) => {
+  const slug = fileData.slug ?? ""
   // Only render on the homepage or tag/list pages — not on poetry pages.
   if (
-    fileData.slug !== "index" &&
-    !fileData.slug?.endsWith("/index") &&
-    !fileData.slug?.startsWith("tags/")
+    slug !== "index" &&
+    slug !== "ar/index" &&
+    !slug.endsWith("/index") &&
+    !slug.startsWith("tags/")
   ) {
     return null
   }
-  if (fileData.slug?.toLowerCase().startsWith("poetry/")) {
+  if (slug.toLowerCase().startsWith("ar/poetry/") || slug.toLowerCase().startsWith("poetry/")) {
     return null
   }
+
+  const isArabic = slug.toLowerCase().startsWith("ar/") || slug.toLowerCase() === "ar"
+
+  const title = isArabic ? "ابق على اطلاع" : "Stay Informed"
+  const description = isArabic
+    ? "مقالات في الرياضيات والهندسة وأشياء من هذا القبيل"
+    : "Articles on math, engineering, and similar topics"
+  const buttonText = isArabic ? "اشتراك" : "Subscribe"
+  const inputPlaceholder = isArabic ? "بريدك الإلكتروني" : "Your Email"
+  const smallText = isArabic
+    ? "لا رسائل مزعجة، إلغاء الاشتراك في أي وقت."
+    : "No spam, unsubscribe at any time."
 
   return (
     <div class={classNames(displayClass, "newsletter-section")}>
@@ -21,30 +35,18 @@ const Newsletter: QuartzComponent = ({ fileData, displayClass }: QuartzComponent
         <span class="separator-diamond">✧</span>
       </div>
 
-      <h3 data-lang-en="Stay Updated">ابق على اطلاع</h3>
-      <p data-lang-en="Articles on math, engineering, and similar topics">
-        مقالات في الرياضيات والهندسة وأشياء من هذا القبيل
-      </p>
+      <h3>{title}</h3>
+      <p>{description}</p>
       <form
         action="https://buttondown.email/api/emails/embed-subscribe/al-khateeb"
         method="POST"
         class="newsletter-form"
         target="popupwindow"
       >
-        <button type="submit" data-lang-en="Subscribe">
-          اشتراك
-        </button>
-        <input
-          type="email"
-          name="email"
-          placeholder="بريدك الإلكتروني"
-          data-lang-en-placeholder="Your Email"
-          required
-        />
+        <button type="submit">{buttonText}</button>
+        <input type="email" name="email" placeholder={inputPlaceholder} required />
       </form>
-      <small data-lang-en="No spam, unsubscribe at any time.">
-        لا رسائل مزعجة، إلغاء الاشتراك في أي وقت.
-      </small>
+      <small>{smallText}</small>
 
       {/* 4. Separator */}
       <div class="footer-separator bottom-sep">

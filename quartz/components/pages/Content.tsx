@@ -4,8 +4,9 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 import { resolveRelative, FullSlug } from "../../util/path"
 import { visit } from "unist-util-visit"
 import { Root } from "hast"
+import { Date, getDate } from "../Date"
 
-const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentProps) => {
+const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzComponentProps) => {
   let processedTree = tree as Root
   const slug = fileData.slug?.toLowerCase() ?? ""
   const isPoetry =
@@ -79,7 +80,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
   const classes: string[] = fileData.frontmatter?.cssclasses ?? []
   const classString = ["popover-hint", ...classes].join(" ")
 
-  // --- Poetry Index: auto-list all poems ---
+  // --- Poetry Index: auto-list all poems in a beautiful literary grid ---
   if (isPoetryIndex) {
     const poems = allFiles.filter(
       (f) =>
@@ -94,7 +95,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
         <div class="poetry-index-wrapper">
           <div class="poetry-index-header">
             <div class="poetry-index-ornament">✦</div>
-            <h1 class="poetry-index-title">ديوان حامد الخطيب</h1>
+            <h1 class="poetry-index-title">ديوان حامد</h1>
             <p class="poetry-index-subtitle">
               أكتب الشعر العربي العمودي أحيانًا. وأبصر فيه دوحًا من الجمال، نمّى فيه إحساسًا عارمًا
               به؛ وأيقظ روحًا شغوفةً بنظمه والأنس به.
@@ -105,34 +106,56 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
             <div class="poetry-index-ornament">❋ ❋ ❋</div>
           </div>
 
-          <div class="poetry-index-list">
+          <ul class="article-magazine-grid" id="article-magazine-grid">
             {poems.map((poem, idx) => {
               const poemTitle =
                 poem.frontmatter?.title ||
                 poem.slug!.split("/").pop()?.replace(/_/g, " ") ||
                 "بلا عنوان"
               const poemMeter = (poem.frontmatter as any)?.meter || ""
-              const poemDescription = poem.frontmatter?.description || ""
+
+              // Extract first line of poetry containing the "|" separator
+              const poemText = poem.text ?? ""
+              const firstLine = poemText.split("\n").find((line) => line.trim().includes("|"))
+              let hemistich1 = ""
+              let hemistich2 = ""
+              if (firstLine) {
+                const parts = firstLine.split("|")
+                hemistich1 = parts[0]?.trim() ?? ""
+                hemistich2 = parts[1]?.trim() ?? ""
+              }
 
               return (
-                <a
-                  href={resolveRelative(fileData.slug!, poem.slug!)}
-                  class="poetry-index-card internal"
-                  key={idx}
-                >
-                  <div class="poetry-card-number">{idx + 1}</div>
-                  <div class="poetry-card-content">
+                <li class="magazine-card poetry-card" key={idx}>
+                  <a
+                    href={resolveRelative(fileData.slug!, poem.slug!)}
+                    class="poetry-card-content-link internal"
+                  >
+                    <div class="poetry-card-number">{idx + 1}</div>
                     <h3 class="poetry-card-title">{poemTitle}</h3>
+
+                    {firstLine && (
+                      <div class="card-poem-preview">
+                        <div class="card-hemistich first">{hemistich1}</div>
+                        <div class="card-hemistich second">{hemistich2}</div>
+                      </div>
+                    )}
+
                     <div class="poetry-card-meta">
                       {poemMeter && <span class="poetry-card-meter">{poemMeter}</span>}
-                      {poemDescription && <span class="poetry-card-desc">{poemDescription}</span>}
+                      {poem.dates && (
+                        <span class="poetry-card-date">
+                          <Date date={getDate(cfg, poem)!} locale={cfg.locale} />
+                        </span>
+                      )}
                     </div>
-                  </div>
-                  <div class="poetry-card-arrow">←</div>
-                </a>
+                  </a>
+                </li>
               )
             })}
-          </div>
+          </ul>
+
+          <div class="article-pagination" id="article-pagination-controls"></div>
 
           <div class="poetry-index-footer">
             <a href={resolveRelative(fileData.slug!, "ar" as FullSlug)} class="poetry-back-blog">
