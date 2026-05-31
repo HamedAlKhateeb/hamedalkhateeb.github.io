@@ -108,23 +108,29 @@ export default ((opts?: Partial<FolderContentOptions>) => {
         : htmlToJsx(fileData.filePath!, tree)
     ) as ComponentChildren
 
+    const isArabicHome = fileData.slug === "ar" || fileData.slug === "ar/index"
+
     return (
       <section class="page-container">
-        <header class="main-header">
-          {fileData.description && fileData.slug !== "About/index" && (
-            <p class="subtitle">{fileData.description}</p>
-          )}
+        {!isArabicHome && (
+          <header class="main-header">
+            {fileData.description && fileData.slug !== "About/index" && (
+              <p class="subtitle">{fileData.description}</p>
+            )}
 
-          {options.showFolderCount && fileData.slug !== "About/index" && (
-            <p class="meta-data">{allPagesInFolder.length} مقال</p>
-          )}
-        </header>
+            {options.showFolderCount && fileData.slug !== "About/index" && (
+              <p class="meta-data">{allPagesInFolder.length} مقال</p>
+            )}
+          </header>
+        )}
 
         <div class="folder-content-body">{content}</div>
 
-        <div class="cards-grid">
-          <PageList {...listProps} />
-        </div>
+        {!isArabicHome && (
+          <div class="cards-grid">
+            <PageList {...listProps} />
+          </div>
+        )}
       </section>
     )
   }

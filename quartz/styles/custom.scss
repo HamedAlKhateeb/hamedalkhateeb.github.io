@@ -54,7 +54,7 @@ figure,
     transition: grid-template-columns 0.3s ease;
   }
   body.is-list .page > #quartz-body {
-    grid-template-columns: 1fr minmax(auto, 580px) 1fr !important;
+    grid-template-columns: 1fr minmax(auto, 1000px) 1fr !important;
   }
 }
 
