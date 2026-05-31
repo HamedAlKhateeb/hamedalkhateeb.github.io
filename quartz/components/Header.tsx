@@ -9,41 +9,9 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
   const baseDir = pathToRoot(fileData.slug!)
 
   if (isArabic) {
-    if (isPoetry) {
-      return (
-        <header class="poetry-header">
-          <div class="header-inner">
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-                margin: "0",
-                flexWrap: "wrap",
-                gap: "1rem",
-              }}
-            >
-              <h1>
-                <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}>
-                  ديوان حامد الخطيب
-                </a>
-              </h1>
-              <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>{children}</div>
-            </div>
-            <nav class="navbar poetry-navbar">
-              <a href={resolveRelative(fileData.slug!, "ar" as FullSlug)}>الصدر</a>
-              <a href={resolveRelative(fileData.slug!, "About" as FullSlug)}>تواصل معي</a>
-              <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}>أشعاري</a>
-              <a href={resolveRelative(fileData.slug!, "ar/articles" as FullSlug)}>مقالاتي</a>
-            </nav>
-          </div>
-        </header>
-      )
-    }
-
+    const headerTitle = isPoetry ? "ديوان حامد" : "مجلة حامد"
     return (
-      <header>
+      <header class="arabic-header">
         <div class="header-inner">
           <div
             style={{
@@ -57,15 +25,33 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
             }}
           >
             <h1>
-              <a href={resolveRelative(fileData.slug!, "ar" as FullSlug)}>مدونة حامد الخطيب</a>
+              <a
+                href={resolveRelative(fileData.slug!, "ar" as FullSlug)}
+                class="arabic-header-title"
+              >
+                {headerTitle}
+              </a>
             </h1>
             <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>{children}</div>
           </div>
-          <nav class="navbar">
+          <nav class="navbar arabic-navbar">
             <a href={resolveRelative(fileData.slug!, "ar" as FullSlug)}>الصدر</a>
-            <a href={resolveRelative(fileData.slug!, "About" as FullSlug)}>تواصل معي</a>
-            <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}>أشعاري</a>
             <a href={resolveRelative(fileData.slug!, "ar/articles" as FullSlug)}>مقالاتي</a>
+            <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}>أشعاري</a>
+            <a
+              href={baseDir}
+              style={{
+                marginRight: "auto",
+                marginLeft: "0",
+                fontSize: "0.95rem",
+                color: "var(--gray)",
+                fontWeight: "normal",
+                fontFamily: "var(--bodyFont)",
+              }}
+              class="internal"
+            >
+              English ↗
+            </a>
           </nav>
         </div>
       </header>
@@ -87,23 +73,21 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           }}
         >
           <h1>
-            <a href={baseDir}>Hamed Al-Khateeb</a>
+            <a href={baseDir} class="english-header-title">
+              Hamed
+            </a>
           </h1>
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>{children}</div>
         </div>
-        <nav class="navbar">
+        <nav class="navbar english-navbar">
           <a href={resolveRelative(fileData.slug!, "Math" as FullSlug)}>Math</a>
-          <a href={resolveRelative(fileData.slug!, "Culture" as FullSlug)}>Culture</a>
           <a href={resolveRelative(fileData.slug!, "Engineering" as FullSlug)}>Engineering</a>
+          <a href={resolveRelative(fileData.slug!, "Culture" as FullSlug)}>Culture</a>
           <a href={resolveRelative(fileData.slug!, "Experiences" as FullSlug)}>Experiences</a>
-          <a href={resolveRelative(fileData.slug!, "Personal" as FullSlug)}>Personal</a>
           <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}>Poetry</a>
           <a href={resolveRelative(fileData.slug!, "About" as FullSlug)}>About</a>
-          <a
-            href={resolveRelative(fileData.slug!, "ar" as FullSlug)}
-            style={{ fontWeight: "bold", color: "var(--tertiary)" }}
-          >
-            العربية
+          <a href={resolveRelative(fileData.slug!, "ar" as FullSlug)} class="arabic-portal-capsule">
+            العربية ↗
           </a>
         </nav>
       </div>

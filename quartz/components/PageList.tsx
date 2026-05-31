@@ -57,11 +57,10 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
 
   return (
     <>
-      <ul class="cards-grid page-grid" id="article-cards-grid">
+      <ul class="page-list" id="article-list">
         {list.map((page) => {
-          const title = page.frontmatter?.title
+          const title = page.frontmatter?.title ?? "Untitled"
           const tags = page.frontmatter?.tags ?? []
-          const cover = (page.frontmatter?.cover ?? page.frontmatter?.image) as string | undefined
           const description = page.frontmatter?.description ?? page.description
 
           let displayedTime = ""
@@ -73,52 +72,36 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
           }
 
           return (
-            <li class="page-card">
-              {cover && (
-                <a href={resolveRelative(fileData.slug!, page.slug!)} class="card-image-link">
-                  <img src={cover} alt={title} class="card-image" />
-                </a>
-              )}
-              <div class="card-body card-content">
-                <div class="desc card-text-center">
-                  <h3 class="card-title">
-                    <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
-                      {title}
-                    </a>
-                  </h3>
-                </div>
-                {tags.length > 0 && (
-                  <div class="card-tags-joined-container">
-                    <div class="card-tags-joined">
-                      {tags.slice(0, 4).map((tag, i) => (
-                        <span key={tag}>
-                          <a
-                            class="internal tag-link inline-tag"
-                            href={resolveRelative(fileData.slug!, `tags/${tag}` as FullSlug)}
-                          >
-                            {tag}
-                          </a>
-                          {i < Math.min(tags.length, 4) - 1 && (
-                            <span class="tag-separator"> · </span>
-                          )}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                <div class="desc card-text-center">
-                  {description && <p class="card-description">{description}</p>}
-                </div>
-                <div class="card-divider"></div>
-                <p class="meta card-meta-inline">
+            <li class="page-item" key={page.slug}>
+              <div class="item-header">
+                <h3 class="item-title">
+                  <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
+                    {title}
+                  </a>
+                </h3>
+                <span class="item-date">
                   {page.dates && <Date date={getDate(cfg, page)!} locale={cfg.locale} />}
-                  {displayedTime && (
-                    <span class="card-reading-time">
-                      <span class="meta-dot"> • </span>
-                      {displayedTime}
-                    </span>
-                  )}
-                </p>
+                </span>
+              </div>
+              {description && <p class="item-description">{description}</p>}
+              <div class="item-meta">
+                {displayedTime && <span class="item-reading-time">{displayedTime}</span>}
+                {tags.length > 0 && (
+                  <span class="item-tags">
+                    {displayedTime && <span class="meta-dot"> • </span>}
+                    {tags.slice(0, 4).map((tag, i) => (
+                      <span key={tag}>
+                        <a
+                          class="internal tag-link inline-tag"
+                          href={resolveRelative(fileData.slug!, `tags/${tag}` as FullSlug)}
+                        >
+                          #{tag}
+                        </a>
+                        {i < Math.min(tags.length, 4) - 1 && <span class="tag-spacer"> </span>}
+                      </span>
+                    ))}
+                  </span>
+                )}
               </div>
             </li>
           )
@@ -130,149 +113,102 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
 }
 
 PageList.css = `
-.page-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+.page-list {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
   padding: 0;
   list-style: none;
   margin-top: 2rem;
-}
-
-.cards-grid {
   width: 100%;
 }
 
-.page-card {
+.page-item {
   display: flex;
   flex-direction: column;
-  background-color: var(--light);
-  border: 1px solid var(--lightgray);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.page-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-}
-
-.card-image-link {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16/9;
-  border-bottom: 1px solid var(--lightgray);
-}
-
-.card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  margin: 0;
-}
-
-.card-content, .card-body {
-  padding: 1.5rem 1.2rem;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  align-items: center;
-  text-align: center;
-}
-
-.card-tags-joined-container {
-  display: block;
-  width: 100%;
-  margin-bottom: 1.2rem;
-  text-align: center;
-}
-
-.card-tags-joined {
-  background-color: var(--highlight);
-  color: var(--secondary);
-  padding: 0.3rem 1.2rem;
-  border-radius: 50px;
-  font-size: 0.8rem;
-  display: inline-block;
-  font-weight: 600;
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
-}
-
-.card-tags-joined .tag-link.inline-tag {
   background-color: transparent;
-  color: var(--secondary);
-  padding: 0;
-  border-radius: 0;
-  text-decoration: none;
+  border: none;
+  border-bottom: 1px dashed var(--lightgray);
+  padding-bottom: 1.2rem;
+  overflow: visible;
+  transition: none;
 }
 
-.card-tags-joined .tag-link.inline-tag:hover {
-  text-decoration: underline;
+.page-item:last-child {
+  border-bottom: none;
 }
 
-.tag-separator {
-  margin: 0 0.3rem;
-  color: var(--secondary);
-  opacity: 0.7;
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.card-text-center {
-  text-align: center;
-  width: 100%;
-}
-
-.card-title {
-  margin: 0 0 1rem 0;
-  font-size: 1.5rem;
-  font-weight: 800;
+.item-title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
   line-height: 1.4;
-  font-family: 'Aref Ruqaa', var(--headerFont);
+  font-family: var(--headerFont);
 }
 
-.card-title a, .card-title a.internal {
+.item-title a, .item-title a.internal {
   color: var(--dark);
   text-decoration: none;
   background-color: transparent;
   padding: 0;
 }
 
-.card-description {
-  color: var(--gray);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  font-family: 'Amiri', var(--bodyFont);
+.item-title a:hover {
+  color: var(--secondary);
+  text-decoration: underline;
 }
 
-.card-divider {
-  border: 0;
-  height: 1px;
-  background-color: var(--lightgray);
-  margin: 1.5rem auto 1rem auto;
-  width: 90%;
-}
-
-.card-meta-inline {
+.item-date {
   font-size: 0.85rem;
   color: var(--gray);
-  margin: auto 0 0 0;
+  white-space: nowrap;
+}
+
+.item-description {
+  color: var(--darkgray);
+  font-size: 0.95rem;
+  line-height: 1.6 !important;
+  margin: 0.5rem 0 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.item-meta {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--gray);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   flex-wrap: wrap;
-  width: 100%;
-  padding: 0;
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
+}
+
+.inline-tag {
+  color: var(--secondary) !important;
+  text-decoration: none !important;
+  padding: 0 0.2rem !important;
+  font-weight: 500;
+}
+
+.inline-tag:hover {
+  text-decoration: underline !important;
 }
 
 .meta-dot {
-  display: none;
+  margin: 0 0.4rem;
+}
+
+.tag-spacer {
+  margin-right: 0.4rem;
 }
 
 /* ==============================
@@ -280,41 +216,39 @@ PageList.css = `
    ============================== */
 .article-pagination {
   display: none;
-  direction: rtl;
+  direction: ltr;
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
   margin: 2.5rem 0 1rem;
   flex-wrap: wrap;
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
 }
 
 .article-pagination {
-  display: flex; /* overridden by inline styles but good as fallback if script enforces it */
+  display: flex;
 }
 
 .article-pagination button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.4rem;
-  height: 2.4rem;
-  padding: 0 0.8rem;
-  border: 1px solid rgba(180, 160, 130, 0.35);
-  border-radius: 8px;
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding: 0 0.6rem;
+  border: 1px dashed var(--lightgray);
+  border-radius: 6px;
   background: transparent;
-  color: #6b4226;
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
-  font-size: 0.9rem;
+  color: var(--dark);
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .article-pagination button:hover:not(:disabled) {
-  background: rgba(201, 160, 108, 0.15);
-  border-color: #c9a06c;
-  color: #4a2e1a;
+  background: var(--highlight);
+  border-color: var(--gray);
+  color: var(--secondary);
 }
 
 .article-pagination button:disabled {
@@ -323,9 +257,9 @@ PageList.css = `
 }
 
 .article-pagination button.active {
-  background: #6b4226;
-  color: #fff;
-  border-color: #6b4226;
+  background: var(--secondary);
+  color: var(--light);
+  border-color: var(--secondary);
   font-weight: bold;
 }
 
@@ -336,18 +270,7 @@ PageList.css = `
   white-space: nowrap;
 }
 
-:root[saved-theme="dark"] .article-pagination button {
-  color: #c9a06c;
-  border-color: rgba(90, 74, 58, 0.4);
-}
-:root[saved-theme="dark"] .article-pagination button:hover:not(:disabled) {
-  background: rgba(90, 74, 58, 0.3);
-  border-color: #c9a06c;
-  color: #e0c090;
-}
-:root[saved-theme="dark"] .article-pagination button.active {
-  background: #5a3a1a;
-  color: #f0d8b0;
-  border-color: #8a6030;
+[dir="rtl"] .article-pagination {
+  direction: rtl;
 }
 `

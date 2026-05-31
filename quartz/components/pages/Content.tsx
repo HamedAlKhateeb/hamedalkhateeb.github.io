@@ -1,15 +1,20 @@
 import { ComponentChildren } from "preact"
 import { htmlToJsx } from "../../util/jsx"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../types"
-import { resolveRelative } from "../../util/path"
+import { resolveRelative, FullSlug } from "../../util/path"
 import { visit } from "unist-util-visit"
 import { Root } from "hast"
 
 const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentProps) => {
   let processedTree = tree as Root
   const slug = fileData.slug?.toLowerCase() ?? ""
-  const isPoetry = slug.startsWith("poetry/") && !slug.endsWith("index")
-  const isPoetryIndex = slug === "poetry/index"
+  const isPoetry =
+    (slug.startsWith("ar/poetry/") || slug.startsWith("poetry/")) && !slug.endsWith("index")
+  const isPoetryIndex =
+    slug === "ar/poetry/index" ||
+    slug === "poetry/index" ||
+    slug === "ar/poetry" ||
+    slug === "poetry"
 
   if (isPoetry) {
     processedTree = JSON.parse(JSON.stringify(tree))
@@ -17,8 +22,13 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
       if (node.tagName === "p") {
         const hasPipe = node.children?.some((c: any) => c.type === "text" && c.value.includes("|"))
         if (hasPipe) {
+          // Convert both text types and <br/> tags to resolve lines robustly
           const textContent = node.children
-            .map((c: any) => (c.type === "text" ? c.value : ""))
+            .map((c: any) => {
+              if (c.type === "text") return c.value
+              if (c.type === "element" && c.tagName === "br") return "\n"
+              return ""
+            })
             .join("")
           const lines = textContent.split("\n")
           const divChildren = lines
@@ -72,7 +82,10 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
   // --- Poetry Index: auto-list all poems ---
   if (isPoetryIndex) {
     const poems = allFiles.filter(
-      (f) => f.slug?.toLowerCase().startsWith("poetry/") && !f.slug.endsWith("index"),
+      (f) =>
+        (f.slug?.toLowerCase().startsWith("ar/poetry/") ||
+          f.slug?.toLowerCase().startsWith("poetry/")) &&
+        !f.slug.endsWith("index"),
     )
     poems.sort((a, b) => (a.slug! > b.slug! ? 1 : -1))
 
@@ -122,8 +135,8 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
           </div>
 
           <div class="poetry-index-footer">
-            <a href="https://hamedalkhateeb.github.io/" class="poetry-back-blog">
-              ← العودة للمدونة
+            <a href={resolveRelative(fileData.slug!, "ar" as FullSlug)} class="poetry-back-blog">
+              ← العودة للصدر
             </a>
           </div>
         </div>
@@ -136,7 +149,12 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
     const uniquePoems = Array.from(
       new Map(
         allFiles
-          .filter((f) => f.slug?.toLowerCase().startsWith("poetry/") && !f.slug.endsWith("index"))
+          .filter(
+            (f) =>
+              (f.slug?.toLowerCase().startsWith("ar/poetry/") ||
+                f.slug?.toLowerCase().startsWith("poetry/")) &&
+              !f.slug.endsWith("index"),
+          )
           .map((item) => [item.slug, item]),
       ).values(),
     )
@@ -190,7 +208,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
             <span class="nav-empty"></span>
           )}
 
-          <a href={resolveRelative(fileData.slug!, "poetry/index" as any)} class="nav-toc">
+          <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)} class="nav-toc">
             <span class="nav-toc-icon">☰</span>
             <span>الفهرس</span>
           </a>

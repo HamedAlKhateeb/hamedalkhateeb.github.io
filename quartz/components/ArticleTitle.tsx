@@ -6,7 +6,7 @@ const ArticleTitle: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
   const titleEn = (fileData.frontmatter as any)?.title_en as string | undefined
   const cover = (fileData.frontmatter?.cover ?? fileData.frontmatter?.image) as string | undefined
 
-  if (title && title !== "الرئيسية") {
+  if (title && title !== "الرئيسية" && fileData.slug !== "index" && fileData.slug !== "ar/index") {
     return (
       <div class={classNames(displayClass, "article-title-container")}>
         <h1 class="article-title" {...(titleEn ? { "data-title-en": titleEn } : {})}>

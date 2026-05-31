@@ -301,101 +301,161 @@ html[reader-mode="on"] .center > article {
 }
 
 /* Home Page Enhancements */
-.continue-reading-banner {
-  background: var(--lightgray);
-  padding: 12px 20px;
-  border-radius: 25px;
-  margin-bottom: 20px;
-  cursor: pointer;
+/* Arabic Portal Capsule in English Header */
+.arabic-portal-capsule {
   display: inline-flex;
   align-items: center;
-  font-size: 0.9rem;
-  color: var(--darkgray);
-  border: 1px solid transparent;
-  transition: all 0.2s;
-  text-decoration: none;
+  justify-content: center;
+  padding: 0.2rem 0.8rem;
+  background-color: var(--highlight);
+  border: 1px dashed var(--secondary);
+  border-radius: 50px;
+  font-size: 0.85rem !important;
+  color: var(--secondary) !important;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin-left: 0.5rem;
 }
-.continue-reading-banner:hover {
-  background: var(--highlight);
-  border-color: var(--gray);
-}
-.continue-reading-banner strong {
-  color: var(--dark);
-  font-weight: bold;
-  margin: 0 5px;
+.arabic-portal-capsule:hover {
+  background-color: var(--secondary);
+  color: var(--light) !important;
+  border-color: var(--secondary);
 }
 
-.home-bookmarks-section {
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid var(--lightgray);
+/* Arabic Welcome Portal Index (الصدر) */
+.arabic-start-container {
+  max-width: 750px;
+  margin: 1.5rem auto;
+  text-align: center;
+  direction: rtl;
 }
-.home-bookmarks-title {
-  font-size: 1rem;
-  margin-bottom: 16px;
+
+.arabic-start-header {
+  margin-bottom: 2.5rem;
+}
+
+.diwan-ornament {
+  font-size: 1.6rem;
+  color: var(--secondary);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.3em;
+  user-select: none;
+}
+
+.diwan-main-title {
+  font-family: "Noto Sans Arabic", sans-serif;
+  font-size: 2.8rem !important;
+  font-weight: 800;
+  color: var(--secondary) !important;
+  margin: 0 0 0.5rem 0 !important;
+}
+
+.diwan-subtitle {
+  font-family: "Amiri", serif;
+  font-size: 1.2rem;
   color: var(--gray);
+  margin: 0;
+  font-style: italic;
 }
-.home-bookmarks-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.home-bookmark-pill {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background: var(--lightgray);
-  border-radius: 6px;
-  font-size: 0.8rem;
+
+.diwan-intro-text {
+  font-family: "Amiri", serif;
+  font-size: 1.25rem;
+  line-height: 2 !important;
   color: var(--darkgray);
+  max-width: 620px;
+  margin: 0 auto 2.5rem auto;
+  text-align: justify;
+}
+
+.diwan-divider {
+  font-size: 1.2rem;
+  color: var(--secondary);
+  margin: 2rem 0;
+  letter-spacing: 0.4em;
+  user-select: none;
+}
+
+.diwan-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  text-align: right;
+  margin: 2rem auto;
+  max-width: 650px;
+}
+
+.diwan-section-item {
+  border-bottom: 1px dashed var(--lightgray);
+  padding-bottom: 1.5rem;
+}
+
+.diwan-section-item:last-child {
+  border-bottom: none;
+}
+
+.diwan-section-title {
+  font-family: "Noto Sans Arabic", sans-serif;
+  font-size: 1.6rem !important;
+  margin: 0 0 0.6rem 0 !important;
+}
+
+.diwan-section-title a {
+  color: var(--secondary) !important;
   text-decoration: none !important;
-  transition: all 0.2s;
-  border: 1px solid transparent;
 }
-.home-bookmark-pill:hover {
-  background: var(--highlight);
-  color: var(--dark);
-  border-color: var(--gray);
+
+.diwan-section-title a:hover {
+  text-decoration: underline !important;
 }
-.home-bookmarks-list .home-bookmark-pill svg {
-  min-width: 14px;
+
+.diwan-section-desc {
+  font-family: "Amiri", serif;
+  font-size: 1.15rem;
+  line-height: 1.9 !important;
+  color: var(--darkgray);
+  margin: 0;
+  text-align: justify;
 }
-.continue-reading-banner {
-  margin: 0 auto 30px auto;
+
+.diwan-footer-ornament {
+  font-size: 1.5rem;
+  color: var(--secondary);
+  margin-top: 3rem;
+  user-select: none;
 }
 
 /* ==================================
-   Poetry Section â€” Premium Design
+   Poetry Section — Premium Design
    ================================== */
 
-/* ---- Poetry Header Override ---- */
-.poetry-header .header-inner h1 a {
+/* ---- Arabic Header & Navbar overrides ---- */
+.arabic-header .header-inner h1 a {
   font-family: "Aref Ruqaa", serif;
-  color: #6b4226;
-  font-size: 1.4rem;
+  color: #6c764a;
+  font-size: 1.6rem;
 }
-:root[saved-theme="dark"] .poetry-header .header-inner h1 a {
-  color: #d4a574;
+:root[saved-theme="dark"] .arabic-header .header-inner h1 a {
+  color: #7b97aa;
 }
-.poetry-navbar {
+.arabic-navbar {
   gap: 2rem !important;
-  border-bottom-color: #d4a574 !important;
+  border-bottom-color: #6c764a !important;
+  border-bottom-style: dashed !important;
 }
-.poetry-navbar a {
-  font-family: "Aref Ruqaa", serif !important;
-  font-size: 1rem !important;
-  color: #8b6f47 !important;
-  letter-spacing: 0.02em;
+.arabic-navbar a {
+  font-family: "Noto Sans Arabic", sans-serif !important;
+  font-size: 0.95rem !important;
+  color: var(--darkgray) !important;
 }
-.poetry-navbar a:hover {
-  color: #6b4226 !important;
+.arabic-navbar a:hover {
+  color: var(--secondary) !important;
 }
-:root[saved-theme="dark"] .poetry-navbar a {
-  color: #c9a06c !important;
+:root[saved-theme="dark"] .arabic-navbar {
+  border-bottom-color: #393639 !important;
 }
 
-/* ---- Poetry Page â€” Poem Display ---- */
+/* ---- Poetry Page — Poem Display ---- */
 .poetry-page {
   max-width: 750px !important;
   margin: 0 auto;
