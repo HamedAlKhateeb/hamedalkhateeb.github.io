@@ -1,4 +1,4 @@
-import { FullSlug, isFolderPath, resolveRelative } from "../util/path"
+import { isFolderPath, resolveRelative } from "../util/path"
 import { QuartzPluginData } from "../plugins/vfile"
 import { Date, getDate } from "./Date"
 import { QuartzComponent, QuartzComponentProps } from "./types"
@@ -57,65 +57,18 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
 
   const slug = fileData.slug ?? ""
   const isArabic = slug.toLowerCase().startsWith("ar/") || slug.toLowerCase() === "ar"
-
-  if (isArabic) {
-    return (
-      <>
-        <ul class="article-magazine-grid" id="article-magazine-grid">
-          {list.map((page) => {
-            const title = page.frontmatter?.title ?? "بدون عنوان"
-            const cover = (page.frontmatter?.cover ??
-              page.frontmatter?.image ??
-              "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=600&auto=format&fit=crop") as string
-            const description = page.frontmatter?.description ?? page.description
-
-            let displayedTime = ""
-            if (page.text) {
-              const { minutes } = readingTime(page.text)
-              displayedTime = i18n(cfg.locale).components.contentMeta.readingTime({
-                minutes: Math.ceil(minutes),
-              })
-            }
-
-            return (
-              <li class="magazine-card" key={page.slug}>
-                <a
-                  href={resolveRelative(fileData.slug!, page.slug!)}
-                  class="card-thumbnail-link internal"
-                >
-                  <img src={cover} alt={title} class="card-thumbnail" />
-                </a>
-                <div class="card-content-area">
-                  <h3 class="card-title">
-                    <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
-                      {title}
-                    </a>
-                  </h3>
-                  {description && <p class="card-excerpt">{description}</p>}
-                  <div class="card-meta-bottom">
-                    {page.dates && (
-                      <span class="card-date">
-                        <Date date={getDate(cfg, page)!} locale={cfg.locale} />
-                      </span>
-                    )}
-                    {displayedTime && <span class="card-time-span">{displayedTime}</span>}
-                  </div>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
-        <div class="article-pagination" id="article-pagination-controls"></div>
-      </>
-    )
-  }
+  const defaultFallback = isArabic
+    ? "/static/thumbnails/arabic-graffiti.png"
+    : "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=600&auto=format&fit=crop"
 
   return (
     <>
-      <ul class="page-list" id="article-list">
+      <ul class={`article-magazine-grid ${isArabic ? "rtl" : "ltr"}`} id="article-magazine-grid">
         {list.map((page) => {
-          const title = page.frontmatter?.title ?? "Untitled"
-          const tags = page.frontmatter?.tags ?? []
+          const title = page.frontmatter?.title ?? (isArabic ? "بدون عنوان" : "Untitled")
+          const cover = (page.frontmatter?.cover ??
+            page.frontmatter?.image ??
+            defaultFallback) as string
           const description = page.frontmatter?.description ?? page.description
 
           let displayedTime = ""
@@ -127,36 +80,28 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
           }
 
           return (
-            <li class="page-item" key={page.slug}>
-              <div class="item-header">
-                <h3 class="item-title">
+            <li class="magazine-card" key={page.slug}>
+              <a
+                href={resolveRelative(fileData.slug!, page.slug!)}
+                class="card-thumbnail-link internal"
+              >
+                <img src={cover} alt={title} class="card-thumbnail" />
+              </a>
+              <div class="card-content-area">
+                <h3 class="card-title">
                   <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
                     {title}
                   </a>
                 </h3>
-                <span class="item-date">
-                  {page.dates && <Date date={getDate(cfg, page)!} locale={cfg.locale} />}
-                </span>
-              </div>
-              {description && <p class="item-description">{description}</p>}
-              <div class="item-meta">
-                {displayedTime && <span class="item-reading-time">{displayedTime}</span>}
-                {tags.length > 0 && (
-                  <span class="item-tags">
-                    {displayedTime && <span class="meta-dot"> • </span>}
-                    {tags.slice(0, 4).map((tag, i) => (
-                      <span key={tag}>
-                        <a
-                          class="internal tag-link inline-tag"
-                          href={resolveRelative(fileData.slug!, `tags/${tag}` as FullSlug)}
-                        >
-                          #{tag}
-                        </a>
-                        {i < Math.min(tags.length, 4) - 1 && <span class="tag-spacer"> </span>}
-                      </span>
-                    ))}
-                  </span>
-                )}
+                {description && <p class="card-excerpt">{description}</p>}
+                <div class="card-meta-bottom">
+                  {page.dates && (
+                    <span class="card-date">
+                      <Date date={getDate(cfg, page)!} locale={cfg.locale} />
+                    </span>
+                  )}
+                  {displayedTime && <span class="card-time-span">{displayedTime}</span>}
+                </div>
               </div>
             </li>
           )

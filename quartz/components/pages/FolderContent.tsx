@@ -114,10 +114,6 @@ export default ((opts?: Partial<FolderContentOptions>) => {
       <section class="page-container">
         {!isArabicHome && (
           <header class="main-header">
-            {fileData.description && fileData.slug !== "About/index" && (
-              <p class="subtitle">{fileData.description}</p>
-            )}
-
             {options.showFolderCount && fileData.slug !== "About/index" && (
               <p class="meta-data">{allPagesInFolder.length} مقال</p>
             )}

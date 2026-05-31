@@ -44,17 +44,6 @@ export default (() => {
           <p class="hero-subtitle">Structural Engineer & Applied Mathematician</p>
         </section>
 
-        {/* Short Introduction */}
-        <section class="homepage-intro">
-          <p>
-            Welcome to my digital garden. I am Hamed, a structural engineer from Egypt, currently
-            pursuing a Master's degree in Applied Mathematics. This space is an intellectual
-            playground where I explore thoughts, document my learning process, and share insights
-            across disciplines—from mathematical analysis and structural design to cultural
-            observations.
-          </p>
-        </section>
-
         {/* Featured Writings */}
         {displayFeatured.length > 0 && (
           <section class="homepage-section">
