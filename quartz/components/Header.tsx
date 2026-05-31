@@ -35,7 +35,6 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
             <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>{children}</div>
           </div>
           <nav class="navbar arabic-navbar">
-            <a href={resolveRelative(fileData.slug!, "ar" as FullSlug)}>الصدر</a>
             <a href={resolveRelative(fileData.slug!, "ar/articles" as FullSlug)}>مقالاتي</a>
             <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}>أشعاري</a>
             <a

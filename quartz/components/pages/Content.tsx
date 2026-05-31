@@ -136,7 +136,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
 
           <div class="poetry-index-footer">
             <a href={resolveRelative(fileData.slug!, "ar" as FullSlug)} class="poetry-back-blog">
-              ← العودة للصدر
+              ← العودة للرئيسية
             </a>
           </div>
         </div>
