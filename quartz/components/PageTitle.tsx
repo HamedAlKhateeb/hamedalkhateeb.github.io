@@ -1,17 +1,23 @@
 import { pathToRoot } from "../util/path"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { classNames } from "../util/lang"
-import { i18n } from "../i18n"
 
-const PageTitle: QuartzComponent = ({ fileData, cfg, displayClass }: QuartzComponentProps) => {
-  const title = cfg?.pageTitle ?? i18n(cfg.locale).propertyDefaults.title
+const PageTitle: QuartzComponent = ({ fileData, displayClass }: QuartzComponentProps) => {
   const baseDir = pathToRoot(fileData.slug!)
+  const slug = fileData.slug ?? ""
+  const isArabic = slug.toLowerCase().startsWith("ar/") || slug.toLowerCase() === "ar"
+
+  const titleText = isArabic ? "حامد" : "Hamed"
+  const subtitleText = isArabic
+    ? "ما صفحت الأقلام، ما طوى الطير، وما يروي العليل"
+    : "A space for thoughts, mathematics, and poetry"
+
   return (
     <div class={classNames(displayClass, "page-title-container")}>
       <h1 class="page-title">
-        <a href={baseDir} data-lang-en="Hamed">حامد</a>
+        <a href={baseDir}>{titleText}</a>
       </h1>
-      <p class="page-subtitle" data-lang-en="Where pens have written, birds have flown, and the weary finds solace">ما صفحت الأقلام، ما طوى الطير، وما يروي العليل</p>
+      <p class="page-subtitle">{subtitleText}</p>
     </div>
   )
 }

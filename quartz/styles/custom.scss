@@ -1,28 +1,41 @@
-
 @use "./base.scss";
 @use "./variables.scss" as *;
 @use "./math-theme.scss";
 
 :root {
-  direction: rtl;
+  direction: ltr;
   --main-font-size: 18px;
   --main-line-height: 1.7;
   --content-width: 800px;
 }
 
-body, html {
+body,
+html {
   font-family: var(--bodyFont);
-  text-align: right;
+  text-align: left;
   background-color: var(--light);
   color: var(--dark);
 }
 
-h1, h2, h3, h4, h5, h6, .title {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.title {
   font-family: var(--headerFont);
 }
 
-label, figcaption, .caption, figure, .mermaid, .diagram, .tag-link, .tag {
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
+label,
+figcaption,
+.caption,
+figure,
+.mermaid,
+.diagram,
+.tag-link,
+.tag {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
 }
 
 .page {
@@ -57,7 +70,9 @@ body.is-article .center > article figcaption,
 body.is-article .center > article dd {
   font-size: var(--main-font-size);
   line-height: var(--main-line-height) !important;
-  transition: font-size 0.3s ease, line-height 0.3s ease;
+  transition:
+    font-size 0.3s ease,
+    line-height 0.3s ease;
 }
 
 .center > article {
@@ -126,18 +141,20 @@ html[reader-mode="on"] .center > article {
   transition: transform 0.4s ease;
 }
 
-
 /* ==================================
    RTL Global Improvements
    ================================== */
 [dir="rtl"] {
   // Generic alignment for left-bound elements
   text-align: right;
-  
+
   // Lists and meta
-  ul.section-ul { padding-right: 0; padding-left: 0; }
-  li.section-li > .section .meta { 
-    margin: 0 0 0 1em; 
+  ul.section-ul {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  li.section-li > .section .meta {
+    margin: 0 0 0 1em;
   }
 
   // Blockquotes
@@ -165,26 +182,30 @@ html[reader-mode="on"] .center > article {
   figure[data-rehype-pretty-code-figure] {
     direction: ltr;
   }
-  pre, code {
+  pre,
+  code {
     direction: ltr;
     text-align: left;
   }
 
   // General Block Math
-  .katex-display, mjx-container[display="true"] {
+  .katex-display,
+  mjx-container[display="true"] {
     direction: ltr;
     text-align: center;
     unicode-bidi: embed;
   }
 
   // General Inline Math
-  .katex, mjx-container:not([display="true"]), .math {
+  .katex,
+  mjx-container:not([display="true"]),
+  .math {
     direction: ltr;
     text-align: left;
     unicode-bidi: embed;
     display: inline-block;
   }
-  
+
   // Tag limits
   .tags {
     margin-right: auto;
@@ -196,7 +217,8 @@ html[reader-mode="on"] .center > article {
     margin-left: 0;
     margin-right: 0.5rem;
   }
-  button.mobile-explorer, button.desktop-explorer {
+  button.mobile-explorer,
+  button.desktop-explorer {
     text-align: right;
   }
   .explorer-content .folder-outer > ul {
@@ -214,13 +236,13 @@ html[reader-mode="on"] .center > article {
   li:has(> .folder-outer:not(.open)) > .folder-container > svg {
     transform: rotate(90deg);
   }
-  
+
   // Mobile Explorer Slide Out
   @media all and (max-width: 600px) {
     .page > #quartz-body.lock-scroll > :not(.sidebar.left:has(.explorer)) {
       transform: translateX(-100dvw);
     }
-    
+
     .explorer {
       .explorer-content {
         left: unset;
@@ -238,7 +260,7 @@ html[reader-mode="on"] .center > article {
 
   // Search Results
   .search > div > .search-contents > .search-contents-body {
-     text-align: right;
+    text-align: right;
   }
 }
 
@@ -249,19 +271,19 @@ html[reader-mode="on"] .center > article {
   color: inherit;
   text-decoration: none;
 }
-.contact-section a[href^="mailto:"] { 
-  display: inline-flex; 
-  align-items: center; 
-  gap: 8px; 
-  padding: 10px 24px; 
-  background-color: var(--secondary); 
-  color: var(--light) !important; 
-  text-decoration: none; 
-  border-radius: 8px; 
-  font-weight: bold; 
-  width: fit-content; 
-  border: 1px solid var(--darkgray); 
-  transition: opacity 0.2s ease; 
+.contact-section a[href^="mailto:"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background-color: var(--secondary);
+  color: var(--light) !important;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  width: fit-content;
+  border: 1px solid var(--darkgray);
+  transition: opacity 0.2s ease;
 }
 
 .contact-section a[href^="mailto:"]::before {
@@ -273,9 +295,9 @@ html[reader-mode="on"] .center > article {
   margin-left: 8px;
 }
 
-.contact-section a[href^="mailto:"]:hover { 
-  opacity: 0.85; 
-  color: var(--light) !important; 
+.contact-section a[href^="mailto:"]:hover {
+  opacity: 0.85;
+  color: var(--light) !important;
 }
 
 /* Home Page Enhancements */
@@ -340,7 +362,7 @@ html[reader-mode="on"] .center > article {
   min-width: 14px;
 }
 .continue-reading-banner {
-  margin: 0 auto 30px auto; 
+  margin: 0 auto 30px auto;
 }
 
 /* ==================================
@@ -349,7 +371,7 @@ html[reader-mode="on"] .center > article {
 
 /* ---- Poetry Header Override ---- */
 .poetry-header .header-inner h1 a {
-  font-family: 'Aref Ruqaa', serif;
+  font-family: "Aref Ruqaa", serif;
   color: #6b4226;
   font-size: 1.4rem;
 }
@@ -361,7 +383,7 @@ html[reader-mode="on"] .center > article {
   border-bottom-color: #d4a574 !important;
 }
 .poetry-navbar a {
-  font-family: 'Aref Ruqaa', serif !important;
+  font-family: "Aref Ruqaa", serif !important;
   font-size: 1rem !important;
   color: #8b6f47 !important;
   letter-spacing: 0.02em;
@@ -394,7 +416,7 @@ html[reader-mode="on"] .center > article {
 }
 
 .poem-page-title {
-  font-family: 'Aref Ruqaa', serif !important;
+  font-family: "Aref Ruqaa", serif !important;
   font-size: 2.2rem !important;
   color: var(--dark);
   margin: 0 0 0.5rem 0 !important;
@@ -408,7 +430,7 @@ html[reader-mode="on"] .center > article {
 }
 
 .poem-page-poet {
-  font-family: 'Amiri', serif;
+  font-family: "Amiri", serif;
   font-size: 1.1rem;
   color: var(--darkgray);
   margin-bottom: 0.5rem;
@@ -429,7 +451,7 @@ html[reader-mode="on"] .center > article {
 
 .poem-meta-meter,
 .poem-meta-count {
-  font-family: 'Amiri', serif;
+  font-family: "Amiri", serif;
   padding: 0.2rem 0.8rem;
   border: 1px solid var(--lightgray);
   border-radius: 20px;
@@ -479,11 +501,13 @@ html[reader-mode="on"] .center > article {
 .poem-line .hemistich {
   flex: 1 1 50%;
   min-width: 0;
-  font-family: 'Amiri', serif;
+  font-family: "Amiri", serif;
   font-size: calc(var(--main-font-size, 18px) * 1.2);
   line-height: calc(var(--main-line-height, 1.7) * 1.2);
   color: var(--dark);
-  transition: font-size 0.3s ease, line-height 0.3s ease;
+  transition:
+    font-size 0.3s ease,
+    line-height 0.3s ease;
   text-align: justify;
   text-align-last: justify;
   -moz-text-align-last: justify;
@@ -502,13 +526,15 @@ html[reader-mode="on"] .center > article {
 
 .poem-text {
   text-align: center;
-  font-family: 'Amiri', serif;
+  font-family: "Amiri", serif;
   font-size: calc(var(--main-font-size, 18px) * 1.1);
   line-height: calc(var(--main-line-height, 1.7) * 1.1);
   color: var(--darkgray);
   padding: 0.8rem 0;
   direction: rtl;
-  transition: font-size 0.3s ease, line-height 0.3s ease;
+  transition:
+    font-size 0.3s ease,
+    line-height 0.3s ease;
 }
 :root[saved-theme="dark"] .poem-text {
   color: var(--darkgray);
@@ -574,11 +600,11 @@ html[reader-mode="on"] .center > article {
   font-size: 0.75rem;
   color: #a89880;
   margin-bottom: 0.2rem;
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-family: "IBM Plex Sans Arabic", sans-serif;
 }
 
 .poetry-navigation .nav-title {
-  font-family: 'Aref Ruqaa', serif;
+  font-family: "Aref Ruqaa", serif;
   font-size: 1rem;
   font-weight: bold;
 }
@@ -591,7 +617,7 @@ html[reader-mode="on"] .center > article {
   border-color: #6b4226;
   gap: 0.3rem;
   flex-direction: row;
-  font-family: 'Aref Ruqaa', serif;
+  font-family: "Aref Ruqaa", serif;
   font-weight: bold;
 }
 .poetry-navigation .nav-toc:hover {
@@ -635,7 +661,7 @@ html[reader-mode="on"] .center > article {
 }
 
 .poetry-index-title {
-  font-family: 'Aref Ruqaa', serif !important;
+  font-family: "Aref Ruqaa", serif !important;
   font-size: 2.5rem !important;
   color: var(--dark);
   margin: 0.5rem 0 !important;
@@ -646,7 +672,7 @@ html[reader-mode="on"] .center > article {
 }
 
 .poetry-index-subtitle {
-  font-family: 'Amiri', serif;
+  font-family: "Amiri", serif;
   font-size: 1.05rem;
   color: var(--darkgray);
   max-width: 500px;
@@ -665,7 +691,7 @@ html[reader-mode="on"] .center > article {
 }
 
 .poetry-index-stats span {
-  font-family: 'Amiri', serif;
+  font-family: "Amiri", serif;
   font-size: 0.9rem;
   color: var(--darkgray);
   padding: 0.3rem 1rem;
@@ -707,7 +733,7 @@ html[reader-mode="on"] .center > article {
 }
 
 .poetry-card-number {
-  font-family: 'Amiri', serif;
+  font-family: "Amiri", serif;
   font-size: 1.4rem;
   color: #c9a06c;
   min-width: 2.5rem;
@@ -721,7 +747,7 @@ html[reader-mode="on"] .center > article {
 }
 
 .poetry-card-title {
-  font-family: 'Aref Ruqaa', serif;
+  font-family: "Aref Ruqaa", serif;
   font-size: 1.3rem;
   color: var(--dark);
   margin: 0 0 0.3rem 0;
@@ -737,7 +763,7 @@ html[reader-mode="on"] .center > article {
 }
 
 .poetry-card-meter {
-  font-family: 'Amiri', serif;
+  font-family: "Amiri", serif;
   font-size: 0.85rem;
   color: #a89880;
   padding: 0.1rem 0.6rem;
@@ -775,7 +801,7 @@ html[reader-mode="on"] .center > article {
 }
 
 .poetry-back-blog {
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-family: "IBM Plex Sans Arabic", sans-serif;
   font-size: 0.9rem;
   color: #8b7355;
   text-decoration: none;
@@ -809,7 +835,7 @@ html.translated-ltr {
   .poetry-index-wrapper {
     direction: ltr !important;
   }
-  
+
   .poem-line .hemistich {
     text-align: left !important;
     text-align-last: left !important;
@@ -822,13 +848,13 @@ html.translated-ltr {
   .poem-page-title {
     font-size: 1.6rem !important;
   }
-  
+
   .poem-line {
     flex-direction: column;
     gap: 0.3rem;
     padding: 0.8rem 0.5rem;
   }
-  
+
   .poem-line .hemistich {
     flex: 1 1 100%;
     text-align: justify;
@@ -838,30 +864,30 @@ html.translated-ltr {
     font-size: calc(var(--main-font-size, 18px) * 1.1);
     line-height: calc(var(--main-line-height, 1.7) * 1.1);
   }
-  
+
   html.translated-ltr .poem-line .hemistich {
     text-align: left !important;
     text-align-last: left !important;
     -moz-text-align-last: left !important;
   }
-  
+
   .poetry-navigation {
     flex-direction: column;
     gap: 0.6rem;
   }
-  
+
   .poetry-navigation .nav-toc {
     order: -1;
   }
-  
+
   .poetry-index-title {
     font-size: 1.8rem !important;
   }
-  
+
   .poetry-index-card {
     padding: 1rem 0.5rem;
   }
-  
+
   .poetry-card-title {
     font-size: 1.1rem;
   }
@@ -876,17 +902,20 @@ html.translated-ltr {
 article.rtl-math {
   direction: rtl;
   text-align: right;
-  font-family: 'Cairo', 'Amiri', sans-serif;
+  font-family: "Cairo", "Amiri", sans-serif;
 
   // Block Math (Equations on their own lines)
-  .katex-display, mjx-container[display="true"] {
+  .katex-display,
+  mjx-container[display="true"] {
     direction: ltr;
     text-align: center;
     unicode-bidi: isolate;
   }
 
   // Inline Math (Equations within Arabic text)
-  .katex, mjx-container:not([display="true"]), .math {
+  .katex,
+  mjx-container:not([display="true"]),
+  .math {
     direction: ltr;
     unicode-bidi: embed;
     display: inline-block;
@@ -894,30 +923,134 @@ article.rtl-math {
 }
 
 /* === Epsilon-Delta Interactive CSS === */
-#epsilon-diagrams, .dw, .nlw {
-  --bg:#f5f2ec;--bg2:#edeae2;--bg3:#e3dfd5;--bg4:#d4cfc3;
-  --text:#1c1a16;--muted:#857f72;--soft:#4a4640;
-  --amber:#8a6818;--amberd:#6a5010;--amberbg:rgba(138,104,24,.09);--amberb:rgba(138,104,24,.22);
-  --teal:#1a6e5c;--tealbg:rgba(26,110,92,.09);--tealb:rgba(26,110,92,.22);
-  --red:#8a2e20;--redbg:rgba(138,46,32,.09);--redb:rgba(138,46,32,.22);
-  --blue:#2a5a9a;--bluebg:rgba(42,90,154,.09);--blueb:rgba(42,90,154,.22);
-  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.14);
-  --shadow:0 1px 3px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+#epsilon-diagrams,
+.dw,
+.nlw {
+  --bg: #f5f2ec;
+  --bg2: #edeae2;
+  --bg3: #e3dfd5;
+  --bg4: #d4cfc3;
+  --text: #1c1a16;
+  --muted: #857f72;
+  --soft: #4a4640;
+  --amber: #8a6818;
+  --amberd: #6a5010;
+  --amberbg: rgba(138, 104, 24, 0.09);
+  --amberb: rgba(138, 104, 24, 0.22);
+  --teal: #1a6e5c;
+  --tealbg: rgba(26, 110, 92, 0.09);
+  --tealb: rgba(26, 110, 92, 0.22);
+  --red: #8a2e20;
+  --redbg: rgba(138, 46, 32, 0.09);
+  --redb: rgba(138, 46, 32, 0.22);
+  --blue: #2a5a9a;
+  --bluebg: rgba(42, 90, 154, 0.09);
+  --blueb: rgba(42, 90, 154, 0.22);
+  --border: rgba(0, 0, 0, 0.08);
+  --border2: rgba(0, 0, 0, 0.14);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.04);
 }
-.dw{background:var(--bg);border:1px solid var(--border2);border-radius:10px;padding:22px;margin:26px 0;box-shadow:var(--shadow);}
-.dtit{font-family:'Cairo',sans-serif;font-size:12px;color:var(--muted);margin-bottom:14px;text-align:center;direction:rtl;}
-.dc{display:block;width:100%;border-radius:5px;}
-.cr{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap;direction:rtl;}
-.cl{font-size:12px;color:var(--muted);font-family:'Cairo',sans-serif;min-width:80px;}
-.dw input[type=range]{flex:1;min-width:100px;-webkit-appearance:none;height:3px;background:var(--bg3);border-radius:2px;outline:none;border:none;}
-.dw input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--amber);cursor:pointer;border:2px solid var(--bg3);box-shadow:0 1px 3px rgba(0,0,0,.2);}
-.cn{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--amberd);min-width:48px;text-align:left;direction:ltr;font-weight:500;}
-.ir{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;direction:rtl;}
-@media(max-width:480px){.ir{grid-template-columns:1fr;}}
-.ic{background:var(--bg2);border-radius:7px;padding:11px 14px;border:1px solid var(--border2);}
-.icl{font-size:11px;color:var(--muted);font-family:'Cairo',sans-serif;margin-bottom:3px;}
-.icv{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500;}
-.nlw{margin:22px 0;padding:18px 20px;background:var(--bg);border-radius:8px;border:1px solid var(--border2);box-shadow:var(--shadow);}
+.dw {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 22px;
+  margin: 26px 0;
+  box-shadow: var(--shadow);
+}
+.dtit {
+  font-family: "Cairo", sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 14px;
+  text-align: center;
+  direction: rtl;
+}
+.dc {
+  display: block;
+  width: 100%;
+  border-radius: 5px;
+}
+.cr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  direction: rtl;
+}
+.cl {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: "Cairo", sans-serif;
+  min-width: 80px;
+}
+.dw input[type="range"] {
+  flex: 1;
+  min-width: 100px;
+  -webkit-appearance: none;
+  height: 3px;
+  background: var(--bg3);
+  border-radius: 2px;
+  outline: none;
+  border: none;
+}
+.dw input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--amber);
+  cursor: pointer;
+  border: 2px solid var(--bg3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.cn {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  color: var(--amberd);
+  min-width: 48px;
+  text-align: left;
+  direction: ltr;
+  font-weight: 500;
+}
+.ir {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+  direction: rtl;
+}
+@media (max-width: 480px) {
+  .ir {
+    grid-template-columns: 1fr;
+  }
+}
+.ic {
+  background: var(--bg2);
+  border-radius: 7px;
+  padding: 11px 14px;
+  border: 1px solid var(--border2);
+}
+.icl {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: "Cairo", sans-serif;
+  margin-bottom: 3px;
+}
+.icv {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 15px;
+  font-weight: 500;
+}
+.nlw {
+  margin: 22px 0;
+  padding: 18px 20px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  box-shadow: var(--shadow);
+}
 
 details.exercise {
   margin: 1rem 0;
@@ -930,4 +1063,138 @@ details.exercise summary {
   cursor: pointer;
   font-weight: bold;
   color: var(--secondary, #7aa2f7);
+}
+
+/* ==========================================================================
+   Premium Arabic Section Overrides (Cream Background & Rounded Card Layout)
+   ========================================================================== */
+
+html[lang="ar"] {
+  // Classic cream palette variables for Arabic pages (light mode)
+  --light: #f6f4ee;
+  --lightgray: #edeae2;
+  --gray: #9a8b73;
+  --darkgray: #4a4640;
+  --dark: #1c1a16;
+  --secondary: #6c764a; // olive green for titles
+  --tertiary: #8a6818; // amber for highlights
+  --highlight: rgba(108, 118, 74, 0.08);
+  --textHighlight: #d4a96866;
+
+  // Enforce Amiri for body and Noto Sans Arabic for headers
+  --bodyFont: "Amiri", serif;
+  --headerFont: "Noto Sans Arabic", sans-serif;
+
+  direction: rtl;
+  text-align: right;
+
+  body,
+  html {
+    text-align: right;
+    background-color: var(--light);
+    color: var(--dark);
+    font-family: var(--bodyFont) !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .title,
+  .page-title,
+  .all-articles-link,
+  .back-to-start {
+    font-family: var(--headerFont) !important;
+  }
+
+  // Premium Rounded Content Card Layout
+  .center > article {
+    background-color: #fcfaf2 !important; // slightly lighter brighter cream
+    border-radius: 12px !important;
+    padding: 2.5rem 3rem !important;
+    box-shadow:
+      0 4px 24px rgba(28, 26, 22, 0.03),
+      0 1px 3px rgba(28, 26, 22, 0.01) !important;
+    border: 1px solid rgba(108, 118, 74, 0.08) !important;
+    margin: 2rem auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  // Mobile card styling responsiveness
+  @media (max-width: 600px) {
+    .center > article {
+      padding: 1.5rem 1.2rem !important;
+      margin: 1rem auto !important;
+      border-radius: 8px !important;
+    }
+  }
+
+  // Custom Olive Green Styling for the Title
+  h1.article-title {
+    color: var(--secondary) !important;
+    font-family: var(--headerFont) !important;
+    font-size: 2.2rem !important;
+    text-align: center !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .article-title-container {
+    text-align: center !important;
+  }
+
+  // Blockquotes styling in Arabic
+  blockquote {
+    border-left: none !important;
+    border-right: 4px solid var(--secondary) !important;
+    padding-left: 0 !important;
+    padding-right: 1.2rem !important;
+    background-color: rgba(108, 118, 74, 0.03) !important;
+    border-radius: 0 6px 6px 0 !important;
+  }
+}
+
+// Dark Mode Support for Arabic Pages
+html[lang="ar"][saved-theme="dark"] {
+  --light: #161617;
+  --lightgray: #393639;
+  --gray: #646464;
+  --darkgray: #d4d4d4;
+  --dark: #ebebec;
+  --secondary: #7b97aa;
+  --tertiary: #84a59d;
+  --highlight: rgba(143, 159, 169, 0.12);
+  --textHighlight: #b3aa0266;
+
+  .center > article {
+    background-color: #1a1a1c !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  blockquote {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+  }
+}
+
+// Sepia Mode Override for Arabic Pages (maps naturally to our premium cream)
+html[lang="ar"][saved-theme="sepia"] {
+  --light: #f4ecd8;
+  --lightgray: #e8dcc8;
+  --gray: #9a8b73;
+  --darkgray: #5b4636;
+  --dark: #3d2e1f;
+  --secondary: #8b6f47;
+  --tertiary: #a08060;
+
+  .center > article {
+    background-color: #faf3e6 !important;
+    border-color: rgba(139, 111, 71, 0.1) !important;
+  }
 }

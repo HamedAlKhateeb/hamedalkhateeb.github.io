@@ -74,23 +74,23 @@ document.addEventListener("nav", async () => {
     <div id="fc-list" class="fc-list"><div class="fc-loading">جاري تحميل التعليقات...</div></div>
   `
 
-  const authSection    = document.getElementById("fc-auth-section")!
+  const authSection = document.getElementById("fc-auth-section")!
   const composeSection = document.getElementById("fc-compose-section")!
-  const textarea       = document.getElementById("fc-textarea") as HTMLTextAreaElement
-  const submitBtn      = document.getElementById("fc-submit-btn") as HTMLButtonElement
-  const listEl         = document.getElementById("fc-list")!
-  const reactionsEl    = document.getElementById("fc-article-reactions")!
-  const previewEl      = document.getElementById("fc-preview")!
+  const textarea = document.getElementById("fc-textarea") as HTMLTextAreaElement
+  const submitBtn = document.getElementById("fc-submit-btn") as HTMLButtonElement
+  const listEl = document.getElementById("fc-list")!
+  const reactionsEl = document.getElementById("fc-article-reactions")!
+  const previewEl = document.getElementById("fc-preview")!
 
   // Helper to insert markdown at cursor
   const bindToolbar = (wrap: HTMLElement, ta: HTMLTextAreaElement) => {
-    wrap.querySelectorAll(".fc-toolbar button").forEach(btn => {
+    wrap.querySelectorAll(".fc-toolbar button").forEach((btn) => {
       btn.addEventListener("click", () => {
         const md = (btn as HTMLElement).dataset.md!
         const start = ta.selectionStart
         const end = ta.selectionEnd
         const text = ta.value
-        
+
         if (md === "[]()") {
           ta.value = text.substring(0, start) + "[النص هنا](الرابط_هنا)" + text.substring(end)
           ta.focus()
@@ -99,12 +99,14 @@ document.addEventListener("nav", async () => {
           const before = text.substring(0, start)
           const needsNewline = before.length > 0 && !before.endsWith("\n")
           const prefix = needsNewline ? "\n## " : "## "
-          ta.value = text.substring(0, start) + prefix + text.substring(start, end) + text.substring(end)
+          ta.value =
+            text.substring(0, start) + prefix + text.substring(start, end) + text.substring(end)
           ta.focus()
           ta.setSelectionRange(start + prefix.length, start + prefix.length + (end - start))
         } else {
           // Wrapping formatting like **, *, ~~, \`
-          ta.value = text.substring(0, start) + md + text.substring(start, end) + md + text.substring(end)
+          ta.value =
+            text.substring(0, start) + md + text.substring(start, end) + md + text.substring(end)
           ta.focus()
           if (start === end) {
             ta.setSelectionRange(start + md.length, start + md.length)
@@ -121,13 +123,16 @@ document.addEventListener("nav", async () => {
 
   const parseMarkdown = (text: string) => {
     let html = text.replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>')
-    html = html.replace(/~~(.*?)~~/g, '<del>$1</del>')
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>')
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-    html = html.replace(/^## (.*?)$/gm, '<h3>$1</h3>')
-    html = html.replace(/\n/g, '<br>')
+    html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    html = html.replace(/\*(.*?)\*/g, "<em>$1</em>")
+    html = html.replace(/~~(.*?)~~/g, "<del>$1</del>")
+    html = html.replace(/`([^`]+)`/g, "<code>$1</code>")
+    html = html.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
+    )
+    html = html.replace(/^## (.*?)$/gm, "<h3>$1</h3>")
+    html = html.replace(/\n/g, "<br>")
     return html
   }
 
@@ -135,7 +140,9 @@ document.addEventListener("nav", async () => {
     const text = ta.value.trim()
     if (text) {
       preview.style.display = "block"
-      preview.innerHTML = `<div style="font-size:0.85em;opacity:0.7;margin-bottom:0.4rem;border-bottom:1px solid var(--lightgray);padding-bottom:0.2rem;">معاينة:</div>` + parseMarkdown(text)
+      preview.innerHTML =
+        `<div style="font-size:0.85em;opacity:0.7;margin-bottom:0.4rem;border-bottom:1px solid var(--lightgray);padding-bottom:0.2rem;">معاينة:</div>` +
+        parseMarkdown(text)
     } else {
       preview.style.display = "none"
       preview.innerHTML = ""
@@ -145,27 +152,30 @@ document.addEventListener("nav", async () => {
   textarea.addEventListener("input", () => updatePreview(textarea, previewEl))
 
   try {
+    // prettier-ignore
     // @ts-ignore
     const { initializeApp, getApps, getApp } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js")
+    // prettier-ignore
     // @ts-ignore
     const { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js")
+    // prettier-ignore
     // @ts-ignore
     const { getFirestore, collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc, updateDoc, setDoc, arrayUnion, arrayRemove } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js")
 
-    const app  = getApps().length === 0 ? initializeApp(config) : getApp()
+    const app = getApps().length === 0 ? initializeApp(config) : getApp()
     const auth = getAuth(app)
-    const db   = getFirestore(app)
+    const db = getFirestore(app)
     let currentUser: any = null
-
-    const reactorId = getAnonId() // Default to anon, override with uid if logged in
 
     const doLogin = (e: Event) => {
       e.preventDefault()
-      signInWithPopup(auth, new GoogleAuthProvider()).catch((err: any) => alert("تعذّر تسجيل الدخول: " + err.code))
+      signInWithPopup(auth, new GoogleAuthProvider()).catch((err: any) =>
+        alert("تعذّر تسجيل الدخول: " + err.code),
+      )
     }
 
     document.getElementById("fc-login-btn")?.addEventListener("click", doLogin)
-    
+
     let onAuthUpdateForReactions: () => void = () => {}
 
     const unsubAuth = onAuthStateChanged(auth, (user: any) => {
@@ -177,7 +187,10 @@ document.addEventListener("nav", async () => {
             <span style="font-size:0.9rem;color:var(--dark);">${user.displayName}</span>
             <button type="button" id="fc-logout-btn" class="fc-logout-btn">تسجيل الخروج</button>
           </div>`
-        document.getElementById("fc-logout-btn")?.addEventListener("click", (e) => { e.preventDefault(); signOut(auth).catch(console.error) })
+        document.getElementById("fc-logout-btn")?.addEventListener("click", (e) => {
+          e.preventDefault()
+          signOut(auth).catch(console.error)
+        })
         composeSection.style.display = "flex"
       } else {
         authSection.innerHTML = `<button type="button" id="fc-login-btn" class="fc-login-btn">${loginSVG} تسجيل الدخول بـ Google</button>`
@@ -192,21 +205,21 @@ document.addEventListener("nav", async () => {
 
     const safeSlug = slug.replace(/\//g, "___")
     const articleReactionsRef = doc(db, "articleReactions", safeSlug)
-    
+
     // Ensure document exists
     setDoc(articleReactionsRef, { init: true }, { merge: true }).catch(() => {})
 
     let latestReactionData: any = null
     let latestCommentsSnapshot: any = null
-    
+
     // forward declarations
     let renderCommentsList: () => void = () => {}
 
     const renderReactions = () => {
       const data = latestReactionData
-      if (!data) return; // Not initialized yet
+      if (!data) return // Not initialized yet
       const currentReactor = currentUser ? currentUser.uid : getAnonId()
-      
+
       const reactionsHTML = EMOJIS.map((emoji) => {
         const reactors: string[] = data[emoji] || []
         const reacted = reactors.includes(currentReactor)
@@ -214,47 +227,47 @@ document.addEventListener("nav", async () => {
       }).join("")
 
       reactionsEl.innerHTML = `<div class="fc-reactions-title">ما رأيك؟</div><div class="fc-reactions">${reactionsHTML}</div>`
-      
+
       reactionsEl.querySelectorAll<HTMLButtonElement>(".fc-reaction-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
           if (!currentUser) {
-            alert("عذراً، يجب تسجيل الدخول أولاً للتفاعل مع المقال.");
-            return;
+            alert("عذراً، يجب تسجيل الدخول أولاً للتفاعل مع المقال.")
+            return
           }
           const activeReactor = currentUser.uid
           const clickedEmoji = btn.dataset.emoji!
           const currentReactors: string[] = latestReactionData[clickedEmoji] || []
-          
+
           try {
             const isAlreadyReacted = currentReactors.includes(activeReactor)
             const updates: any = {}
-            
+
             // Remove user from ALL emojis to ensure only one reaction at a time
-            EMOJIS.forEach(e => {
+            EMOJIS.forEach((e) => {
               if ((latestReactionData[e] || []).includes(activeReactor)) {
                 updates[e] = arrayRemove(activeReactor)
               }
             })
-            
+
             // If they clicked a new emoji, add it
             if (!isAlreadyReacted) {
               updates[clickedEmoji] = arrayUnion(activeReactor)
             }
-            
+
             if (Object.keys(updates).length > 0) {
               await setDoc(articleReactionsRef, updates, { merge: true })
-              
+
               if (!isAlreadyReacted) {
-                fetch('https://telegram-notify.hsmefh.workers.dev', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
+                fetch("https://telegram-notify.hsmefh.workers.dev", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
                     actionType: "reaction",
                     emoji: clickedEmoji,
                     author: currentUser.displayName || "مجهول",
                     articleTitle: document.title,
-                    articleUrl: window.location.href
-                  })
+                    articleUrl: window.location.href,
+                  }),
                 }).catch(() => {})
               }
             }
@@ -269,7 +282,7 @@ document.addEventListener("nav", async () => {
       latestReactionData = snap.exists() ? snap.data() : {}
       renderReactions()
     })
-    
+
     onAuthUpdateForReactions = () => {
       renderReactions()
       renderCommentsList()
@@ -280,10 +293,10 @@ document.addEventListener("nav", async () => {
 
     const toggleLike = async (commentId: string, snap: any) => {
       if (!currentUser) {
-        alert("عذراً، يجب تسجيل الدخول للإعجاب بالتعليقات.");
-        return;
+        alert("عذراً، يجب تسجيل الدخول للإعجاب بالتعليقات.")
+        return
       }
-      
+
       const activeReactor = currentUser.uid
       const ref = doc(db, "comments", commentId)
       const current = snap.likes || []
@@ -291,23 +304,23 @@ document.addEventListener("nav", async () => {
         await updateDoc(ref, { likes: arrayRemove(activeReactor) })
       } else {
         await updateDoc(ref, { likes: arrayUnion(activeReactor) })
-        
-        fetch('https://telegram-notify.hsmefh.workers.dev', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+
+        fetch("https://telegram-notify.hsmefh.workers.dev", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             actionType: "like",
             author: currentUser?.displayName || "زائر",
             content: snap.text,
             articleTitle: document.title,
-            articleUrl: window.location.href
-          })
+            articleUrl: window.location.href,
+          }),
         }).catch(() => {})
       }
     }
 
     const startEdit = (commentContent: HTMLElement, commentId: string, originalText: string) => {
-      const textDiv    = commentContent.querySelector(".fc-comment-text") as HTMLElement
+      const textDiv = commentContent.querySelector(".fc-comment-text") as HTMLElement
       const actionsDiv = commentContent.querySelector(".fc-comment-actions") as HTMLElement
       if (!textDiv) return
       if (actionsDiv) actionsDiv.style.display = "none"
@@ -322,7 +335,8 @@ document.addEventListener("nav", async () => {
 
       const editPreview = document.createElement("div")
       editPreview.className = "fc-comment-text"
-      editPreview.style.cssText = "display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"
+      editPreview.style.cssText =
+        "display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"
 
       editTA.addEventListener("input", () => updatePreview(editTA, editPreview))
 
@@ -330,14 +344,18 @@ document.addEventListener("nav", async () => {
       editActions.className = "fc-edit-actions"
 
       const saveBtn = document.createElement("button")
-      saveBtn.type = "button"; saveBtn.className = "fc-submit-btn fc-save-edit-btn"; saveBtn.textContent = "حفظ"
+      saveBtn.type = "button"
+      saveBtn.className = "fc-submit-btn fc-save-edit-btn"
+      saveBtn.textContent = "حفظ"
 
       const cancelBtn = document.createElement("button")
-      cancelBtn.type = "button"; cancelBtn.className = "fc-logout-btn"; cancelBtn.textContent = "إلغاء"
+      cancelBtn.type = "button"
+      cancelBtn.className = "fc-logout-btn"
+      cancelBtn.textContent = "إلغاء"
 
       editActions.append(saveBtn, cancelBtn)
       wrap.append(editTA)
-      
+
       const fullWrap = document.createElement("div")
       fullWrap.style.display = "flex"
       fullWrap.style.flexDirection = "column"
@@ -348,7 +366,7 @@ document.addEventListener("nav", async () => {
       textDiv.appendChild(fullWrap)
       editTA.focus()
       updatePreview(editTA, editPreview)
-      
+
       bindToolbar(wrap, editTA)
 
       cancelBtn.addEventListener("click", () => {
@@ -358,19 +376,27 @@ document.addEventListener("nav", async () => {
       saveBtn.addEventListener("click", async () => {
         const newText = editTA.value.trim()
         if (!newText) return
-        saveBtn.disabled = true; saveBtn.textContent = "جاري الحفظ..."
+        saveBtn.disabled = true
+        saveBtn.textContent = "جاري الحفظ..."
         try {
-          await updateDoc(doc(db, "comments", commentId), { text: newText, editedAt: serverTimestamp() })
+          await updateDoc(doc(db, "comments", commentId), {
+            text: newText,
+            editedAt: serverTimestamp(),
+          })
         } catch (err: any) {
           alert("فشل التعديل: " + err.message)
-          saveBtn.disabled = false; saveBtn.textContent = "حفظ"
+          saveBtn.disabled = false
+          saveBtn.textContent = "حفظ"
         }
       })
     }
 
     const showReplyForm = (container: HTMLElement, parentId: string) => {
       const existing = container.querySelector(".fc-reply-form")
-      if (existing) { existing.remove(); return }
+      if (existing) {
+        existing.remove()
+        return
+      }
 
       const form = document.createElement("div")
       form.className = "fc-reply-form"
@@ -385,11 +411,11 @@ document.addEventListener("nav", async () => {
           <button type="button" class="fc-logout-btn fc-reply-cancel-btn">إلغاء</button>
         </div>`
       container.appendChild(form)
-      
+
       const ta = form.querySelector(".fc-reply-textarea") as HTMLTextAreaElement
       const rpPreview = form.querySelector(".fc-reply-preview") as HTMLElement
       ta.addEventListener("input", () => updatePreview(ta, rpPreview))
-      
+
       ta.focus()
       bindToolbar(form.querySelector(".fc-editor-wrap") as HTMLElement, ta)
 
@@ -398,56 +424,73 @@ document.addEventListener("nav", async () => {
         const text = ta.value.trim()
         if (!text) return
         const btn = form.querySelector(".fc-reply-submit-btn") as HTMLButtonElement
-        btn.disabled = true; btn.textContent = "جاري الإرسال..."
+        btn.disabled = true
+        btn.textContent = "جاري الإرسال..."
         try {
           await addDoc(collection(db, "comments"), {
             slug,
             text,
             parentId,
-            userId:    currentUser?.uid    || null,
-            userName:  currentUser?.displayName || "زائر",
-            userPhoto: currentUser?.photoURL    || "",
+            userId: currentUser?.uid || null,
+            userName: currentUser?.displayName || "زائر",
+            userPhoto: currentUser?.photoURL || "",
             createdAt: serverTimestamp(),
-            likes:     []
+            likes: [],
           })
-          
+
           // إشعار تيليجرام للردود
-          fetch('https://telegram-notify.hsmefh.workers.dev', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+          fetch("https://telegram-notify.hsmefh.workers.dev", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               author: currentUser?.displayName || "زائر (رد)",
               content: text,
               articleTitle: document.title,
-              articleUrl: window.location.href
-            })
-          }).catch(err => console.error("Telegram notification failed", err))
+              articleUrl: window.location.href,
+            }),
+          }).catch((err) => console.error("Telegram notification failed", err))
 
           form.remove()
         } catch (err: any) {
           alert("خطأ في الإرسال: " + err.message)
-          btn.disabled = false; btn.textContent = "إرسال الرد"
+          btn.disabled = false
+          btn.textContent = "إرسال الرد"
         }
       })
     }
 
-    const renderComment = (cdoc: any, currentReactor: string, isReply = false, depth = 0): HTMLElement => {
+    const renderComment = (
+      cdoc: any,
+      currentReactor: string,
+      isReply = false,
+      depth = 0,
+    ): HTMLElement => {
       const d = cdoc.data()
       const date = d.createdAt
-        ? new Date(d.createdAt.toDate()).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })
+        ? new Date(d.createdAt.toDate()).toLocaleDateString("ar-SA", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })
         : "الآن"
 
-      const isOwner     = currentUser && currentUser.uid === d.userId
+      const isOwner = currentUser && currentUser.uid === d.userId
       const editedBadge = d.editedAt ? `<span class="fc-edited-badge">• تم التعديل</span>` : ""
 
       // Likes (thumbs up)
       const likes: string[] = d.likes || []
-      const liked     = likes.includes(currentReactor)
+      const liked = likes.includes(currentReactor)
       const likeCount = likes.length
 
       const el = document.createElement("div")
       // Limit the reply indentation to avoid shrinking too much on deep levels
-      const replyClass = isReply ? (depth > 3 ? "fc-comment fc-reply fc-reply-max-depth" : "fc-comment fc-reply") : "fc-comment"
+      const replyClass = isReply
+        ? depth > 3
+          ? "fc-comment fc-reply fc-reply-max-depth"
+          : "fc-comment fc-reply"
+        : "fc-comment"
       el.className = replyClass
       el.dataset.commentId = cdoc.id
 
@@ -481,8 +524,8 @@ document.addEventListener("nav", async () => {
       // Wire reply
       el.querySelector(".fc-reply-btn")?.addEventListener("click", () => {
         if (!currentUser) {
-          alert("عذراً، يجب تسجيل الدخول للرد على التعليقات.");
-          return;
+          alert("عذراً، يجب تسجيل الدخول للرد على التعليقات.")
+          return
         }
         const area = el.querySelector(".fc-replies-area") as HTMLElement
         showReplyForm(area, cdoc.id)
@@ -495,21 +538,21 @@ document.addEventListener("nav", async () => {
         })
         el.querySelector(".fc-delete-btn")?.addEventListener("click", async () => {
           if (confirm("هل أنت متأكد من حذف هذا التعليق؟")) {
-            try { 
+            try {
               await deleteDoc(doc(db, "comments", cdoc.id))
 
-              fetch('https://telegram-notify.hsmefh.workers.dev', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+              fetch("https://telegram-notify.hsmefh.workers.dev", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                   actionType: "delete",
                   articleTitle: document.title,
-                  articleUrl: window.location.href
-                })
+                  articleUrl: window.location.href,
+                }),
               }).catch(() => {})
-              
+            } catch (err: any) {
+              alert("فشل الحذف: " + err.message)
             }
-            catch (err: any) { alert("فشل الحذف: " + err.message) }
           }
         })
       }
@@ -523,36 +566,39 @@ document.addEventListener("nav", async () => {
       e.preventDefault()
       const text = textarea.value.trim()
       if (!text || !currentUser) return
-      submitBtn.disabled = true; submitBtn.textContent = "جاري الإرسال..."
+      submitBtn.disabled = true
+      submitBtn.textContent = "جاري الإرسال..."
       try {
         await addDoc(collection(db, "comments"), {
-          slug, text,
-          parentId:  null,
-          userId:    currentUser.uid,
-          userName:  currentUser.displayName,
+          slug,
+          text,
+          parentId: null,
+          userId: currentUser.uid,
+          userName: currentUser.displayName,
           userPhoto: currentUser.photoURL || "",
           createdAt: serverTimestamp(),
-          likes:     []
+          likes: [],
         })
-        
+
         // إشعار تيليجرام
-        fetch('https://telegram-notify.hsmefh.workers.dev', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        fetch("https://telegram-notify.hsmefh.workers.dev", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             author: currentUser.displayName || "زائر",
             content: text,
             articleTitle: document.title,
-            articleUrl: window.location.href
-          })
-        }).catch(err => console.error("Telegram notification failed", err))
+            articleUrl: window.location.href,
+          }),
+        }).catch((err) => console.error("Telegram notification failed", err))
 
         textarea.value = ""
         updatePreview(textarea, previewEl)
       } catch (err: any) {
         alert("خطأ في الإرسال: " + err.message)
       }
-      submitBtn.disabled = false; submitBtn.textContent = "إرسال التعليق"
+      submitBtn.disabled = false
+      submitBtn.textContent = "إرسال التعليق"
     })
 
     // ── Real-time snapshot (all docs for this slug) ───────────────────────
@@ -564,46 +610,47 @@ document.addEventListener("nav", async () => {
     )
 
     renderCommentsList = () => {
-        if (!latestCommentsSnapshot) return;
-        const currentReactor = currentUser ? currentUser.uid : getAnonId()
+      if (!latestCommentsSnapshot) return
+      const currentReactor = currentUser ? currentUser.uid : getAnonId()
 
-        const topLevel: any[] = []
-        const repliesMap = new Map<string, any[]>()
+      const topLevel: any[] = []
+      const repliesMap = new Map<string, any[]>()
 
-        latestCommentsSnapshot.forEach((cdoc: any) => {
-          const d = cdoc.data()
-          if (!d.parentId) topLevel.push(cdoc)
-          else {
-            if (!repliesMap.has(d.parentId)) repliesMap.set(d.parentId, [])
-            repliesMap.get(d.parentId)!.push(cdoc)
+      latestCommentsSnapshot.forEach((cdoc: any) => {
+        const d = cdoc.data()
+        if (!d.parentId) topLevel.push(cdoc)
+        else {
+          if (!repliesMap.has(d.parentId)) repliesMap.set(d.parentId, [])
+          repliesMap.get(d.parentId)!.push(cdoc)
+        }
+      })
+
+      listEl.innerHTML = ""
+
+      if (topLevel.length === 0) {
+        listEl.innerHTML = `<div style="text-align:center;color:var(--gray);padding:1rem 0;">لا توجد تعليقات حتى الآن. كُن أول من يعلق!</div>`
+        return
+      }
+
+      const renderTree = (docs: any[], isNested: boolean, depth: number) => {
+        const frag = document.createDocumentFragment()
+        docs.forEach((doc) => {
+          const el = renderComment(doc, currentReactor, isNested, depth)
+          const area = el.querySelector(".fc-replies-area")
+          const children = repliesMap.get(doc.id)
+          if (children && children.length > 0 && area) {
+            area.appendChild(renderTree(children, true, depth + 1))
           }
+          frag.appendChild(el)
         })
+        return frag
+      }
 
-        listEl.innerHTML = ""
-
-        if (topLevel.length === 0) {
-          listEl.innerHTML = `<div style="text-align:center;color:var(--gray);padding:1rem 0;">لا توجد تعليقات حتى الآن. كُن أول من يعلق!</div>`
-          return
-        }
-
-        const renderTree = (docs: any[], isNested: boolean, depth: number) => {
-          const frag = document.createDocumentFragment()
-          docs.forEach(doc => {
-            const el = renderComment(doc, currentReactor, isNested, depth)
-            const area = el.querySelector(".fc-replies-area")
-            const children = repliesMap.get(doc.id)
-            if (children && children.length > 0 && area) {
-              area.appendChild(renderTree(children, true, depth + 1))
-            }
-            frag.appendChild(el)
-          })
-          return frag
-        }
-        
-        listEl.appendChild(renderTree([...topLevel].reverse(), false, 0))
+      listEl.appendChild(renderTree([...topLevel].reverse(), false, 0))
     }
 
-    const unsubSnap = onSnapshot(q,
+    const unsubSnap = onSnapshot(
+      q,
       (snapshot: any) => {
         latestCommentsSnapshot = snapshot
         renderCommentsList()
@@ -615,7 +662,6 @@ document.addEventListener("nav", async () => {
     )
 
     window.addCleanup?.(() => unsubSnap())
-
   } catch (err: any) {
     console.error("Firebase init error:", err)
     container.innerHTML = `<div style="text-align:center;color:#e53935;">تعذر تحميل نظام التعليقات.</div>`

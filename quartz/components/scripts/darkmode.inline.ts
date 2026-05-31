@@ -30,7 +30,9 @@ document.addEventListener("nav", () => {
 
     if (newTheme === "auto") {
       localStorage.removeItem("theme")
-      const autoTheme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"
+      const autoTheme = window.matchMedia("(prefers-color-scheme: light)").matches
+        ? "light"
+        : "dark"
       document.documentElement.setAttribute("saved-theme", autoTheme)
       emitThemeChangeEvent(autoTheme as "light" | "dark")
     } else {

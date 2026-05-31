@@ -98,7 +98,9 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
                           >
                             {tag}
                           </a>
-                          {i < Math.min(tags.length, 4) - 1 && <span class="tag-separator"> · </span>}
+                          {i < Math.min(tags.length, 4) - 1 && (
+                            <span class="tag-separator"> · </span>
+                          )}
                         </span>
                       ))}
                     </div>
@@ -112,7 +114,8 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
                   {page.dates && <Date date={getDate(cfg, page)!} locale={cfg.locale} />}
                   {displayedTime && (
                     <span class="card-reading-time">
-                      <span class="meta-dot"> • </span>{displayedTime}
+                      <span class="meta-dot"> • </span>
+                      {displayedTime}
                     </span>
                   )}
                 </p>

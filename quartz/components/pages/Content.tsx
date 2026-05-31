@@ -17,7 +17,9 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
       if (node.tagName === "p") {
         const hasPipe = node.children?.some((c: any) => c.type === "text" && c.value.includes("|"))
         if (hasPipe) {
-          const textContent = node.children.map((c: any) => (c.type === "text" ? c.value : "")).join("")
+          const textContent = node.children
+            .map((c: any) => (c.type === "text" ? c.value : ""))
+            .join("")
           const lines = textContent.split("\n")
           const divChildren = lines
             .map((line: string) => {
@@ -50,11 +52,11 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
                 type: "element",
                 tagName: "div",
                 properties: { className: ["poem-text"] },
-                children: [{ type: "text", value: line }]
+                children: [{ type: "text", value: line }],
               }
             })
             .filter((c: any) => c.type !== "text" || c.value !== "")
-          
+
           node.tagName = "div"
           node.properties = { className: ["poem-container"] }
           node.children = divChildren
@@ -69,8 +71,9 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
 
   // --- Poetry Index: auto-list all poems ---
   if (isPoetryIndex) {
-    const poems = allFiles
-      .filter(f => f.slug?.toLowerCase().startsWith("poetry/") && !f.slug.endsWith("index"))
+    const poems = allFiles.filter(
+      (f) => f.slug?.toLowerCase().startsWith("poetry/") && !f.slug.endsWith("index"),
+    )
     poems.sort((a, b) => (a.slug! > b.slug! ? 1 : -1))
 
     return (
@@ -79,7 +82,10 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
           <div class="poetry-index-header">
             <div class="poetry-index-ornament">✦</div>
             <h1 class="poetry-index-title">ديوان حامد الخطيب</h1>
-            <p class="poetry-index-subtitle">أكتب الشعر العربي العمودي أحيانًا. وأبصر فيه دوحًا من الجمال، نمّى فيه إحساسًا عارمًا به؛ وأيقظ روحًا شغوفةً بنظمه والأنس به.</p>
+            <p class="poetry-index-subtitle">
+              أكتب الشعر العربي العمودي أحيانًا. وأبصر فيه دوحًا من الجمال، نمّى فيه إحساسًا عارمًا
+              به؛ وأيقظ روحًا شغوفةً بنظمه والأنس به.
+            </p>
             <div class="poetry-index-stats">
               <span>{poems.length} قصيدة</span>
             </div>
@@ -88,12 +94,19 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
 
           <div class="poetry-index-list">
             {poems.map((poem, idx) => {
-              const poemTitle = poem.frontmatter?.title || poem.slug!.split("/").pop()?.replace(/_/g, " ") || "بلا عنوان"
+              const poemTitle =
+                poem.frontmatter?.title ||
+                poem.slug!.split("/").pop()?.replace(/_/g, " ") ||
+                "بلا عنوان"
               const poemMeter = (poem.frontmatter as any)?.meter || ""
               const poemDescription = poem.frontmatter?.description || ""
 
               return (
-                <a href={resolveRelative(fileData.slug!, poem.slug!)} class="poetry-index-card internal" key={idx}>
+                <a
+                  href={resolveRelative(fileData.slug!, poem.slug!)}
+                  class="poetry-index-card internal"
+                  key={idx}
+                >
                   <div class="poetry-card-number">{idx + 1}</div>
                   <div class="poetry-card-content">
                     <h3 class="poetry-card-title">{poemTitle}</h3>
@@ -109,7 +122,9 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
           </div>
 
           <div class="poetry-index-footer">
-            <a href="https://hamedalkhateeb.github.io/" class="poetry-back-blog">← العودة للمدونة</a>
+            <a href="https://hamedalkhateeb.github.io/" class="poetry-back-blog">
+              ← العودة للمدونة
+            </a>
           </div>
         </div>
       </article>
@@ -120,8 +135,10 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
   if (isPoetry) {
     const uniquePoems = Array.from(
       new Map(
-        allFiles.filter(f => f.slug?.toLowerCase().startsWith("poetry/") && !f.slug.endsWith("index")).map(item => [item.slug, item])
-      ).values()
+        allFiles
+          .filter((f) => f.slug?.toLowerCase().startsWith("poetry/") && !f.slug.endsWith("index"))
+          .map((item) => [item.slug, item]),
+      ).values(),
     )
     uniquePoems.sort((a, b) => (a.slug! > b.slug! ? 1 : -1))
 
@@ -155,9 +172,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
         </div>
 
         {/* Poem Content */}
-        <div class="poem-body">
-          {content}
-        </div>
+        <div class="poem-body">{content}</div>
 
         {/* Poem Footer Ornament */}
         <div class="poem-end-ornament">
@@ -171,30 +186,30 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles }: QuartzComponentP
               <span class="nav-label">القصيدة السابقة</span>
               <span class="nav-title">{prevPoem.frontmatter?.title || "السابقة"}</span>
             </a>
-          ) : <span class="nav-empty"></span>}
-          
+          ) : (
+            <span class="nav-empty"></span>
+          )}
+
           <a href={resolveRelative(fileData.slug!, "poetry/index" as any)} class="nav-toc">
             <span class="nav-toc-icon">☰</span>
             <span>الفهرس</span>
           </a>
-          
+
           {nextPoem ? (
             <a href={resolveRelative(fileData.slug!, nextPoem.slug!)} class="nav-next">
               <span class="nav-label">القصيدة التالية</span>
               <span class="nav-title">{nextPoem.frontmatter?.title || "التالية"}</span>
             </a>
-          ) : <span class="nav-empty"></span>}
+          ) : (
+            <span class="nav-empty"></span>
+          )}
         </div>
       </article>
     )
   }
 
   // --- Normal article ---
-  return (
-    <article class={classString}>
-      {content}
-    </article>
-  )
+  return <article class={classString}>{content}</article>
 }
 
 export default (() => Content) satisfies QuartzComponentConstructor

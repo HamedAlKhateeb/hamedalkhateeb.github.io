@@ -4,12 +4,10 @@ import style from "../styles/listPage.scss"
 import { PageList, SortFn } from "../PageList"
 import { Root } from "hast"
 import { htmlToJsx } from "../../util/jsx"
-import { i18n } from "../../i18n"
 import { QuartzPluginData } from "../../plugins/vfile"
 import { ComponentChildren } from "preact"
 import { concatenateResources } from "../../util/resources"
 import { trieFromAllFiles } from "../../util/ctx"
-import { resolveRelative } from "../../util/path"
 // @ts-ignore
 import paginationScript from "../scripts/pagination.inline"
 
@@ -31,7 +29,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
   const options: FolderContentOptions = { ...defaultOptions, ...opts }
 
   const FolderContent: QuartzComponent = (props: QuartzComponentProps) => {
-    const { tree, fileData, allFiles, cfg } = props
+    const { tree, fileData, allFiles } = props
 
     const trie = (props.ctx.trie ??= trieFromAllFiles(allFiles))
     const folder = trie.findNode(fileData.slug!.split("/"))
@@ -42,7 +40,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
     let allPagesInFolder: QuartzPluginData[] = []
     if (fileData.slug === "index") {
       allPagesInFolder = allFiles.filter(
-        (page) => page.slug && page.slug !== "index" && !page.slug.endsWith("/index")
+        (page) => page.slug && page.slug !== "index" && !page.slug.endsWith("/index"),
       )
     } else {
       allPagesInFolder =
@@ -98,8 +96,6 @@ export default ((opts?: Partial<FolderContentOptions>) => {
           })
           .filter((page) => page !== undefined) as QuartzPluginData[]) ?? []
     }
-    const cssClasses: string[] = fileData.frontmatter?.cssclasses ?? []
-    const classes = cssClasses.join(" ")
     const listProps = {
       ...props,
       sort: options.sort,
@@ -112,24 +108,19 @@ export default ((opts?: Partial<FolderContentOptions>) => {
         : htmlToJsx(fileData.filePath!, tree)
     ) as ComponentChildren
 
-    const totalMinutes = allPagesInFolder.reduce((acc, page) => {
-      // Estimate reading time for all articles roughly or just omit
-      return acc + 15 // Static estimate or calculate if possible
-    }, 0)
-
     return (
       <section class="page-container">
         <header class="main-header">
-          {fileData.description && fileData.slug !== "About/index" && <p class="subtitle">{fileData.description}</p>}
+          {fileData.description && fileData.slug !== "About/index" && (
+            <p class="subtitle">{fileData.description}</p>
+          )}
 
           {options.showFolderCount && fileData.slug !== "About/index" && (
-             <p class="meta-data">{allPagesInFolder.length} مقال</p>
+            <p class="meta-data">{allPagesInFolder.length} مقال</p>
           )}
         </header>
 
-        <div class="folder-content-body">
-          {content}
-        </div>
+        <div class="folder-content-body">{content}</div>
 
         <div class="cards-grid">
           <PageList {...listProps} />

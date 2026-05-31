@@ -1,10 +1,10 @@
 document.addEventListener("nav", () => {
   const pageSlug = document.body.dataset.slug ?? ""
-  
+
   if (pageSlug === "index" || pageSlug === "" || window.location.pathname === "/") {
     // Clean up any previously injected elements to prevent duplicates after SPA navigation
-    document.querySelectorAll(".continue-reading-banner").forEach(el => el.remove())
-    document.querySelectorAll(".home-bookmarks-section").forEach(el => el.remove())
+    document.querySelectorAll(".continue-reading-banner").forEach((el) => el.remove())
+    document.querySelectorAll(".home-bookmarks-section").forEach((el) => el.remove())
 
     // Show Continue Reading
     const lastReadData = localStorage.getItem("quartz-last-read")
@@ -42,22 +42,24 @@ document.addEventListener("nav", () => {
             bmSection.innerHTML = `
               <h3 class="home-bookmarks-title" data-lang-en="Your Bookmarks" data-lang-ar="إشاراتك المرجعية">إشاراتك المرجعية</h3>
               <div class="home-bookmarks-list">
-                ${allBms.map((bm: any) => `
+                ${allBms
+                  .map(
+                    (bm: any) => `
                   <a href="/${bm.slug}?bm=${bm.index}" class="home-bookmark-pill">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
                     <span>${bm.text.substring(0, 40)}${bm.text.length > 40 ? "..." : ""}</span>
                   </a>
-                `).join('')}
+                `,
+                  )
+                  .join("")}
               </div>
             `
-            // Try to place it after newsletter, or at end of center
-            const footer = document.querySelector("footer")
             centerDiv.appendChild(bmSection)
           }
         }
       } catch (e) {}
     }
-    
+
     return
   }
 
@@ -66,9 +68,9 @@ document.addEventListener("nav", () => {
   if (!articleContent) return
 
   // Check if navigating from a bookmark link or resume flag
-  const urlParams = new URLSearchParams(window.location.search);
-  const bmIndex = urlParams.get('bm');
-  const isResume = urlParams.get('resume') === 'true';
+  const urlParams = new URLSearchParams(window.location.search)
+  const bmIndex = urlParams.get("bm")
+  const isResume = urlParams.get("resume") === "true"
 
   if (bmIndex && articleContent) {
     setTimeout(() => {
@@ -91,7 +93,7 @@ document.addEventListener("nav", () => {
             window.scrollTo({ top: lastRead.scrollTop, behavior: "smooth" })
           }, 500)
         }
-      } catch(e) {}
+      } catch (e) {}
     }
   }
 
@@ -100,7 +102,9 @@ document.addEventListener("nav", () => {
   // =====================
   const topProgressBar = document.getElementById("reading-progress-bar") as HTMLElement | null
   const readingTimeInfo = document.getElementById("reading-time-info") as HTMLElement | null
-  const readingTimeRemaining = document.getElementById("reading-time-remaining") as HTMLElement | null
+  const readingTimeRemaining = document.getElementById(
+    "reading-time-remaining",
+  ) as HTMLElement | null
 
   // Calculate total read time from word count
   const text = articleContent.innerText || ""
@@ -121,13 +125,16 @@ document.addEventListener("nav", () => {
     // Save reading progress to localStorage
     const articleTitle = document.querySelector(".article-title")?.textContent || ""
     if (articleTitle && progressPercent > 0 && progressPercent < 100) {
-      localStorage.setItem("quartz-last-read", JSON.stringify({
-        title: articleTitle,
-        slug: pageSlug,
-        progress: progressPercent,
-        path: window.location.pathname,
-        scrollTop: scrollTop
-      }))
+      localStorage.setItem(
+        "quartz-last-read",
+        JSON.stringify({
+          title: articleTitle,
+          slug: pageSlug,
+          progress: progressPercent,
+          path: window.location.pathname,
+          scrollTop: scrollTop,
+        }),
+      )
     } else if (progressPercent >= 100) {
       localStorage.removeItem("quartz-last-read")
     }
@@ -192,14 +199,16 @@ document.addEventListener("nav", () => {
     if (!container) return
 
     const all = getBookmarks()
-    const pageBookmarks = all.filter(b => b.slug === pageSlug)
+    const pageBookmarks = all.filter((b) => b.slug === pageSlug)
 
     if (pageBookmarks.length === 0) {
-        container.innerHTML = `<div class="empty-bookmarks">لا توجد إشارات مرجعية بعد. يمكنك حفظ أي فقرة عند القراءة.</div>`
-        return
-      }
-  
-      container.innerHTML = pageBookmarks.map((bm, i) => `
+      container.innerHTML = `<div class="empty-bookmarks">لا توجد إشارات مرجعية بعد. يمكنك حفظ أي فقرة عند القراءة.</div>`
+      return
+    }
+
+    container.innerHTML = pageBookmarks
+      .map(
+        (bm) => `
         <div class="bookmark-item" data-index="${bm.index}">
           <div class="bookmark-content">
             <span class="bookmark-title">إشارة</span>
@@ -209,30 +218,36 @@ document.addEventListener("nav", () => {
              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
-      `).join("")
+      `,
+      )
+      .join("")
 
-      // Click to scroll to paragraph
-      container.querySelectorAll<HTMLElement>(".bookmark-item").forEach(item => {
-        item.addEventListener("click", (e) => {
-          if ((e.target as HTMLElement).classList.contains("bookmark-remove") || (e.target as HTMLElement).closest(".bookmark-remove")) return
-          const idx = parseInt(item.dataset.index ?? "0")
-          const paragraphs = articleContent.querySelectorAll("p, blockquote, li, .poem-line")
-          const target = paragraphs[idx] as HTMLElement | undefined
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth", block: "center" })
-            target.classList.add("bookmark-flash")
+    // Click to scroll to paragraph
+    container.querySelectorAll<HTMLElement>(".bookmark-item").forEach((item) => {
+      item.addEventListener("click", (e) => {
+        if (
+          (e.target as HTMLElement).classList.contains("bookmark-remove") ||
+          (e.target as HTMLElement).closest(".bookmark-remove")
+        )
+          return
+        const idx = parseInt(item.dataset.index ?? "0")
+        const paragraphs = articleContent.querySelectorAll("p, blockquote, li, .poem-line")
+        const target = paragraphs[idx] as HTMLElement | undefined
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "center" })
+          target.classList.add("bookmark-flash")
           setTimeout(() => target.classList.remove("bookmark-flash"), 1200)
         }
       })
     })
 
     // Remove bookmark button
-    container.querySelectorAll<HTMLElement>(".bookmark-remove").forEach(btn => {
+    container.querySelectorAll<HTMLElement>(".bookmark-remove").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation()
         const idx = parseInt(btn.dataset.bmIndex ?? "0")
         const all = getBookmarks()
-        const updated = all.filter(b => !(b.slug === pageSlug && b.index === idx))
+        const updated = all.filter((b) => !(b.slug === pageSlug && b.index === idx))
         saveBookmarks(updated)
         renderBookmarkPanel()
         // Also remove icon from paragraph
@@ -248,19 +263,21 @@ document.addEventListener("nav", () => {
   }
 
   // Inject bookmark icons into paragraphs on hover
-  const allParagraphs = articleContent.querySelectorAll<HTMLElement>("p, blockquote, li, .poem-line")
+  const allParagraphs = articleContent.querySelectorAll<HTMLElement>(
+    "p, blockquote, li, .poem-line",
+  )
   const bookmarks = getBookmarks()
 
   allParagraphs.forEach((para, index) => {
-      para.style.position = "relative"
-      const isBookmarked = bookmarks.some(b => b.slug === pageSlug && b.index === index)
-      if (isBookmarked) {
-        para.classList.add("is-bookmarked")
-      }
-      injectBookmarkIcon(para, index, isBookmarked)
-    })
+    para.style.position = "relative"
+    const isBookmarked = bookmarks.some((b) => b.slug === pageSlug && b.index === index)
+    if (isBookmarked) {
+      para.classList.add("is-bookmarked")
+    }
+    injectBookmarkIcon(para, index, isBookmarked)
+  })
 
-    function injectBookmarkIcon(para: HTMLElement, index: number, active: boolean) {
+  function injectBookmarkIcon(para: HTMLElement, index: number, active: boolean) {
     const existing = para.querySelector(".bookmark-icon")
     if (existing) {
       existing.classList.toggle("bookmark-active", active)
@@ -276,11 +293,11 @@ document.addEventListener("nav", () => {
     icon.addEventListener("click", (e) => {
       e.stopPropagation()
       const all = getBookmarks()
-      const exists = all.find(b => b.slug === pageSlug && b.index === index)
+      const exists = all.find((b) => b.slug === pageSlug && b.index === index)
 
       if (exists) {
         // Remove
-        const updated = all.filter(b => !(b.slug === pageSlug && b.index === index))
+        const updated = all.filter((b) => !(b.slug === pageSlug && b.index === index))
         saveBookmarks(updated)
         para.classList.remove("is-bookmarked")
         icon.classList.remove("bookmark-active")
@@ -300,17 +317,17 @@ document.addEventListener("nav", () => {
     })
 
     // Bulletproof JS fallback for bookmark hover icon
-    para.addEventListener('mouseenter', () => {
-      icon.classList.add('icon-visible')
+    para.addEventListener("mouseenter", () => {
+      icon.classList.add("icon-visible")
     })
-    para.addEventListener('mouseleave', (e) => {
+    para.addEventListener("mouseleave", (e) => {
       if (e.relatedTarget !== icon && !icon.contains(e.relatedTarget as Node)) {
-        icon.classList.remove('icon-visible')
+        icon.classList.remove("icon-visible")
       }
     })
-    icon.addEventListener('mouseleave', (e) => {
+    icon.addEventListener("mouseleave", (e) => {
       if (e.relatedTarget !== para && !para.contains(e.relatedTarget as Node)) {
-        icon.classList.remove('icon-visible')
+        icon.classList.remove("icon-visible")
       }
     })
 
@@ -318,8 +335,12 @@ document.addEventListener("nav", () => {
   }
 
   // Sidebar toggle logic
-  const toggleBookmarksBtn = document.getElementById("btn-toggle-bookmarks-sidebar") as HTMLButtonElement | null
-  const closeBookmarksBtn = document.getElementById("btn-close-bookmarks") as HTMLButtonElement | null
+  const toggleBookmarksBtn = document.getElementById(
+    "btn-toggle-bookmarks-sidebar",
+  ) as HTMLButtonElement | null
+  const closeBookmarksBtn = document.getElementById(
+    "btn-close-bookmarks",
+  ) as HTMLButtonElement | null
   const bookmarksSidebar = document.getElementById("bookmarks-sidebar") as HTMLElement | null
 
   if (toggleBookmarksBtn && bookmarksSidebar) {
@@ -343,10 +364,10 @@ document.addEventListener("nav", () => {
   if (clearBtn) {
     const clearHandler = () => {
       const all = getBookmarks()
-      const updated = all.filter(b => b.slug !== pageSlug)
+      const updated = all.filter((b) => b.slug !== pageSlug)
       saveBookmarks(updated)
       // Remove all bookmark classes and icons
-      allParagraphs.forEach(para => {
+      allParagraphs.forEach((para) => {
         para.classList.remove("is-bookmarked")
         const icon = para.querySelector(".bookmark-icon")
         if (icon) icon.remove()
@@ -423,7 +444,12 @@ document.addEventListener("nav", () => {
       const text = window.getSelection()?.toString() ?? ""
       await navigator.clipboard.writeText(text).catch(() => {})
       const span = copyBtn.querySelector("span")
-      if (span) { span.textContent = "تم!"; setTimeout(() => { span.textContent = "نسخ" }, 1500) }
+      if (span) {
+        span.textContent = "تم!"
+        setTimeout(() => {
+          span.textContent = "نسخ"
+        }, 1500)
+      }
       hidePopover()
       window.getSelection()?.removeAllRanges()
     }
@@ -459,4 +485,3 @@ document.addEventListener("nav", () => {
   document.addEventListener("mousedown", hideOnClick)
   window.addCleanup(() => document.removeEventListener("mousedown", hideOnClick))
 })
-

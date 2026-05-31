@@ -23,7 +23,8 @@ export default ((opts: Options) => {
       (!fileData.frontmatter?.comments || fileData.frontmatter?.comments === "false")
 
     const slug = fileData.slug
-    const isContentPage = slug && slug !== "index" && !slug.startsWith("tags/") && !slug.endsWith("/index")
+    const isContentPage =
+      slug && slug !== "index" && !slug.startsWith("tags/") && !slug.endsWith("/index")
 
     if (disableComment || !isContentPage) return <></>
 

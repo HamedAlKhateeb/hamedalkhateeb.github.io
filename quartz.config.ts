@@ -16,7 +16,7 @@ const config: QuartzConfig = {
     analytics: {
       provider: "plausible",
     },
-    locale: "ar-SA",
+    locale: "en-US",
     baseUrl: "hamedalkhateeb.pages.dev",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
@@ -24,8 +24,8 @@ const config: QuartzConfig = {
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
-        header: "Noto Sans Arabic",
-        body: "Amiri",
+        header: "Inter",
+        body: "system-ui",
         code: "IBM Plex Mono",
       },
       colors: {

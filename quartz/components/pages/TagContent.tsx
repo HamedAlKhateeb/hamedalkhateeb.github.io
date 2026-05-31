@@ -115,7 +115,7 @@ export default ((opts?: Partial<TagContentOptions>) => {
         ...props,
         allFiles: pages,
       }
-      
+
       return (
         <section class="page-container">
           <header class="main-header">

@@ -3,7 +3,11 @@ import { classNames } from "../util/lang"
 
 const Newsletter: QuartzComponent = ({ fileData, displayClass }: QuartzComponentProps) => {
   // Only render on the homepage or tag/list pages — not on poetry pages.
-  if (fileData.slug !== "index" && !fileData.slug?.endsWith("/index") && !fileData.slug?.startsWith("tags/")) {
+  if (
+    fileData.slug !== "index" &&
+    !fileData.slug?.endsWith("/index") &&
+    !fileData.slug?.startsWith("tags/")
+  ) {
     return null
   }
   if (fileData.slug?.toLowerCase().startsWith("poetry/")) {
@@ -14,21 +18,33 @@ const Newsletter: QuartzComponent = ({ fileData, displayClass }: QuartzComponent
     <div class={classNames(displayClass, "newsletter-section")}>
       {/* 2. Separator */}
       <div class="footer-separator top-sep">
-         <span class="separator-diamond">✧</span>
+        <span class="separator-diamond">✧</span>
       </div>
-      
+
       <h3 data-lang-en="Stay Updated">ابق على اطلاع</h3>
-      <p data-lang-en="Articles on math, engineering, and similar topics">مقالات في الرياضيات والهندسة وأشياء من هذا القبيل</p>
-      <form 
-        action="https://buttondown.email/api/emails/embed-subscribe/al-khateeb" 
-        method="POST" 
+      <p data-lang-en="Articles on math, engineering, and similar topics">
+        مقالات في الرياضيات والهندسة وأشياء من هذا القبيل
+      </p>
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/al-khateeb"
+        method="POST"
         class="newsletter-form"
         target="popupwindow"
       >
-        <button type="submit" data-lang-en="Subscribe">اشتراك</button>
-        <input type="email" name="email" placeholder="بريدك الإلكتروني" data-lang-en-placeholder="Your Email" required />
+        <button type="submit" data-lang-en="Subscribe">
+          اشتراك
+        </button>
+        <input
+          type="email"
+          name="email"
+          placeholder="بريدك الإلكتروني"
+          data-lang-en-placeholder="Your Email"
+          required
+        />
       </form>
-      <small data-lang-en="No spam, unsubscribe at any time.">لا رسائل مزعجة، إلغاء الاشتراك في أي وقت.</small>
+      <small data-lang-en="No spam, unsubscribe at any time.">
+        لا رسائل مزعجة، إلغاء الاشتراك في أي وقت.
+      </small>
 
       {/* 4. Separator */}
       <div class="footer-separator bottom-sep">

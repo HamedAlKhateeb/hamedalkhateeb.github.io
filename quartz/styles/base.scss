@@ -228,7 +228,9 @@ a {
       position: sticky;
       overflow-y: auto;
       z-index: 10;
-      transition: transform 0.3s ease, opacity 0.3s ease;
+      transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
     }
 
     & .sidebar.left {

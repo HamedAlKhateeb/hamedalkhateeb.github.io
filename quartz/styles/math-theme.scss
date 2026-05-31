@@ -25,7 +25,7 @@ body:has(.math-article) {
 
   background-color: var(--bg);
   color: var(--text);
-  font-family: 'Cairo', sans-serif;
+  font-family: "Cairo", sans-serif;
   line-height: 1.8;
   font-size: 16px;
 }
@@ -104,13 +104,13 @@ body:has(.math-article):root[saved-theme="sepia"] {
 }
 
 article.math-article {
-  font-family: 'Cairo', sans-serif;
+  font-family: "Cairo", sans-serif;
   line-height: 1.8;
   font-size: 16px;
   max-width: 840px !important;
   margin: 0 auto;
 
-  @media(max-width: 600px) {
+  @media (max-width: 600px) {
     padding: 0 16px 80px;
   }
 
@@ -122,14 +122,14 @@ article.math-article {
     margin-bottom: 70px;
     margin-top: 0;
     position: relative;
-    font-family: 'Amiri', serif;
+    font-family: "Amiri", serif;
     font-size: clamp(26px, 5vw, 44px);
     font-weight: 700;
     line-height: 1.3;
     color: var(--text);
 
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: -1px;
       left: 50%;
@@ -144,12 +144,12 @@ article.math-article {
   .htag {
     display: inline-block;
     font-size: 11px;
-    letter-spacing: .2em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--amber);
     font-weight: 600;
     background: var(--amberbg);
-    border: .5px solid var(--amberb);
+    border: 0.5px solid var(--amberb);
     padding: 4px 14px;
     border-radius: 20px;
     margin-bottom: 22px;
@@ -160,7 +160,7 @@ article.math-article {
     color: var(--muted);
     max-width: 520px;
     margin: 0 auto;
-    font-family: 'Amiri', serif;
+    font-family: "Amiri", serif;
     font-style: italic;
     text-align: center;
   }
@@ -169,11 +169,11 @@ article.math-article {
   .stag {
     display: inline-block;
     font-size: 10px;
-    letter-spacing: .16em;
+    letter-spacing: 0.16em;
     font-weight: 700;
     color: var(--amber);
     background: var(--amberbg);
-    border: .5px solid var(--amberb);
+    border: 0.5px solid var(--amberb);
     padding: 3px 10px;
     border-radius: 12px;
     margin-bottom: 12px;
@@ -211,7 +211,7 @@ article.math-article {
   }
 
   h2 {
-    font-family: 'Amiri', serif;
+    font-family: "Amiri", serif;
     font-size: clamp(20px, 3vw, 28px);
     font-weight: 700;
     color: var(--text);
@@ -221,7 +221,7 @@ article.math-article {
   }
 
   p {
-    font-family: 'Amiri', serif;
+    font-family: "Amiri", serif;
     font-size: 17px;
     line-height: 1.95;
     color: var(--text);
@@ -233,7 +233,9 @@ article.math-article {
   }
 
   /* MATH */
-  .math-display, .katex-display, .mblock {
+  .math-display,
+  .katex-display,
+  .mblock {
     text-align: center;
     padding: 20px 16px;
     margin: 22px 0;
@@ -259,7 +261,7 @@ article.math-article {
       border-radius: 4px;
     }
 
-    @media(max-width: 600px) {
+    @media (max-width: 600px) {
       padding: 16px 12px;
       margin: 18px 0;
       /* On very small screens, scaling down the formula slightly helps prevent excessive scrolling */
@@ -267,18 +269,22 @@ article.math-article {
     }
   }
 
-  .math:not(.math-display), mjx-container:not([display="true"]), .minl {
+  .math:not(.math-display),
+  mjx-container:not([display="true"]),
+  .minl {
     direction: ltr;
     display: inline-block;
     vertical-align: middle;
   }
 
   /* Math Blocks Inside Callouts */
-  .callout .math-display, .callout .katex-display, .callout .mblock {
+  .callout .math-display,
+  .callout .katex-display,
+  .callout .mblock {
     margin: 10px 0;
     box-shadow: none;
     border-color: var(--border);
-    @media(max-width: 600px) {
+    @media (max-width: 600px) {
       margin: 8px 0;
       padding: 12px 8px;
     }
@@ -295,7 +301,7 @@ article.math-article {
     overflow-x: auto;
     overflow-y: hidden;
     white-space: normal; /* Normal wrap for text on desktop */
-    @media(max-width: 768px) {
+    @media (max-width: 768px) {
       white-space: nowrap; /* Prevent wrap on mobile to allow scrolling */
     }
     -webkit-overflow-scrolling: touch;
@@ -307,12 +313,20 @@ article.math-article {
     border: 1px solid var(--border);
 
     /* thin, subtle scrollbar */
-    &::-webkit-scrollbar { height: 4px; }
-    &::-webkit-scrollbar-track { background: transparent; }
-    &::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 4px;
+    }
 
     /* keep the katex span itself non-wrapping */
-    > .katex, > .katex-display {
+    > .katex,
+    > .katex-display {
       display: inline-block;
       white-space: nowrap;
     }
@@ -327,7 +341,7 @@ article.math-article {
     border: none;
     position: relative;
     &::before {
-      content: '◆';
+      content: "◆";
       position: absolute;
       top: -9px;
       left: 50%;
@@ -352,14 +366,14 @@ article.math-article {
       margin-bottom: 10px;
       .callout-title-inner {
         font-size: 10px;
-        letter-spacing: .14em;
-        font-family: 'Cairo', sans-serif;
+        letter-spacing: 0.14em;
+        font-family: "Cairo", sans-serif;
         font-weight: 700;
         text-transform: uppercase;
         p {
-          font-family: 'Cairo', sans-serif !important;
+          font-family: "Cairo", sans-serif !important;
           font-size: 10px !important;
-          letter-spacing: .14em !important;
+          letter-spacing: 0.14em !important;
           margin: 0;
         }
       }
@@ -375,7 +389,7 @@ article.math-article {
     .callout-content p {
       font-size: 16px;
       margin-bottom: 10px;
-      font-family: 'Cairo', sans-serif;
+      font-family: "Cairo", sans-serif;
       &:last-child {
         margin-bottom: 0;
       }
@@ -388,7 +402,10 @@ article.math-article {
     background: #fff;
     border-color: var(--border2);
     box-shadow: var(--shadow);
-    .callout-title .callout-title-inner, .callout-title .callout-title-inner p { color: var(--muted); }
+    .callout-title .callout-title-inner,
+    .callout-title .callout-title-inner p {
+      color: var(--muted);
+    }
   }
 
   .callout[data-callout="warning"],
@@ -398,7 +415,10 @@ article.math-article {
   .box.re {
     border-color: var(--redb);
     background: var(--redbg);
-    .callout-title .callout-title-inner, .callout-title .callout-title-inner p { color: var(--red); }
+    .callout-title .callout-title-inner,
+    .callout-title .callout-title-inner p {
+      color: var(--red);
+    }
   }
 
   .callout[data-callout="success"],
@@ -406,7 +426,10 @@ article.math-article {
   .box.te {
     border-color: var(--tealb);
     background: var(--tealbg);
-    .callout-title .callout-title-inner, .callout-title .callout-title-inner p { color: var(--teal); }
+    .callout-title .callout-title-inner,
+    .callout-title .callout-title-inner p {
+      color: var(--teal);
+    }
   }
 
   .callout[data-callout="question"],
@@ -414,7 +437,10 @@ article.math-article {
   .box.am {
     border-color: var(--amberb);
     background: var(--amberbg);
-    .callout-title .callout-title-inner, .callout-title .callout-title-inner p { color: var(--amber); }
+    .callout-title .callout-title-inner,
+    .callout-title .callout-title-inner p {
+      color: var(--amber);
+    }
   }
 
   .callout[data-callout="info"],
@@ -422,7 +448,10 @@ article.math-article {
   .box.bl {
     border-color: var(--blueb);
     background: var(--bluebg);
-    .callout-title .callout-title-inner, .callout-title .callout-title-inner p { color: var(--blue); }
+    .callout-title .callout-title-inner,
+    .callout-title .callout-title-inner p {
+      color: var(--blue);
+    }
   }
 
   /* CUSTOM HTML ELEMENTS */
@@ -435,7 +464,7 @@ article.math-article {
     margin: 28px 0;
     box-shadow: var(--shadow);
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       right: 0;
       top: 14px;
@@ -445,9 +474,9 @@ article.math-article {
       border-radius: 2px;
     }
     .dtitle {
-      font-family: 'Cairo', sans-serif;
+      font-family: "Cairo", sans-serif;
       font-size: 11px;
-      letter-spacing: .14em;
+      letter-spacing: 0.14em;
       color: var(--amberd);
       font-weight: 700;
       margin-bottom: 12px;
@@ -460,26 +489,39 @@ article.math-article {
     grid-template-columns: 1fr 1fr;
     gap: 13px;
     margin: 20px 0;
-    @media(max-width: 560px) {
+    @media (max-width: 560px) {
       grid-template-columns: 1fr;
     }
   }
   .pc {
     border-radius: 9px;
     padding: 18px 20px;
-    &.re { background: var(--redbg); border: 1px solid var(--redb); }
-    &.te { background: var(--tealbg); border: 1px solid var(--tealb); }
+    &.re {
+      background: var(--redbg);
+      border: 1px solid var(--redb);
+    }
+    &.te {
+      background: var(--tealbg);
+      border: 1px solid var(--tealb);
+    }
     .pn {
       font-size: 10px;
-      letter-spacing: .14em;
-      font-family: 'Cairo', sans-serif;
+      letter-spacing: 0.14em;
+      font-family: "Cairo", sans-serif;
       font-weight: 700;
       margin-bottom: 7px;
       text-transform: uppercase;
     }
-    &.re .pn { color: var(--red); }
-    &.te .pn { color: var(--teal); }
-    p { font-size: 15px; line-height: 1.75; }
+    &.re .pn {
+      color: var(--red);
+    }
+    &.te .pn {
+      color: var(--teal);
+    }
+    p {
+      font-size: 15px;
+      line-height: 1.75;
+    }
   }
 
   .steps {
@@ -507,7 +549,7 @@ article.math-article {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Cairo', sans-serif;
+      font-family: "Cairo", sans-serif;
       font-size: 12px;
       color: var(--amberd);
       font-weight: 700;
@@ -520,10 +562,14 @@ article.math-article {
       margin-top: 5px;
       min-height: 20px;
     }
-    .step:last-child .svl { display: none; }
-    .sb { padding-bottom: 24px; }
+    .step:last-child .svl {
+      display: none;
+    }
+    .sb {
+      padding-bottom: 24px;
+    }
     .st {
-      font-family: 'Cairo', sans-serif;
+      font-family: "Cairo", sans-serif;
       font-size: 14px;
       font-weight: 600;
       color: var(--amberd);
@@ -537,28 +583,34 @@ article.math-article {
   }
 
   /* DIAGRAMS AND EXAMPLES */
-  .dw, .nlw, .excard {
+  .dw,
+  .nlw,
+  .excard {
     background: #fff;
     border: 1px solid var(--border2);
     border-radius: 10px;
     margin: 26px 0;
     box-shadow: var(--shadow);
   }
-  .dw { padding: 22px; }
-  .nlw { padding: 18px 20px; }
+  .dw {
+    padding: 22px;
+  }
+  .nlw {
+    padding: 18px 20px;
+  }
   .excard {
     padding: 26px 28px;
     .exnum {
       font-size: 10px;
-      letter-spacing: .16em;
-      font-family: 'Cairo', sans-serif;
+      letter-spacing: 0.16em;
+      font-family: "Cairo", sans-serif;
       font-weight: 700;
       color: var(--muted);
       margin-bottom: 4px;
       text-transform: uppercase;
     }
     h3 {
-      font-family: 'Amiri', serif;
+      font-family: "Amiri", serif;
       font-size: 20px;
       font-weight: 700;
       margin-bottom: 10px;
@@ -570,7 +622,7 @@ article.math-article {
   }
 
   .dtit {
-    font-family: 'Cairo', sans-serif;
+    font-family: "Cairo", sans-serif;
     font-size: 12px;
     color: var(--muted);
     margin-bottom: 14px;
@@ -591,10 +643,10 @@ article.math-article {
   .cl {
     font-size: 12px;
     color: var(--muted);
-    font-family: 'Cairo', sans-serif;
+    font-family: "Cairo", sans-serif;
     min-width: 80px;
   }
-  input[type=range] {
+  input[type="range"] {
     flex: 1;
     min-width: 100px;
     -webkit-appearance: none;
@@ -611,11 +663,11 @@ article.math-article {
       background: var(--amber);
       cursor: pointer;
       border: 2px solid #fff;
-      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
   }
   .cn {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "JetBrains Mono", monospace;
     font-size: 13px;
     color: var(--amberd);
     min-width: 48px;
@@ -628,7 +680,7 @@ article.math-article {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     margin-top: 12px;
-    @media(max-width: 480px) {
+    @media (max-width: 480px) {
       grid-template-columns: 1fr;
     }
   }
@@ -641,11 +693,11 @@ article.math-article {
   .icl {
     font-size: 11px;
     color: var(--muted);
-    font-family: 'Cairo', sans-serif;
+    font-family: "Cairo", sans-serif;
     margin-bottom: 3px;
   }
   .icv {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "JetBrains Mono", monospace;
     font-size: 15px;
     font-weight: 500;
   }
@@ -664,8 +716,8 @@ article.math-article {
   }
   .lctag {
     font-size: 10px;
-    letter-spacing: .12em;
-    font-family: 'Cairo', sans-serif;
+    letter-spacing: 0.12em;
+    font-family: "Cairo", sans-serif;
     font-weight: 700;
     color: var(--muted);
     margin-bottom: 5px;
@@ -678,7 +730,7 @@ article.math-article {
   }
   .lcc {
     margin: 6px 0 0;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "JetBrains Mono", monospace;
     font-size: 12px;
     color: var(--amberd);
     background: var(--bg2);
@@ -690,13 +742,21 @@ article.math-article {
   .exst {
     display: inline-block;
     font-size: 11px;
-    font-family: 'Cairo', sans-serif;
+    font-family: "Cairo", sans-serif;
     font-weight: 600;
     padding: 3px 12px;
     border-radius: 12px;
     margin-bottom: 14px;
-    &.ok { background: var(--tealbg); color: var(--teal); border: .5px solid var(--tealb); }
-    &.no { background: var(--redbg); color: var(--red); border: .5px solid var(--redb); }
+    &.ok {
+      background: var(--tealbg);
+      color: var(--teal);
+      border: 0.5px solid var(--tealb);
+    }
+    &.no {
+      background: var(--redbg);
+      color: var(--red);
+      border: 0.5px solid var(--redb);
+    }
   }
 
   /* COMPARE TABLE */
@@ -704,10 +764,11 @@ article.math-article {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    th, td {
+    th,
+    td {
       padding: 12px 15px;
       border-bottom: 1px solid var(--border);
-      font-family: 'Amiri', serif;
+      font-family: "Amiri", serif;
       font-size: 15px;
       line-height: 1.7;
     }
@@ -716,15 +777,23 @@ article.math-article {
       color: var(--muted);
       font-weight: 400;
       font-size: 12px;
-      letter-spacing: .05em;
-      font-family: 'Cairo', sans-serif;
+      letter-spacing: 0.05em;
+      font-family: "Cairo", sans-serif;
       text-transform: uppercase;
       text-align: right;
     }
-    td:first-child { color: var(--muted); }
-    td:nth-child(2) { color: var(--red); }
-    td:nth-child(3) { color: var(--teal); }
-    tr:last-child td { border-bottom: none; }
+    td:first-child {
+      color: var(--muted);
+    }
+    td:nth-child(2) {
+      color: var(--red);
+    }
+    td:nth-child(3) {
+      color: var(--teal);
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
   }
 
   /* EPIGRAPH */
@@ -733,7 +802,7 @@ article.math-article {
     padding: 5px 18px;
     margin: 26px 0;
     p {
-      font-family: 'Amiri', serif;
+      font-family: "Amiri", serif;
       font-style: italic;
       font-size: 16px;
       color: var(--muted);
@@ -743,7 +812,7 @@ article.math-article {
       font-size: 13px;
       color: var(--bg4);
       margin-top: 5px;
-      font-family: 'Cairo', sans-serif;
+      font-family: "Cairo", sans-serif;
     }
   }
 

@@ -8,44 +8,59 @@ import { resolveRelative } from "../util/path"
 const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
   const { fileData, allFiles, displayClass, cfg } = props
   const text = fileData.text
-  
+
   // Only render on actual articles — not on poetry pages
-  if (!text || fileData.slug === "index" || fileData.slug?.endsWith("/index") || fileData.slug?.startsWith("tags/") || fileData.slug?.toLowerCase().startsWith("poetry/")) {
+  if (
+    !text ||
+    fileData.slug === "index" ||
+    fileData.slug?.endsWith("/index") ||
+    fileData.slug?.startsWith("tags/") ||
+    fileData.slug?.toLowerCase().startsWith("poetry/")
+  ) {
     return null
   }
-  
+
   const { minutes } = readingTime(text)
   const time = i18n(cfg.locale).components.contentMeta.readingTime({ minutes: Math.ceil(minutes) })
   const date = getDate(cfg, fileData)
-  
+
   // Get 2 recommended articles (simple logic: get 2 next/prev or fallback)
-  const currentIdx = allFiles.findIndex(f => f.slug === fileData.slug)
+  const currentIdx = allFiles.findIndex((f) => f.slug === fileData.slug)
   const recommendations = []
   if (currentIdx !== -1 && allFiles.length > 2) {
     let nextIdx = (currentIdx + 1) % allFiles.length
     let prevIdx = (currentIdx - 1 + allFiles.length) % allFiles.length
     if (allFiles[nextIdx].slug === fileData.slug) nextIdx = (nextIdx + 1) % allFiles.length
-    if (allFiles[prevIdx].slug === fileData.slug || allFiles[prevIdx].slug === allFiles[nextIdx].slug) prevIdx = (prevIdx - 1 + allFiles.length) % allFiles.length
-    
+    if (
+      allFiles[prevIdx].slug === fileData.slug ||
+      allFiles[prevIdx].slug === allFiles[nextIdx].slug
+    )
+      prevIdx = (prevIdx - 1 + allFiles.length) % allFiles.length
+
     recommendations.push(allFiles[prevIdx])
     recommendations.push(allFiles[nextIdx])
   } else {
-     recommendations.push(...allFiles.filter(f => f.slug !== fileData.slug).slice(0, 2))
+    recommendations.push(...allFiles.filter((f) => f.slug !== fileData.slug).slice(0, 2))
   }
 
   return (
     <div class={classNames(displayClass, "article-footer-wrapper")}>
-      
       {/* 1. Recommendations */}
       {recommendations.length > 0 && (
         <div class="recommendations-section">
-          <h3 class="recommendations-title" data-lang-en="Read Also">إقرأ أيضاً</h3>
+          <h3 class="recommendations-title" data-lang-en="Read Also">
+            إقرأ أيضاً
+          </h3>
           <div class="recommendations-grid">
             {recommendations.map((page, idx) => (
-              <a href={resolveRelative(fileData.slug!, page.slug!)} class="recommendation-card internal" key={idx}>
-                <span class="rec-category">{page.frontmatter?.tags?.[0] || 'مقال'}</span>
+              <a
+                href={resolveRelative(fileData.slug!, page.slug!)}
+                class="recommendation-card internal"
+                key={idx}
+              >
+                <span class="rec-category">{page.frontmatter?.tags?.[0] || "مقال"}</span>
                 <h4>{page.frontmatter?.title}</h4>
-                <p>{page.frontmatter?.description || 'اضغط لقراءة المزيد...'}</p>
+                <p>{page.frontmatter?.description || "اضغط لقراءة المزيد..."}</p>
               </a>
             ))}
           </div>
@@ -54,7 +69,7 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
 
       {/* 2. Separator */}
       <div class="footer-separator top-sep">
-         <span class="separator-diamond">✧</span>
+        <span class="separator-diamond">✧</span>
       </div>
 
       {/* 4. Separator */}
@@ -65,21 +80,31 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
       {/* 5. Meta Block */}
       <div class="article-end-meta">
         <h2 class="footer-article-title">{fileData.frontmatter?.title}</h2>
-        <p class="footer-category" data-lang-en="Related articles in the same category">من المقالات في نفس التصنيف</p>
-        
+        <p class="footer-category" data-lang-en="Related articles in the same category">
+          من المقالات في نفس التصنيف
+        </p>
+
         <div class="footer-info">
-          <a href="/" class="internal author-link" data-lang-en="Hamed Al-Khateeb's Blog">مدونة حامد الخطيب</a>
+          <a href="/" class="internal author-link" data-lang-en="Hamed Al-Khateeb's Blog">
+            مدونة حامد الخطيب
+          </a>
           <span class="dot">|</span>
-          <span>{date ? date.toLocaleDateString('ar-SA', { day: 'numeric', month: 'long', year: 'numeric' }) : ""}</span>
+          <span>
+            {date
+              ? date.toLocaleDateString("ar-SA", { day: "numeric", month: "long", year: "numeric" })
+              : ""}
+          </span>
           <span class="dot">|</span>
           <span>{time}</span>
         </div>
-        
+
         <button class="back-to-start" id="btn-footer-top" data-lang-en="↑ Back to Top">
           ↑ العودة للبداية
         </button>
 
-        <a href="/" class="all-articles-link" data-lang-en="-- All Articles --">-- جميع المقالات --</a>
+        <a href="/" class="all-articles-link" data-lang-en="-- All Articles --">
+          -- جميع المقالات --
+        </a>
       </div>
     </div>
   )

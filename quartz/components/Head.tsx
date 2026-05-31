@@ -34,7 +34,7 @@ export default (() => {
     const usesCustomOgImage = ctx.cfg.plugins.emitters.some(
       (e) => e.name === CustomOgImagesEmitterName,
     )
-    const frontmatterImage = fileData.frontmatter?.cover ?? fileData.frontmatter?.image;
+    const frontmatterImage = fileData.frontmatter?.cover ?? fileData.frontmatter?.image
     const ogImageDefaultPath = frontmatterImage
       ? `https://${cfg.baseUrl}${frontmatterImage}`
       : `https://${cfg.baseUrl}/static/thumbnails/og-image.jpg`
@@ -42,12 +42,16 @@ export default (() => {
     return (
       <head>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-3QGXK7JG0G"></script>
-        <script dangerouslySetInnerHTML={{ __html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-3QGXK7JG0G');
-        `}}></script>
+        `,
+          }}
+        ></script>
         <title>{title}</title>
         <meta charSet="utf-8" />
         {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
@@ -55,8 +59,14 @@ export default (() => {
             <link rel="preconnect" href="https://fonts.googleapis.com" />
             <link rel="preconnect" href="https://fonts.gstatic.com" />
             <link rel="stylesheet" href={googleFontHref(cfg.theme)} />
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&amp;display=swap" />
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+            <link
+              rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&amp;display=swap"
+            />
+            <link
+              rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+            />
             {cfg.theme.typography.title && (
               <link rel="stylesheet" href={googleFontSubsetHref(cfg.theme, cfg.pageTitle)} />
             )}
@@ -97,8 +107,15 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
-        <meta name="google-site-verification" content="RvjcbTmq75nTxaiEgp-3J8I6NuH6KvkhxUsITh_zUSU" />
-        <script src={joinSegments(baseDir, "static/math-canvas.js")} defer data-persist="true"></script>
+        <meta
+          name="google-site-verification"
+          content="RvjcbTmq75nTxaiEgp-3J8I6NuH6KvkhxUsITh_zUSU"
+        />
+        <script
+          src={joinSegments(baseDir, "static/math-canvas.js")}
+          defer
+          data-persist="true"
+        ></script>
 
         {css.map((resource) => CSSResourceToStyleElement(resource, true))}
         {js

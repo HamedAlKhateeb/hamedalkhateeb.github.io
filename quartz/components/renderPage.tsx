@@ -257,8 +257,9 @@ export function renderPage(
     </div>
   )
 
-  const lang = componentData.fileData.frontmatter?.lang ?? cfg.locale?.split("-")[0] ?? "en"
-  const direction = i18n(cfg.locale).direction ?? "ltr"
+  const isArabic = slug.startsWith("ar/") || slug === "ar"
+  const lang = isArabic ? "ar" : "en"
+  const direction = isArabic ? "rtl" : "ltr"
   const isArticle = !slug.endsWith("index")
   const doc = (
     <html lang={lang} dir={direction}>
@@ -293,7 +294,11 @@ export function renderPage(
           </Body>
         </div>
         {/* Cloudflare Web Analytics */}
-        <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "c9e8fa2ad2ae4db3b20f1e87d3765481"}'></script>
+        <script
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "c9e8fa2ad2ae4db3b20f1e87d3765481"}'
+        ></script>
         {/* End Cloudflare Web Analytics */}
       </body>
       {pageResources.js

@@ -11,14 +11,18 @@ export const AutoRTL: QuartzTransformerPlugin = () => ({
     return [
       () => (_tree: any, file: VFile) => {
         const path = (file.data.filePath ?? "").toLowerCase()
-        const inRTLFolder = RTL_FOLDERS.some(f => path.includes(`/${f}/`) || path.startsWith(`${f}/`))
-        
+        const inRTLFolder = RTL_FOLDERS.some(
+          (f) => path.includes(`/${f}/`) || path.startsWith(`${f}/`),
+        )
+
         if (inRTLFolder) {
-          file.data.frontmatter = file.data.frontmatter ?? {}
+          if (!file.data.frontmatter) {
+            file.data.frontmatter = { title: file.stem ?? "" }
+          }
           const fm = file.data.frontmatter as Record<string, any>
           fm.cssclasses = [...(fm.cssclasses ?? []), "rtl-math", "math-article"]
         }
-      }
+      },
     ]
   },
 })

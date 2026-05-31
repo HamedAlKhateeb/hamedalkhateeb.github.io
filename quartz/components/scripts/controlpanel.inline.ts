@@ -246,7 +246,11 @@ document.addEventListener("nav", () => {
 
     // Close panel when clicking outside
     const closeOnOutsideClick = (e: MouseEvent) => {
-      if (!settingsPanel.contains(e.target as Node) && !settingsToggle.contains(e.target as Node) && !settingsPanel.classList.contains("panel-collapsed")) {
+      if (
+        !settingsPanel.contains(e.target as Node) &&
+        !settingsToggle.contains(e.target as Node) &&
+        !settingsPanel.classList.contains("panel-collapsed")
+      ) {
         settingsPanel.classList.add("panel-collapsed")
       }
     }
@@ -270,7 +274,7 @@ document.addEventListener("nav", () => {
   const gearDock = document.querySelector(".isolated-gear-dock") as HTMLElement | null
   const backDock = document.querySelector(".back-to-prev-dock") as HTMLElement | null
   const scrollTopDock = document.querySelector(".scroll-to-top-dock") as HTMLElement | null
-  
+
   if (gearDock || backDock || scrollTopDock) {
     let lastScrollY = window.scrollY
     let ticking = false
@@ -281,22 +285,49 @@ document.addEventListener("nav", () => {
         window.requestAnimationFrame(() => {
           if (currentScrollY > 100) {
             // we use some threshold to avoid flutter
-            if (currentScrollY > lastScrollY && (currentScrollY - lastScrollY > 10)) {
+            if (currentScrollY > lastScrollY && currentScrollY - lastScrollY > 10) {
               // Scrolling down - hide
-              if (gearDock) { gearDock.style.transform = "translateY(150%)"; gearDock.style.opacity = "0" }
-              if (backDock) { backDock.style.transform = "translateY(-150%)"; backDock.style.opacity = "0" }
-              if (scrollTopDock) { scrollTopDock.style.transform = "translateY(150%)"; scrollTopDock.style.opacity = "0" }
-            } else if (currentScrollY < lastScrollY && (lastScrollY - currentScrollY > 10)) {
+              if (gearDock) {
+                gearDock.style.transform = "translateY(150%)"
+                gearDock.style.opacity = "0"
+              }
+              if (backDock) {
+                backDock.style.transform = "translateY(-150%)"
+                backDock.style.opacity = "0"
+              }
+              if (scrollTopDock) {
+                scrollTopDock.style.transform = "translateY(150%)"
+                scrollTopDock.style.opacity = "0"
+              }
+            } else if (currentScrollY < lastScrollY && lastScrollY - currentScrollY > 10) {
               // Scrolling up - show
-              if (gearDock) { gearDock.style.transform = "translateY(0)"; gearDock.style.opacity = "1" }
-              if (backDock) { backDock.style.transform = "translateY(0)"; backDock.style.opacity = "1" }
-              if (scrollTopDock) { scrollTopDock.style.transform = "translateY(0)"; scrollTopDock.style.opacity = "1" }
+              if (gearDock) {
+                gearDock.style.transform = "translateY(0)"
+                gearDock.style.opacity = "1"
+              }
+              if (backDock) {
+                backDock.style.transform = "translateY(0)"
+                backDock.style.opacity = "1"
+              }
+              if (scrollTopDock) {
+                scrollTopDock.style.transform = "translateY(0)"
+                scrollTopDock.style.opacity = "1"
+              }
             }
           } else {
             // At top - always show
-            if (gearDock) { gearDock.style.transform = "translateY(0)"; gearDock.style.opacity = "1" }
-            if (backDock) { backDock.style.transform = "translateY(0)"; backDock.style.opacity = "1" }
-            if (scrollTopDock) { scrollTopDock.style.transform = "translateY(0)"; scrollTopDock.style.opacity = "1" }
+            if (gearDock) {
+              gearDock.style.transform = "translateY(0)"
+              gearDock.style.opacity = "1"
+            }
+            if (backDock) {
+              backDock.style.transform = "translateY(0)"
+              backDock.style.opacity = "1"
+            }
+            if (scrollTopDock) {
+              scrollTopDock.style.transform = "translateY(0)"
+              scrollTopDock.style.opacity = "1"
+            }
           }
           lastScrollY = currentScrollY
           ticking = false

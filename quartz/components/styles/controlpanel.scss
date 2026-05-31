@@ -31,7 +31,6 @@
   z-index: 9998;
 }
 
-
 /* Scroll To Top - Bottom Left */
 .scroll-to-top-dock {
   position: fixed;
@@ -39,7 +38,6 @@
   left: 0.5rem;
   z-index: 998;
 }
-
 
 .dock-btn {
   width: 50px;
@@ -82,7 +80,7 @@
   direction: rtl;
   width: 240px; /* ~20% smaller width */
   max-width: calc(100vw - 4rem);
-  
+
   /* Solid floating card */
   background: var(--light);
   border: 1px solid var(--lightgray);
@@ -92,7 +90,10 @@
 
   /* Animation for toggle */
   transform-origin: bottom right; /* Drop down from the bottom right again */
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, visibility 0.3s;
+  transition:
+    transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    opacity 0.3s ease,
+    visibility 0.3s;
 }
 
 .control-panel.panel-collapsed {
@@ -155,7 +156,7 @@
   & .btn-text {
     font-size: 0.7rem;
   }
-  
+
   & .btn-text-only {
     font-size: 0.75rem;
     font-weight: 600;
@@ -169,7 +170,7 @@
     border-color: #8a252c;
     color: #8a252c;
     background: var(--highlight);
-    
+
     & svg {
       stroke: #8a252c;
     }
@@ -311,7 +312,9 @@
   transform: translateX(100%);
   opacity: 0;
   pointer-events: none;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
 :root[dir="rtl"] .sidebar.right.sidebar-hidden {
@@ -373,7 +376,7 @@
   color: var(--darkgray);
   white-space: nowrap;
   pointer-events: none;
-  height: 40px; 
+  height: 40px;
   align-items: center;
   justify-content: center;
 }
@@ -419,7 +422,9 @@
 }
 
 /* Paragraph Hover Bookmarks */
-p, blockquote, li {
+p,
+blockquote,
+li {
   position: relative;
 }
 
@@ -436,10 +441,12 @@ p, blockquote, li {
   opacity: 0;
   pointer-events: none;
   z-index: 100;
-  transition: opacity 0.2s ease, color 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease;
   padding: 0;
 
-  @media(max-width: 768px) {
+  @media (max-width: 768px) {
     right: -15px; /* Keep it close on mobile to avoid going off-screen */
   }
 }
@@ -447,14 +454,14 @@ p, blockquote, li {
 /* Hover bridge: an invisible extension that covers the gap to the paragraph 
    so the mouse doesn't "fall out" of the hover state while moving towards the icon */
 .bookmark-icon::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -10px;
   bottom: -10px;
   right: 100%;
   width: 30px; /* Covers exactly the distance to the paragraph edge without overlapping text */
 
-  @media(max-width: 768px) {
+  @media (max-width: 768px) {
     width: 15px; /* Smaller bridge for mobile */
   }
 }
@@ -491,11 +498,11 @@ li:hover > .bookmark-icon,
   border-radius: 4px;
 }
 
-  .bookmark-active {
-    color: #8a252c !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
+.bookmark-active {
+  color: #8a252c !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
 :root[saved-theme="dark"] .bookmark-active {
   color: #d1565e !important;
 }
@@ -512,8 +519,12 @@ li:hover > .bookmark-icon,
   animation: flashBookmark 1.2s ease-out;
 }
 @keyframes flashBookmark {
-  0% { background-color: var(--bookmark-flash-bg); }
-  100% { background-color: transparent; }
+  0% {
+    background-color: var(--bookmark-flash-bg);
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
 /* Bookmarks Panel inside Settings */
@@ -620,7 +631,7 @@ li:hover > .bookmark-icon,
   height: 100vh;
   background: var(--light);
   border-right: 1px solid var(--lightgray);
-  box-shadow: 4px 0 30px rgba(0,0,0,0.05);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.05);
   z-index: 10000;
   display: flex;
   flex-direction: column;
@@ -629,7 +640,7 @@ li:hover > .bookmark-icon,
 }
 
 :root[saved-theme="dark"] .bookmarks-sidebar {
-  box-shadow: 4px 0 30px rgba(0,0,0,0.3);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
 }
 
 .bookmarks-sidebar.sidebar-hidden {
@@ -743,7 +754,6 @@ li:hover > .bookmark-icon,
   margin: 0;
   text-align: right;
 }
-
 
 .control-panel {
   width: 220px !important;
@@ -771,7 +781,7 @@ li:hover > .bookmark-icon,
   height: 100vh;
   background: var(--light);
   border-right: 1px solid var(--lightgray);
-  box-shadow: 4px 0 30px rgba(0,0,0,0.05);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.05);
   z-index: 10000;
   display: flex;
   flex-direction: column;
@@ -780,7 +790,7 @@ li:hover > .bookmark-icon,
 }
 
 :root[saved-theme="dark"] .bookmarks-sidebar {
-  box-shadow: 4px 0 30px rgba(0,0,0,0.3);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
 }
 
 .bookmarks-sidebar.sidebar-hidden {
@@ -894,4 +904,3 @@ li:hover > .bookmark-icon,
   margin: 0;
   text-align: right;
 }
-
