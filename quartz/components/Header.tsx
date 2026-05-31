@@ -83,7 +83,6 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           <a href={resolveRelative(fileData.slug!, "Engineering" as FullSlug)}>Engineering</a>
           <a href={resolveRelative(fileData.slug!, "Culture" as FullSlug)}>Culture</a>
           <a href={resolveRelative(fileData.slug!, "Experiences" as FullSlug)}>Experiences</a>
-          <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}>Poetry</a>
           <a href={resolveRelative(fileData.slug!, "About" as FullSlug)}>About</a>
           <a href={resolveRelative(fileData.slug!, "ar" as FullSlug)} class="arabic-portal-capsule">
             العربية ↗

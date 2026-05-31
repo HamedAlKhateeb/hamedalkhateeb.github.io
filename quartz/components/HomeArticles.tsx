@@ -114,12 +114,6 @@ export default (() => {
               💡 Experiences
             </a>
             <a
-              href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}
-              class="category-pill internal"
-            >
-              📜 Poetry
-            </a>
-            <a
               href={resolveRelative(fileData.slug!, "About" as FullSlug)}
               class="category-pill internal"
             >
