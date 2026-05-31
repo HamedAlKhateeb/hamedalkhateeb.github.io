@@ -46,7 +46,7 @@ figure,
   box-sizing: border-box;
   margin: 0 auto;
   width: 100%;
-  max-width: 100vw;
+  max-width: 100%;
   @media all and (max-width: 800px) {
     padding: 0 16px;
     padding-bottom: 90px;
@@ -88,6 +88,7 @@ body.is-article .center > article dd {
   margin: 0 auto;
   overflow-x: hidden;
   word-wrap: break-word;
+  box-sizing: border-box;
 }
 
 // Sepia theme colors
@@ -1802,7 +1803,7 @@ html[lang="ar"][saved-theme="sepia"] {
    Responsive Settings & Fluid Units (Appended directly)
    ============================================================ */
 :root {
-  --page-width: 100vw;
+  --page-width: 100%;
   --side-panel-width: clamp(250px, 20vw, 320px);
 }
 
