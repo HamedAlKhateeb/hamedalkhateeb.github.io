@@ -307,6 +307,9 @@ export function renderPage(
       <Head {...componentData} />
       <body data-slug={slug} class={isArticle ? "is-article" : "is-list"}>
         <div id="quartz-root" class="page">
+          <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle Sidebar">
+            ☰ الأقسام الجانبية
+          </button>
           <Body {...componentData}>
             {LeftComponent}
             <div class="center">
@@ -334,6 +337,16 @@ export function renderPage(
             <Footer {...componentData} />
           </Body>
         </div>
+        <script dangerouslySetInnerHTML={{ __html: `
+          document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('sidebar-toggle');
+            if (toggle) {
+              toggle.addEventListener('click', function() {
+                document.body.classList.toggle('sidebar-open');
+              });
+            }
+          });
+        `}} />
         {/* Cloudflare Web Analytics */}
         <script
           defer
