@@ -7,7 +7,7 @@ lang: ar
   
   <div class="arabic-start-header">
     <div class="diwan-ornament">❊ ❊ ❊</div>
-    <h1 class="diwan-main-title">المجلة العربية</h1>
+    <h1 class="diwan-main-title"></h1>
   </div>
 
   <div class="diwan-divider">⟡</div>

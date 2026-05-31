@@ -28,14 +28,8 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
   const readingWidthLabel = isArabic ? "عرض القراءة" : "Reading Width"
   const audioLabel = isArabic ? "الصوت" : "Audio"
   const tocLabel = isArabic ? "الفهرس" : "TOC"
-  const bookmarksLabel = isArabic ? "الإشارات" : "Bookmarks"
-  const bookmarksHeaderLabel = isArabic ? "الإشارات المرجعية" : "Bookmarks"
-  const emptyBookmarksLabel = isArabic
-    ? "لا توجد علامات مرجعية بعد. يمكنك حفظ أي فقرة عند القراءة."
-    : "No bookmarks yet. You can save any paragraph while reading."
   const audioToggleTitle = isArabic ? "تفعيل / إيقاف الصوت" : "Toggle Audio"
   const tocToggleTitle = isArabic ? "تفعيل / إيقاف الفهرس" : "Toggle TOC"
-  const bookmarksToggleTitle = isArabic ? "عرض الإشارات المرجعية" : "View Bookmarks"
   const audioActiveText = isArabic ? "مفعل" : "On"
   const audioInactiveText = isArabic ? "إيقاف" : "Off"
   const toggleOpenText = isArabic ? "تفعيل" : "Open"
@@ -309,44 +303,9 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
                   <span>{toggleOpenText}</span>
                 </button>
               </div>
-              <div class="toggle-row">
-                <span class="toggle-label">{bookmarksLabel}</span>
-                <button
-                  id="btn-toggle-bookmarks-sidebar"
-                  class="small-action-btn"
-                  title={bookmarksToggleTitle}
-                >
-                  <span>{toggleOpenText}</span>
-                </button>
-              </div>
             </div>
           </div>
 
-          {/* Left Sidebar for Bookmarks */}
-          <div id="bookmarks-sidebar" class="bookmarks-sidebar sidebar-hidden">
-            <div class="bookmarks-header">
-              <h3 class="control-label">{bookmarksHeaderLabel}</h3>
-              <button id="btn-close-bookmarks" class="close-sidebar-btn" title={closeLabel}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </div>
-            <div id="bookmarks-container" class="bookmarks-list">
-              <div class="empty-bookmarks">{emptyBookmarksLabel}</div>
-            </div>
-          </div>
         </>
       )}
     </div>
