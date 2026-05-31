@@ -212,6 +212,47 @@ function renderTranscludes(
   })
 }
 
+function checkIsArabic(slug: string, fileData: any): boolean {
+  const normalizedSlug = slug.toLowerCase()
+  // English sections are never Arabic
+  if (normalizedSlug.startsWith("en/") || normalizedSlug === "en" || normalizedSlug.includes("/en/")) {
+    return false
+  }
+
+  // 1. Check if frontmatter specifies lang: ar
+  if (fileData?.frontmatter?.lang === "ar" || fileData?.frontmatter?.lang === "ar-EG") {
+    return true
+  }
+  
+  // 2. Check if slug / path contains an Arabic folder/segment or starts with ar or poetry
+  if (
+    normalizedSlug.startsWith("ar/") ||
+    normalizedSlug === "ar" ||
+    normalizedSlug.includes("/ar/") ||
+    normalizedSlug.includes("/poetry") ||
+    normalizedSlug.includes("poetry/") ||
+    normalizedSlug.includes("/أشعاري/") ||
+    normalizedSlug.includes("/مقالاتي/") ||
+    normalizedSlug.includes("أشعاري") ||
+    normalizedSlug.includes("مقالاتي")
+  ) {
+    return true
+  }
+
+  // 3. Check if more than 50% of characters in the title are Arabic
+  const title = fileData?.frontmatter?.title ?? ""
+  if (title) {
+    const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g
+    const arabicChars = title.match(arabicRegex) || []
+    const totalChars = title.replace(/\s+/g, "").length
+    if (totalChars > 0 && (arabicChars.length / totalChars) > 0.5) {
+      return true
+    }
+  }
+
+  return false
+}
+
 export function renderPage(
   cfg: GlobalConfiguration,
   slug: FullSlug,
@@ -250,14 +291,14 @@ export function renderPage(
   )
 
   const RightComponent = (
-    <div class="right sidebar">
+    <div class="right sidebar sidebar-hidden">
       {right.map((BodyComponent) => (
         <BodyComponent {...componentData} />
       ))}
     </div>
   )
 
-  const isArabic = slug.startsWith("ar/") || slug === "ar"
+  const isArabic = checkIsArabic(slug, componentData.fileData)
   const lang = isArabic ? "ar" : "en"
   const direction = isArabic ? "rtl" : "ltr"
   const isArticle = !slug.endsWith("index")

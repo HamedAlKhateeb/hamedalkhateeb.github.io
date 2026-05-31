@@ -12,7 +12,16 @@ const ArticleTitle: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
         <h1 class="article-title" {...(titleEn ? { "data-title-en": titleEn } : {})}>
           {title}
         </h1>
-        {cover && <img src={cover} alt={title} class="article-cover" />}
+        {cover && (
+          <img
+            src={cover}
+            alt={title}
+            class="article-cover"
+            width="800"
+            height="400"
+            style={{ objectFit: "cover" }}
+          />
+        )}
       </div>
     )
   } else {

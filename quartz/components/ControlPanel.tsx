@@ -38,7 +38,7 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
   const bookmarksToggleTitle = isArabic ? "عرض الإشارات المرجعية" : "View Bookmarks"
   const audioActiveText = isArabic ? "مفعل" : "On"
   const audioInactiveText = isArabic ? "إيقاف" : "Off"
-  const toggleOpenText = isArabic ? "فتح" : "Open"
+  const toggleOpenText = isArabic ? "تفعيل" : "Open"
   const closeLabel = isArabic ? "إغلاق" : "Close"
 
   return (

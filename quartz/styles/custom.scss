@@ -6,7 +6,8 @@
   direction: ltr;
   --main-font-size: 18px;
   --main-line-height: 1.7;
-  --content-width: 800px;
+  --reading-width: 1400px;
+  --content-width: 1400px;
 }
 
 body,
@@ -40,7 +41,6 @@ figure,
 
 .page {
   justify-content: center;
-  max-width: 100vw !important;
   padding: 0 16px;
   box-sizing: border-box;
   margin: 0 auto;
@@ -50,7 +50,7 @@ figure,
 
 @media all and ($desktop) {
   body.is-article .page > #quartz-body {
-    grid-template-columns: 1fr minmax(auto, var(--content-width, 580px)) 1fr !important;
+    grid-template-columns: 1fr minmax(auto, var(--content-width, 1400px)) 1fr !important;
     transition: grid-template-columns 0.3s ease;
   }
   body.is-list .page > #quartz-body {
@@ -132,7 +132,7 @@ html[reader-mode="on"] hr {
 
 @media all and ($desktop) {
   html[reader-mode="on"] body.is-article .page > #quartz-body {
-    grid-template-columns: 1fr minmax(auto, var(--content-width, 800px)) 1fr !important;
+    grid-template-columns: 1fr minmax(auto, var(--content-width, 1400px)) 1fr !important;
   }
 }
 
@@ -457,7 +457,7 @@ html[reader-mode="on"] .center > article {
 
 /* ---- Poetry Page — Poem Display ---- */
 .poetry-page {
-  max-width: 750px !important;
+  max-width: var(--reading-width, 1400px);
   margin: 0 auto;
 }
 
@@ -1248,6 +1248,20 @@ details.exercise summary {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+
+  &.poem {
+    -webkit-line-clamp: 2;
+    white-space: pre-line;
+    line-height: 1.8;
+    text-align: right;
+  }
+
+  &.prose {
+    -webkit-line-clamp: 3;
+    white-space: pre-line;
+    line-height: 1.8;
+    text-align: right;
+  }
 }
 .article-magazine-grid.ltr .card-excerpt {
   font-family: var(--bodyFont) !important;
@@ -1340,13 +1354,17 @@ html[lang="ar"] {
     box-shadow: none !important; // Enforce No heavy shadows!
     border: 1px solid rgba(139, 115, 85, 0.15) !important; // Subtle border
     margin: 2rem auto !important;
-    max-width: 800px !important; // Enforce Container max-width: 800px!
+    max-width: var(--reading-width, 1400px) !important; /* Scale article width dynamically according to reader preference */
     box-sizing: border-box;
     text-align: justify; // Enforce justified body text!
     text-justify: inter-word;
     transition:
       background-color 0.3s ease,
       border-color 0.3s ease;
+  }
+
+  body.is-list .center > article {
+    max-width: 1000px !important; /* Allow listing/folder pages to be wider like English */
   }
 
   // Mobile card styling responsiveness
@@ -1363,13 +1381,13 @@ html[lang="ar"] {
     color: var(--secondary) !important;
     font-family: var(--headerFont) !important;
     font-size: 2.4rem !important;
-    text-align: center !important;
+    text-align: right !important; /* Right-align titles for Arabic pages */
     margin-bottom: 1.5rem !important;
     line-height: 1.4 !important;
   }
 
   .article-title-container {
-    text-align: center !important;
+    text-align: right !important; /* Right-align containers for Arabic pages */
   }
 
   // Blockquotes styling in Arabic (literary side border)
@@ -1517,6 +1535,27 @@ html[lang="ar"] {
     border: 1px solid rgba(139, 115, 85, 0.2) !important;
   }
 
+  .magazine-card.poetry-card .card-thumbnail-link {
+    aspect-ratio: 16/12 !important; /* Make the thumbnail image larger and taller */
+  }
+
+  .arabic-section-title {
+    font-family: var(--headerFont) !important;
+    color: var(--secondary) !important;
+    border-bottom: 1px dashed rgba(139, 115, 85, 0.15) !important;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem !important;
+    font-size: 1.6rem !important;
+    font-weight: 700;
+  }
+
+  .arabic-homepage-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    margin-top: 2rem;
+  }
+
   .poetry-card-content-link {
     display: flex;
     flex-direction: column;
@@ -1540,7 +1579,7 @@ html[lang="ar"] {
     font-size: 1.5rem !important;
     color: var(--secondary) !important;
     margin: 0 0 1.2rem 0 !important;
-    text-align: center;
+    text-align: right !important; /* Right-align poetry card titles */
     line-height: 1.4 !important;
   }
 
@@ -1715,3 +1754,37 @@ html[lang="ar"][saved-theme="sepia"] {
     border-color: rgba(139, 111, 71, 0.08);
   }
 }
+
+/* --- Robust RTL / Arabic Safeguards --- */
+[dir="rtl"] .page-content,
+[lang="ar"] .page-content {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Amiri', serif;
+}
+
+/* --- Dynamic Reading Width & Responsive Article Container --- */
+.page-content {
+  max-width: var(--reading-width, 1400px);
+  width: min(95%, var(--reading-width, 1400px));
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .page-content {
+    width: min(var(--reading-width, 1400px), 95vw) !important;
+    max-width: 100% !important;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-content {
+    width: min(var(--reading-width, 1400px), 100vw) !important;
+    max-width: 100% !important;
+    padding: 0 0.75rem;
+  }
+}
+

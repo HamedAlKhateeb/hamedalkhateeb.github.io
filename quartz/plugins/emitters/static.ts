@@ -11,9 +11,20 @@ export const Static: QuartzEmitterPlugin = () => ({
     const fps = await glob("**", staticPath, cfg.configuration.ignorePatterns)
     const outputStaticPath = joinSegments(argv.output, "static")
     await fs.promises.mkdir(outputStaticPath, { recursive: true })
+    
     for (const fp of fps) {
       const src = joinSegments(staticPath, fp) as FilePath
-      const dest = joinSegments(outputStaticPath, fp) as FilePath
+      
+      // Determine if it's a root-level file like robots.txt, _headers, or a google verification html
+      const isRootFile = 
+        fp === "_headers" || 
+        fp === "robots.txt" || 
+        (fp.startsWith("google") && fp.endsWith(".html"))
+        
+      const dest = isRootFile
+        ? (joinSegments(argv.output, fp) as FilePath)
+        : (joinSegments(outputStaticPath, fp) as FilePath)
+        
       await fs.promises.mkdir(dirname(dest), { recursive: true })
       await fs.promises.copyFile(src, dest)
       yield dest

@@ -75,9 +75,9 @@ document.addEventListener("nav", () => {
   // Content Width Control
   // =====================
   const widths: Record<string, string> = {
-    narrow: "480px",
-    medium: "580px",
-    wide: "870px",
+    narrow: "1000px",
+    medium: "1400px",
+    wide: "1700px",
   }
 
   const widthButtons = {
@@ -87,8 +87,17 @@ document.addEventListener("nav", () => {
   }
 
   const setContentWidth = (width: string) => {
-    document.documentElement.style.setProperty("--content-width", widths[width])
     localStorage.setItem("reader-content-width", width)
+    
+    // Only apply reading width to single article pages and poetry pages (is-article)
+    const isArticle = document.body.classList.contains("is-article")
+    if (isArticle) {
+      document.documentElement.style.setProperty("--reading-width", widths[width])
+      document.documentElement.style.setProperty("--content-width", widths[width])
+    } else {
+      document.documentElement.style.removeProperty("--reading-width")
+      document.documentElement.style.removeProperty("--content-width")
+    }
 
     Object.entries(widthButtons).forEach(([key, btn]) => {
       if (btn) btn.classList.toggle("active", key === width)
@@ -157,23 +166,44 @@ document.addEventListener("nav", () => {
       if (rightSidebar) {
         rightSidebar.classList.toggle("sidebar-hidden")
         const isHidden = rightSidebar.classList.contains("sidebar-hidden")
-        tocToggle.classList.toggle("active", isHidden)
+        tocToggle.classList.toggle("active", !isHidden)
         localStorage.setItem("toc-visible", isHidden ? "false" : "true")
 
         const textSpan = tocToggle.querySelector("span")
-        if (textSpan) textSpan.innerText = isHidden ? "إيقاف" : "تفعيل"
+        if (textSpan) {
+          const isArabic = document.documentElement.dir === "rtl" || document.documentElement.lang === "ar"
+          textSpan.innerText = isHidden 
+            ? (isArabic ? "تفعيل" : "Open") 
+            : (isArabic ? "إيقاف" : "Close")
+        }
       }
     }
 
     // Restore saved TOC state
+    // By default, TOC is hidden. If toc-visible is "true", we show it!
     const tocVisible = localStorage.getItem("toc-visible")
-    if (tocVisible === "false") {
+    if (tocVisible === "true") {
+      const rightSidebar = document.querySelector(".sidebar.right") as HTMLElement | null
+      if (rightSidebar) {
+        rightSidebar.classList.remove("sidebar-hidden")
+        tocToggle.classList.add("active")
+        const textSpan = tocToggle.querySelector("span")
+        if (textSpan) {
+          const isArabic = document.documentElement.dir === "rtl" || document.documentElement.lang === "ar"
+          textSpan.innerText = isArabic ? "إيقاف" : "Close"
+        }
+      }
+    } else {
+      // By default (if not set to "true"), it should be hidden
       const rightSidebar = document.querySelector(".sidebar.right") as HTMLElement | null
       if (rightSidebar) {
         rightSidebar.classList.add("sidebar-hidden")
-        tocToggle.classList.add("active")
+        tocToggle.classList.remove("active")
         const textSpan = tocToggle.querySelector("span")
-        if (textSpan) textSpan.innerText = "إيقاف"
+        if (textSpan) {
+          const isArabic = document.documentElement.dir === "rtl" || document.documentElement.lang === "ar"
+          textSpan.innerText = isArabic ? "تفعيل" : "Open"
+        }
       }
     }
 

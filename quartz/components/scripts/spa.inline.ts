@@ -88,6 +88,24 @@ async function _navigate(url: URL, isBack: boolean = false) {
   const html = p.parseFromString(contents, "text/html")
   normalizeRelativeURLs(html, url)
 
+  // Sync <html> attributes (lang, dir, class) from the new page to the current document
+  // This must happen BEFORE micromorph to prevent RTL/LTR flash
+  const newHtmlEl = html.documentElement
+  const curHtmlEl = document.documentElement
+  // Sync lang and dir attributes
+  const newLang = newHtmlEl.getAttribute("lang")
+  const newDir = newHtmlEl.getAttribute("dir")
+  if (newLang) {
+    curHtmlEl.setAttribute("lang", newLang)
+  } else {
+    curHtmlEl.removeAttribute("lang")
+  }
+  if (newDir) {
+    curHtmlEl.setAttribute("dir", newDir)
+  } else {
+    curHtmlEl.removeAttribute("dir")
+  }
+
   let title = html.querySelector("title")?.textContent
   if (title) {
     document.title = title

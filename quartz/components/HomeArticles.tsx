@@ -85,42 +85,7 @@ export default (() => {
           </section>
         )}
 
-        {/* Main Categories */}
-        <section class="homepage-section">
-          <h2 class="section-title">Main Categories</h2>
-          <div class="categories-grid">
-            <a
-              href={resolveRelative(fileData.slug!, "Math" as FullSlug)}
-              class="category-pill internal"
-            >
-              📐 Mathematics
-            </a>
-            <a
-              href={resolveRelative(fileData.slug!, "Engineering" as FullSlug)}
-              class="category-pill internal"
-            >
-              🏗️ Engineering
-            </a>
-            <a
-              href={resolveRelative(fileData.slug!, "Culture" as FullSlug)}
-              class="category-pill internal"
-            >
-              🌍 Culture
-            </a>
-            <a
-              href={resolveRelative(fileData.slug!, "Experiences" as FullSlug)}
-              class="category-pill internal"
-            >
-              💡 Experiences
-            </a>
-            <a
-              href={resolveRelative(fileData.slug!, "About" as FullSlug)}
-              class="category-pill internal"
-            >
-              ℹ️ About Me
-            </a>
-          </div>
-        </section>
+
 
         {/* Recent Posts */}
         {recentPages.length > 0 && (
@@ -147,25 +112,7 @@ export default (() => {
           </section>
         )}
 
-        {/* Arabic Publication Portal Banner */}
-        <section class="arabic-portal-section">
-          <div class="arabic-portal-card">
-            <div class="portal-ornament">❊</div>
-            <div class="portal-content">
-              <h3 class="portal-title">القسم العربي (Arabic Section)</h3>
-              <p class="portal-description">
-                أهلاً بك في الفناء العربي الرقمي الخاص بي. هنا أدون خواطري، أشعاري، ومقالات في
-                الرياضيات، الفلسفة، والهندسة.
-              </p>
-              <a
-                href={resolveRelative(fileData.slug!, "ar" as FullSlug)}
-                class="portal-button internal"
-              >
-                دخول المجلة العربية ←
-              </a>
-            </div>
-          </div>
-        </section>
+
       </div>
     )
   }
@@ -327,59 +274,7 @@ export default (() => {
     text-decoration: underline;
   }
 
-  /* Arabic publication portal gate */
-  .arabic-portal-section {
-    margin-top: 1rem;
-  }
 
-  .arabic-portal-card {
-    background: #fcfaf2;
-    border: 1px dashed #6c764a;
-    border-radius: 12px;
-    padding: 2rem;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(108, 118, 74, 0.03);
-  }
-
-  .portal-ornament {
-    font-size: 1.5rem;
-    color: #6c764a;
-    margin-bottom: 0.5rem;
-  }
-
-  .portal-title {
-    font-family: "Noto Sans Arabic", sans-serif;
-    color: #6c764a !important;
-    font-size: 1.4rem !important;
-    margin: 0 0 0.8rem 0 !important;
-  }
-
-  .portal-description {
-    font-family: "Amiri", serif;
-    color: #4a4640;
-    font-size: 1.1rem;
-    max-width: 550px;
-    margin: 0 auto 1.5rem auto;
-    line-height: 1.8 !important;
-    direction: rtl;
-  }
-
-  .portal-button {
-    display: inline-block;
-    padding: 0.6rem 2rem;
-    background: #6c764a;
-    color: #fff !important;
-    text-decoration: none !important;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: background 0.2s ease;
-    font-family: "Noto Sans Arabic", sans-serif;
-  }
-
-  .portal-button:hover {
-    background: #565e3b;
-  }
 
   @media (max-width: 600px) {
     .homepage-container {

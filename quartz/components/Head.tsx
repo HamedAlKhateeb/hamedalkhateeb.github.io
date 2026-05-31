@@ -37,7 +37,7 @@ export default (() => {
     const frontmatterImage = fileData.frontmatter?.cover ?? fileData.frontmatter?.image
     const ogImageDefaultPath = frontmatterImage
       ? `https://${cfg.baseUrl}${frontmatterImage}`
-      : `https://${cfg.baseUrl}/static/thumbnails/og-image.jpg`
+      : `https://${cfg.baseUrl}/static/thumbnails/og-image.webp`
 
     return (
       <head>
@@ -57,7 +57,7 @@ export default (() => {
         {cfg.theme.cdnCaching && cfg.theme.fontOrigin === "googleFonts" && (
           <>
             <link rel="preconnect" href="https://fonts.googleapis.com" />
-            <link rel="preconnect" href="https://fonts.gstatic.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
             <link rel="stylesheet" href={googleFontHref(cfg.theme)} />
             <link
               rel="stylesheet"

@@ -9,6 +9,7 @@ import { Date, getDate } from "../Date"
 const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzComponentProps) => {
   let processedTree = tree as Root
   const slug = fileData.slug?.toLowerCase() ?? ""
+  const isArticle = !slug.endsWith("index")
   const isPoetry =
     (slug.startsWith("ar/poetry/") || slug.startsWith("poetry/")) && !slug.endsWith("index")
   const isPoetryIndex =
@@ -106,7 +107,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
             <div class="poetry-index-ornament">❋ ❋ ❋</div>
           </div>
 
-          <ul class="article-magazine-grid" id="article-magazine-grid">
+          <ul class="article-magazine-grid rtl" id="article-magazine-grid" dir="rtl">
             {poems.map((poem, idx) => {
               const poemTitle =
                 poem.frontmatter?.title ||
@@ -114,19 +115,42 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
                 "بلا عنوان"
               const poemMeter = (poem.frontmatter as any)?.meter || ""
 
-              // Extract first line of poetry containing the "|" separator
+              const cover = (poem.frontmatter?.cover ??
+                poem.frontmatter?.image ??
+                "/static/thumbnails/arabic-graffiti.webp") as string
+
               const poemText = poem.text ?? ""
-              const firstLine = poemText.split("\n").find((line) => line.trim().includes("|"))
-              let hemistich1 = ""
-              let hemistich2 = ""
-              if (firstLine) {
-                const parts = firstLine.split("|")
-                hemistich1 = parts[0]?.trim() ?? ""
-                hemistich2 = parts[1]?.trim() ?? ""
+              const description = poem.frontmatter?.description
+              let excerpt = ""
+              let isExcerptPoem = false
+
+              if (description) {
+                excerpt = description
+              } else {
+                const lines = poemText
+                  .split("\n")
+                  .map((l) => l.trim())
+                  .filter((l) => l.includes("|"))
+                  .slice(0, 2)
+                excerpt = lines.join("\n")
+                isExcerptPoem = true
               }
 
               return (
                 <li class="magazine-card poetry-card" key={idx}>
+                  <a
+                    href={resolveRelative(fileData.slug!, poem.slug!)}
+                    class="card-thumbnail-link internal"
+                  >
+                    <img
+                      src={cover}
+                      alt={poemTitle}
+                      class="card-thumbnail"
+                      loading="lazy"
+                      width="400"
+                      height="300"
+                    />
+                  </a>
                   <a
                     href={resolveRelative(fileData.slug!, poem.slug!)}
                     class="poetry-card-content-link internal"
@@ -134,11 +158,10 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
                     <div class="poetry-card-number">{idx + 1}</div>
                     <h3 class="poetry-card-title">{poemTitle}</h3>
 
-                    {firstLine && (
-                      <div class="card-poem-preview">
-                        <div class="card-hemistich first">{hemistich1}</div>
-                        <div class="card-hemistich second">{hemistich2}</div>
-                      </div>
+                    {excerpt && (
+                      <p class={isExcerptPoem ? "card-excerpt poem" : "card-excerpt prose"}>
+                        {excerpt}
+                      </p>
                     )}
 
                     <div class="poetry-card-meta">
@@ -197,7 +220,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
       : 0
 
     return (
-      <article class={`${classString} poetry-page`}>
+      <article class={`${classString} poetry-page page-content`}>
         {/* Poem Header */}
         <div class="poem-page-header">
           <div class="poem-ornament-top">❋</div>
@@ -250,7 +273,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
   }
 
   // --- Normal article ---
-  return <article class={classString}>{content}</article>
+  return <article class={isArticle ? `${classString} page-content` : classString}>{content}</article>
 }
 
 export default (() => Content) satisfies QuartzComponentConstructor

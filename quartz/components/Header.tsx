@@ -38,7 +38,7 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
             <a href={resolveRelative(fileData.slug!, "ar/articles" as FullSlug)}>مقالاتي</a>
             <a href={resolveRelative(fileData.slug!, "ar/poetry" as FullSlug)}>أشعاري</a>
             <a
-              href={baseDir}
+              href={resolveRelative(fileData.slug!, "index" as FullSlug)}
               style={{
                 marginRight: "auto",
                 marginLeft: "0",
@@ -47,7 +47,6 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
                 fontWeight: "normal",
                 fontFamily: "var(--bodyFont)",
               }}
-              class="internal"
             >
               English ↗
             </a>

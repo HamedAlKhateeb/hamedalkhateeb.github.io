@@ -58,7 +58,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
   const slug = fileData.slug ?? ""
   const isArabic = slug.toLowerCase().startsWith("ar/") || slug.toLowerCase() === "ar"
   const defaultFallback = isArabic
-    ? "/static/thumbnails/arabic-graffiti.png"
+    ? "/static/thumbnails/arabic-graffiti.webp"
     : "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=600&auto=format&fit=crop"
 
   return (
@@ -85,7 +85,14 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
                 href={resolveRelative(fileData.slug!, page.slug!)}
                 class="card-thumbnail-link internal"
               >
-                <img src={cover} alt={title} class="card-thumbnail" />
+                <img
+                  src={cover}
+                  alt={title}
+                  class="card-thumbnail"
+                  loading="lazy"
+                  width="400"
+                  height="250"
+                />
               </a>
               <div class="card-content-area">
                 <h3 class="card-title">
