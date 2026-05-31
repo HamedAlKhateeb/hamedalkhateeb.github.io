@@ -114,6 +114,8 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
             </button>
           </div>
 
+          <div id="settings-backdrop" class="settings-backdrop panel-collapsed"></div>
+
           {/* Settings Popover - Stacked immediately above the gear using CSS, not DOM nesting */}
           <div id="settings-panel" class="control-panel panel-collapsed isolated-settings-panel">
             {/* Font Size Control */}

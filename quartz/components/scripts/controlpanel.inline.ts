@@ -267,14 +267,16 @@ document.addEventListener("nav", () => {
 
   const settingsToggle = document.querySelector("#btn-settings-toggle") as HTMLButtonElement | null
   const settingsPanel = document.querySelector("#settings-panel") as HTMLElement | null
+  const settingsBackdrop = document.querySelector("#settings-backdrop") as HTMLElement | null
   if (settingsToggle && settingsPanel) {
     const togglePanel = () => {
       settingsPanel.classList.toggle("panel-collapsed")
+      if (settingsBackdrop) settingsBackdrop.classList.toggle("panel-collapsed")
     }
     settingsToggle.addEventListener("click", togglePanel)
     window.addCleanup(() => settingsToggle.removeEventListener("click", togglePanel))
 
-    // Close panel when clicking outside
+    // Close panel when clicking outside or on backdrop
     const closeOnOutsideClick = (e: MouseEvent) => {
       if (
         !settingsPanel.contains(e.target as Node) &&
@@ -282,6 +284,7 @@ document.addEventListener("nav", () => {
         !settingsPanel.classList.contains("panel-collapsed")
       ) {
         settingsPanel.classList.add("panel-collapsed")
+        if (settingsBackdrop) settingsBackdrop.classList.add("panel-collapsed")
       }
     }
     document.addEventListener("click", closeOnOutsideClick)
