@@ -6,7 +6,7 @@ import readingTime from "reading-time"
 export default (() => {
   const HomeArticlesAr: QuartzComponent = (props: QuartzComponentProps) => {
     const { fileData, allFiles, cfg } = props
-    if (fileData.slug !== "ar/index") return null
+    if (fileData.slug !== "ar/index" && fileData.slug !== "ar" && fileData.slug !== "ar/") return null
 
     const arabicArticles = allFiles
       .filter((page) => page.slug && page.slug.startsWith("ar/articles/") && !page.slug.endsWith("/index"))

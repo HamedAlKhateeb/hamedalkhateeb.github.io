@@ -108,28 +108,9 @@ export default ((opts?: Partial<FolderContentOptions>) => {
         : htmlToJsx(fileData.filePath!, tree)
     ) as ComponentChildren
 
+
+
     const isArabicHome = fileData.slug === "ar" || fileData.slug === "ar/index"
-
-    // Filter Arabic articles and poetry for the homepage
-    const arabicArticles = allFiles.filter(
-      (f) =>
-        f.slug?.toLowerCase().startsWith("ar/articles/") &&
-        !f.slug.toLowerCase().endsWith("index"),
-    )
-    const arabicPoetry = allFiles.filter(
-      (f) =>
-        f.slug?.toLowerCase().startsWith("ar/poetry/") &&
-        !f.slug.toLowerCase().endsWith("index"),
-    )
-
-    const sortByDate = (a: QuartzPluginData, b: QuartzPluginData) => {
-      const aDate = a.dates?.published ?? new Date("1970-01-01")
-      const bDate = b.dates?.published ?? new Date("1970-01-01")
-      return bDate.getTime() - aDate.getTime()
-    }
-
-    const latestArticles = arabicArticles.sort(sortByDate).slice(0, 2)
-    const latestPoems = arabicPoetry.sort(sortByDate).slice(0, 2)
 
     return (
       <section class="page-container">
@@ -142,28 +123,6 @@ export default ((opts?: Partial<FolderContentOptions>) => {
         )}
 
         <div class="folder-content-body">{content}</div>
-
-        {isArabicHome && (
-          <div class="arabic-homepage-sections">
-            {latestArticles.length > 0 && (
-              <section class="homepage-section arabic-section">
-                <h2 class="arabic-section-title">آخر المقالات</h2>
-                <div class="cards-grid">
-                  <PageList {...listProps} allFiles={latestArticles} />
-                </div>
-              </section>
-            )}
-
-            {latestPoems.length > 0 && (
-              <section class="homepage-section arabic-section">
-                <h2 class="arabic-section-title">آخر الأشعار</h2>
-                <div class="cards-grid">
-                  <PageList {...listProps} allFiles={latestPoems} />
-                </div>
-              </section>
-            )}
-          </div>
-        )}
 
         {!isArabicHome && (
           <div class="cards-grid">
