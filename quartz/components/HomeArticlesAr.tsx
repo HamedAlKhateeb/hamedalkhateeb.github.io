@@ -25,18 +25,24 @@ export default (() => {
       })
 
     const latestArticles = arabicArticles.slice(0, 5)
-    const latestPoems = arabicPoems.slice(0, 5)
-    
+    const latestPoems = arabicPoems.slice(0, 10)
+
     // Select poem of the week (pinned or just first)
     const featuredPoems = arabicPoems.filter((p) => p.frontmatter?.pinned === true)
     const poemOfWeek = featuredPoems.length > 0 ? featuredPoems[0] : (arabicPoems.length > 0 ? arabicPoems[0] : null)
-    
-    // Archive
+
+    // Archive — 4 random items
     const allArPages = allFiles.filter((page) => page.slug && page.slug.startsWith("ar/") && !page.slug.endsWith("/index"))
-    const archivePages = [...allArPages].sort(() => 0.5 - Math.random()).slice(0, 2)
-    
+    const archivePages = [...allArPages].sort(() => 0.5 - Math.random()).slice(0, 4)
+
     // Random Quote from content
     const randomPage = allArPages.length > 0 ? allArPages[Math.floor(Math.random() * allArPages.length)] : null
+
+    // Most read (longest articles as proxy)
+    const mostRead = [...allArPages]
+      .filter((p) => p.text)
+      .sort((a, b) => (b.text?.length ?? 0) - (a.text?.length ?? 0))
+      .slice(0, 3)
 
     // Stats
     const totalWords = allArPages.reduce((acc, page) => {
@@ -50,33 +56,8 @@ export default (() => {
     return (
       <div class="ar-main-layout container" dir="rtl">
         <div class="ar-content-column">
-            
-            {/* حكمة اليوم */}
-            <section class="ar-card ar-quote-of-the-day ar-text-center">
-                <div class="ar-section-header">
-                    <span class="ar-decorator-icon">❊</span>
-                    <h2>حكمة اليوم</h2>
-                    <span class="ar-decorator-icon mirror">❊</span>
-                </div>
-                <blockquote id="ar-daily-quote-text">"الناس أعداء ما جهلوا"</blockquote>
-                <p id="ar-daily-quote-author" class="ar-author">- علي بن أبي طالب</p>
-                <button id="ar-refresh-quote" class="ar-btn ar-btn-outline">حكمة أخرى</button>
-            </section>
 
-            {/* اقتباس عشوائي */}
-            {randomPage && (
-            <section class="ar-card ar-random-quote">
-                <div class="ar-quote-content">
-                    <div class="ar-section-header">
-                        <h2>اقتباس عشوائي من الموقع</h2>
-                    </div>
-                    <blockquote>{randomPage.frontmatter?.description ?? randomPage.description ?? randomPage.frontmatter?.title}</blockquote>
-                    <a href={resolveRelative(fileData.slug!, randomPage.slug!)} class="ar-read-more-link">اقرأ المقال ←</a>
-                </div>
-            </section>
-            )}
-
-            {/* آخر المقالات */}
+            {/* ══════ آخر المقالات ══════ */}
             <section class="ar-latest-articles">
                 <div class="ar-section-title-row">
                     <h2>آخر المقالات</h2>
@@ -94,10 +75,11 @@ export default (() => {
                         const cover = (page.frontmatter?.cover ?? page.frontmatter?.image) as string | undefined
                         return (
                         <article class="ar-card ar-content-card">
-                            {cover && <div class="ar-card-image" style={{backgroundImage: `url('${cover}')`}}></div>}
+                            {cover ? <div class="ar-card-image" style={{backgroundImage: `url('${cover}')`}}></div>
+                                   : <div class="ar-card-image ar-card-image-placeholder"></div>}
                             <div class="ar-card-body">
                                 <h3><a href={resolveRelative(fileData.slug!, page.slug!)}>{title}</a></h3>
-                                <p class="ar-excerpt">{desc.length > 80 ? desc.substring(0, 80) + '...' : desc}</p>
+                                <p class="ar-excerpt">{desc.length > 60 ? desc.substring(0, 60) + '...' : desc}</p>
                                 <div class="ar-card-meta">
                                     <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
                                     <span>{minutesStr}</span>
@@ -109,7 +91,7 @@ export default (() => {
                 </div>
             </section>
 
-            {/* آخر الأشعار */}
+            {/* ══════ آخر الأشعار ══════ */}
             <section class="ar-latest-poems">
                 <div class="ar-section-title-row">
                     <h2>آخر الأشعار</h2>
@@ -137,8 +119,59 @@ export default (() => {
                 </div>
             </section>
 
+            {/* ══════ حكمة اليوم ══════ */}
+            <section class="ar-card ar-quote-of-the-day ar-text-center">
+                <div class="ar-section-header">
+                    <span class="ar-decorator-icon">❊</span>
+                    <h2>حكمة اليوم</h2>
+                    <span class="ar-decorator-icon mirror">❊</span>
+                </div>
+                <blockquote id="ar-daily-quote-text">"الناس أعداء ما جهلوا"</blockquote>
+                <p id="ar-daily-quote-author" class="ar-author">- علي بن أبي طالب</p>
+                <button id="ar-refresh-quote" class="ar-btn ar-btn-outline">حكمة أخرى</button>
+            </section>
+
+            {/* ══════ اقتباس عشوائي ══════ */}
+            {randomPage && (
+            <section class="ar-card ar-random-quote">
+                <div class="ar-quote-content">
+                    <div class="ar-section-header">
+                        <h2>اقتباس عشوائي من الموقع</h2>
+                    </div>
+                    <blockquote>{randomPage.frontmatter?.description ?? randomPage.description ?? randomPage.frontmatter?.title}</blockquote>
+                    <a href={resolveRelative(fileData.slug!, randomPage.slug!)} class="ar-read-more-link">اقرأ المقال ←</a>
+                </div>
+            </section>
+            )}
+
+            {/* ══════ قصيدة الأسبوع + من الأرشيف ══════ */}
             <div class="ar-two-col-layout">
-                {/* قصيدة الأسبوع */}
+                {/* من الأرشيف — first child → RIGHT in RTL */}
+                <section class="ar-archive-section">
+                    <div class="ar-section-title-row">
+                        <h2>من الأرشيف</h2>
+                        <a href={resolveRelative(fileData.slug!, "ar/articles" as any)} class="ar-view-all">عرض الكل ←</a>
+                    </div>
+                    <div class="ar-grid-2">
+                        {archivePages.map((page) => {
+                            const title = page.frontmatter?.title ?? "بدون عنوان"
+                            const cover = (page.frontmatter?.cover ?? page.frontmatter?.image) as string | undefined
+                            return (
+                            <article class="ar-card ar-content-card ar-small-card">
+                                {cover && <div class="ar-card-image ar-card-image-sm" style={{backgroundImage: `url('${cover}')`}}></div>}
+                                <div class="ar-card-body">
+                                    <h3><a href={resolveRelative(fileData.slug!, page.slug!)}>{title}</a></h3>
+                                    <div class="ar-card-meta">
+                                        <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
+                                    </div>
+                                </div>
+                            </article>
+                            )
+                        })}
+                    </div>
+                </section>
+
+                {/* قصيدة الأسبوع — second child → LEFT in RTL */}
                 {poemOfWeek && (
                 <section class="ar-card ar-poem-of-week ar-featured-card">
                     <div class="ar-section-header">
@@ -151,84 +184,102 @@ export default (() => {
                     <a href={resolveRelative(fileData.slug!, poemOfWeek.slug!)} class="ar-btn ar-btn-primary mt-3">اقرأ القصيدة كاملة ←</a>
                 </section>
                 )}
+            </div>
 
-                {/* من الأرشيف */}
-                <section class="ar-archive-section">
-                    <div class="ar-section-title-row">
-                        <h2>من الأرشيف</h2>
+            {/* ══════ خريطة المعرفة + الأكثر قراءة ══════ */}
+            <div class="ar-two-col-layout">
+                {/* خريطة المعرفة — first child → RIGHT in RTL */}
+                <section class="ar-card ar-knowledge-map">
+                    <div class="ar-section-header">
+                        <h2>خريطة المعرفة</h2>
                     </div>
-                    <div class="ar-grid-2">
-                        {archivePages.map((page) => {
+                    <p class="ar-subtitle ar-text-center">اختر موضوعاً لتستكشف المحتوى المرتبط به</p>
+                    <div class="ar-nodes-container">
+                        <a href={resolveRelative(fileData.slug!, "tags/رياضيات" as any)} class="ar-node">
+                            <span class="ar-node-icon">∑</span>
+                            <span>رياضيات</span>
+                        </a>
+                        <a href={resolveRelative(fileData.slug!, "tags/فلسفة" as any)} class="ar-node">
+                            <span class="ar-node-icon">φ</span>
+                            <span>فلسفة</span>
+                        </a>
+                        <a href={resolveRelative(fileData.slug!, "tags/لغة" as any)} class="ar-node">
+                            <span class="ar-node-icon">ع</span>
+                            <span>لغة</span>
+                        </a>
+                        <a href={resolveRelative(fileData.slug!, "tags/أدب" as any)} class="ar-node">
+                            <span class="ar-node-icon">📖</span>
+                            <span>أدب</span>
+                        </a>
+                        <a href={resolveRelative(fileData.slug!, "tags/شعر" as any)} class="ar-node">
+                            <span class="ar-node-icon">✒</span>
+                            <span>شعر</span>
+                        </a>
+                    </div>
+                </section>
+
+                {/* الأكثر قراءة — second child → LEFT in RTL */}
+                <section class="ar-card ar-most-read">
+                    <div class="ar-section-title-row">
+                        <h2>الأكثر قراءة</h2>
+                        <a href={resolveRelative(fileData.slug!, "ar/articles" as any)} class="ar-view-all">عرض الكل ←</a>
+                    </div>
+                    <ol class="ar-most-read-list">
+                        {mostRead.map((page) => {
                             const title = page.frontmatter?.title ?? "بدون عنوان"
-                            const cover = (page.frontmatter?.cover ?? page.frontmatter?.image) as string | undefined
                             return (
-                            <article class="ar-card ar-content-card ar-small-card">
-                                {cover && <div class="ar-card-image" style={{backgroundImage: `url('${cover}')`}}></div>}
-                                <div class="ar-card-body">
-                                    <h3><a href={resolveRelative(fileData.slug!, page.slug!)}>{title}</a></h3>
-                                    <div class="ar-card-meta">
-                                        <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
-                                    </div>
-                                </div>
-                            </article>
+                            <li>
+                                <a href={resolveRelative(fileData.slug!, page.slug!)}>{title}</a>
+                            </li>
                             )
                         })}
-                    </div>
+                    </ol>
                 </section>
             </div>
 
-            {/* خريطة المعرفة */}
-            <section class="ar-card ar-knowledge-map">
-                <div class="ar-section-header ar-text-center">
-                    <h2>خريطة المعرفة</h2>
-                    <p class="ar-subtitle">اختر موضوعاً لتستكشف المحتوى المرتبط به</p>
-                </div>
-                <div class="ar-nodes-container">
-                    <a href={resolveRelative(fileData.slug!, "tags/رياضيات" as any)} class="ar-node"><span>رياضيات</span></a>
-                    <div class="ar-connector"></div>
-                    <a href={resolveRelative(fileData.slug!, "tags/فلسفة" as any)} class="ar-node"><span>فلسفة</span></a>
-                    <div class="ar-connector"></div>
-                    <a href={resolveRelative(fileData.slug!, "tags/لغة" as any)} class="ar-node"><span>لغة</span></a>
-                    <div class="ar-connector"></div>
-                    <a href={resolveRelative(fileData.slug!, "tags/أدب" as any)} class="ar-node"><span>أدب</span></a>
-                    <div class="ar-connector"></div>
-                    <a href={resolveRelative(fileData.slug!, "tags/شعر" as any)} class="ar-node"><span>شعر</span></a>
-                </div>
+            {/* ══════ اقرأ لتعرف ══════ */}
+            <section class="ar-card ar-inspirational-quote ar-text-center">
+                <h2>"اقرأ لتعرف، واكتب لتفهم، وتأمل لتُدرك."</h2>
+                <div class="ar-ornament"></div>
             </section>
-            
-             <section class="ar-card ar-inspirational-quote ar-text-center">
-                 <h2>"اقرأ لتعرف، واكتب لتفهم، وتأمل لتُدرك."</h2>
-                 <div class="ar-ornament"></div>
-             </section>
 
         </div>
 
+        {/* ══════════════════════════ الشريط الجانبي ══════════════════════════ */}
         <aside class="ar-sidebar-column">
-            
+
             {/* التقويم */}
             <div class="ar-card ar-calendar-widget ar-text-center">
                 <h3 class="ar-day-name" id="ar-cal-day-name">الأربعاء</h3>
                 <div class="ar-date-large" id="ar-cal-gregorian">3 يونيو 2026</div>
                 <div class="ar-date-hijri" id="ar-cal-hijri">17 ذو الحجة 1447 هـ</div>
-                <div class="ar-season" id="ar-cal-season">فصل الصيف</div>
+                <div class="ar-season" id="ar-cal-season">☀ فصل الصيف</div>
             </div>
 
+            {/* في مثل هذا اليوم */}
+            <div class="ar-card ar-on-this-day-widget">
+                <h3 class="ar-widget-title ar-on-this-day-title">
+                    <span class="ar-otd-icon">🔖</span>
+                    في مثل هذا اليوم
+                </h3>
+                <p id="ar-on-this-day-text" class="ar-on-this-day-text">جارِ التحميل...</p>
+            </div>
 
             {/* إحصائيات الموقع */}
             <div class="ar-card ar-stats-widget">
                 <h3 class="ar-widget-title ar-text-center">إحصائيات الموقع</h3>
                 <ul class="ar-stats-list">
                     <li>
-                        <span class="ar-stat-label">المقالات</span>
+                        <span class="ar-stat-label">📝 المقالات</span>
                         <span class="ar-stat-value">{arabicArticles.length}</span>
                     </li>
                     <li>
-                        <span class="ar-stat-label">الأشعار</span>
+                        <span class="ar-stat-label">📜 الأشعار</span>
                         <span class="ar-stat-value">{arabicPoems.length}</span>
                     </li>
                     <li>
-                        <span class="ar-stat-label">إجمالي الكلمات</span>
-                        <span class="ar-stat-value">{totalWords}</span>
+                        <span class="ar-stat-label">📖 إجمالي الكلمات</span>
+                        <span class="ar-stat-value">{totalWords.toLocaleString('ar-EG')}</span>
                     </li>
                 </ul>
             </div>
@@ -243,8 +294,10 @@ export default (() => {
             {/* عن الكاتب */}
             <div class="ar-card ar-author-widget ar-text-center">
                 <h3 class="ar-widget-title">عن الكاتب</h3>
+                <div class="ar-author-avatar">👤</div>
                 <h4 class="ar-author-name">حامد</h4>
                 <p class="ar-author-bio">مهندس يهتم بالرياضيات والفلسفة والأدب والشعر. يكتب ليفهم، ويقرأ ليتأمل.</p>
+                <a href={resolveRelative(fileData.slug!, "ar/" as any)} class="ar-about-link">حول الموقع →</a>
             </div>
 
         </aside>
@@ -253,22 +306,18 @@ export default (() => {
   }
 
   HomeArticlesAr.afterDOMLoaded = `
+    // ── Calendar ──
     const updateCalendar = () => {
         const today = new Date();
-        const gregorianOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-        const gregorianDate = today.toLocaleDateString('ar-EG', gregorianOptions);
-        
-        const hijriOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-        const hijriDate = today.toLocaleDateString('ar-SA-u-ca-islamic', hijriOptions);
-        
+        const gregorianDate = today.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
+        const hijriDate = today.toLocaleDateString('ar-SA-u-ca-islamic', { day: 'numeric', month: 'long', year: 'numeric' });
         const dayName = today.toLocaleDateString('ar-EG', { weekday: 'long' });
-        
         const month = today.getMonth() + 1;
-        let season = 'فصل الربيع';
-        if (month >= 3 && month <= 5) season = 'فصل الربيع';
-        else if (month >= 6 && month <= 8) season = 'فصل الصيف';
-        else if (month >= 9 && month <= 11) season = 'فصل الخريف';
-        else season = 'فصل الشتاء';
+        let season = '🌸 فصل الربيع';
+        if (month >= 3 && month <= 5) season = '🌸 فصل الربيع';
+        else if (month >= 6 && month <= 8) season = '☀ فصل الصيف';
+        else if (month >= 9 && month <= 11) season = '🍂 فصل الخريف';
+        else season = '❄ فصل الشتاء';
 
         const dn = document.getElementById('ar-cal-day-name');
         if(dn) dn.textContent = dayName;
@@ -280,18 +329,68 @@ export default (() => {
         if(s) s.textContent = season;
     };
 
+    // ── On This Day ──
+    const updateOnThisDay = () => {
+        const events = [
+            { m:1, d:1,  t:"في عام 622م بدأ التقويم الهجري، تخليداً لهجرة النبي محمد ﷺ من مكة إلى المدينة." },
+            { m:1, d:15, t:"في عام 1929 ولد مارتن لوثر كينغ جونيور، قائد حركة الحقوق المدنية الأمريكية." },
+            { m:1, d:27, t:"في عام 1756 ولد فولفغانغ أماديوس موتسارت، أحد أعظم المؤلفين الموسيقيين في التاريخ." },
+            { m:2, d:7,  t:"في عام 1812 ولد الروائي الإنجليزي تشارلز ديكنز، صاحب «قصة مدينتين»." },
+            { m:2, d:19, t:"في عام 1473 ولد نيكولاس كوبرنيكوس، الذي أثبت أن الأرض تدور حول الشمس." },
+            { m:3, d:14, t:"في عام 1879 ولد ألبرت أينشتاين، صاحب نظرية النسبية وأحد أعظم علماء الفيزياء." },
+            { m:3, d:21, t:"اليوم العالمي للشعر، اعتمدته اليونسكو عام 1999 للاحتفاء بالتنوع اللغوي والإبداع الشعري." },
+            { m:3, d:22, t:"في عام 1945 تأسست جامعة الدول العربية في القاهرة بعضوية سبع دول عربية مؤسسة." },
+            { m:4, d:15, t:"في عام 1452 ولد ليوناردو دا فينشي، الفنان والعالم والمخترع الإيطالي." },
+            { m:4, d:23, t:"اليوم العالمي للكتاب وحقوق المؤلف، اعتمدته اليونسكو عام 1995." },
+            { m:5, d:5,  t:"في عام 1818 ولد كارل ماركس، الفيلسوف والاقتصادي الألماني مؤسس الفلسفة المادية." },
+            { m:5, d:27, t:"في عام 1332 ولد عبد الرحمن بن خلدون في تونس، مؤسس علم العمران والاجتماع البشري." },
+            { m:6, d:3,  t:"في عام 1769 رصد الكابتن جيمس كوك عبور كوكب الزهرة أمام الشمس من تاهيتي، حدث فلكي نادر." },
+            { m:6, d:15, t:"في عام 1215 صدرت وثيقة الماغنا كارتا في إنجلترا، أول ميثاق لتقييد السلطة المطلقة." },
+            { m:6, d:28, t:"في عام 1889 ولد الأديب المصري عباس محمود العقاد، صاحب سلسلة العبقريات الشهيرة." },
+            { m:7, d:14, t:"في عام 1789 اقتحم الشعب الفرنسي سجن الباستيل، إيذاناً ببدء الثورة الفرنسية." },
+            { m:7, d:20, t:"في عام 1969 هبط أول إنسان على سطح القمر، نيل أرمسترونغ في مهمة أبولو 11." },
+            { m:8, d:15, t:"في عام 1947 استقلت الهند عن الإمبراطورية البريطانية بقيادة المهاتما غاندي." },
+            { m:8, d:25, t:"في عام 1530 توفي ظهير الدين بابر، مؤسس الإمبراطورية المغولية في الهند." },
+            { m:9, d:1,  t:"في عام 1939 بدأت الحرب العالمية الثانية بغزو ألمانيا النازية لبولندا." },
+            { m:9, d:23, t:"في عام 1932 أُعلن توحيد المملكة العربية السعودية باسمها الحالي." },
+            { m:10,d:6,  t:"في عام 1973 بدأت حرب أكتوبر / العاشر من رمضان بين العرب وإسرائيل." },
+            { m:10,d:16, t:"في عام 1868 ولد أمير الشعراء أحمد شوقي، أحد أعلام الشعر العربي الحديث." },
+            { m:10,d:24, t:"في عام 1945 تأسست منظمة الأمم المتحدة بهدف حفظ السلام والأمن الدوليين." },
+            { m:11,d:9,  t:"في عام 1989 سقط جدار برلين، رمزاً لنهاية الحرب الباردة وبداية عصر جديد." },
+            { m:11,d:14, t:"في عام 1889 ولد طه حسين في المنيا بمصر، الذي أصبح عميد الأدب العربي." },
+            { m:12,d:10, t:"في عام 1948 تبنت الأمم المتحدة الإعلان العالمي لحقوق الإنسان في باريس." },
+            { m:12,d:18, t:"اليوم العالمي للغة العربية، اعتمدته اليونسكو تقديراً لإسهامها الكبير في الحضارة الإنسانية." },
+            { m:12,d:25, t:"في عام 1642 ولد إسحاق نيوتن، مؤسس الميكانيكا الكلاسيكية وحساب التفاضل والتكامل." },
+        ];
+        const today = new Date();
+        const m = today.getMonth() + 1;
+        const d = today.getDate();
+        let best = events[0];
+        let bestDist = 400;
+        for (const e of events) {
+            const dist = Math.abs((e.m * 31 + e.d) - (m * 31 + d));
+            if (dist < bestDist) { bestDist = dist; best = e; }
+        }
+        const el = document.getElementById('ar-on-this-day-text');
+        if (el) el.textContent = best.t;
+    };
+
+    // ── Quotes ──
     const fallbackQuotes = [
         { quote: "الناس أعداء ما جهلوا", author: "علي بن أبي طالب" },
         { quote: "على قدر أهل العزم تأتي العزائم", author: "المتنبي" },
         { quote: "الأيام صحائف الأعمار، فخلدوها بأحسن الأعمال", author: "ابن الجوزي" },
-        { quote: "إنما الأمم الأخلاق ما بقيت، فإن هم ذهبت أخلاقهم ذهبوا", author: "أحمد شوقي" }
+        { quote: "إنما الأمم الأخلاق ما بقيت، فإن هم ذهبت أخلاقهم ذهبوا", author: "أحمد شوقي" },
+        { quote: "العلم صيد والكتابة قيده", author: "الإمام الشافعي" },
+        { quote: "من طلب العلا سهر الليالي", author: "الإمام الشافعي" },
+        { quote: "إذا أردت أن تطاع فأمر بما يستطاع", author: "حكمة عربية" },
+        { quote: "ما ندمت على سكوتي مرة، لكنني ندمت على الكلام مراراً", author: "حكمة عربية" },
     ];
 
     const fetchQuote = async () => {
         const quoteEl = document.getElementById('ar-daily-quote-text');
         const authorEl = document.getElementById('ar-daily-quote-author');
         if(!quoteEl) return;
-
         try {
             const response = await fetch('https://kalimatapi.com/api/v1/quotes/random', {
                 headers: { 'Authorization': "Bearer YOUR_TOKEN" }
@@ -300,9 +399,7 @@ export default (() => {
                 const data = await response.json();
                 quoteEl.textContent = "\\"" + (data.quote || data.content) + "\\"";
                 authorEl.textContent = "- " + (data.author || data.author_name);
-            } else {
-                throw new Error('API error');
-            }
+            } else { throw new Error('API error'); }
         } catch (error) {
             const random = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
             quoteEl.textContent = "\\"" + random.quote + "\\"";
@@ -311,210 +408,245 @@ export default (() => {
     };
 
     updateCalendar();
-    
+    updateOnThisDay();
     const refreshBtn = document.getElementById('ar-refresh-quote');
-    if(refreshBtn) {
-        refreshBtn.addEventListener('click', fetchQuote);
-    }
+    if(refreshBtn) { refreshBtn.addEventListener('click', fetchQuote); }
   `
 
   HomeArticlesAr.css = `
+    /* ═══════════════ Layout ═══════════════ */
     .ar-main-layout {
         display: grid;
-        grid-template-columns: 320px 1fr;
-        gap: 30px;
+        grid-template-columns: 1fr 300px;
+        gap: 28px;
         margin-top: 20px;
         margin-bottom: 60px;
         font-family: 'Amiri', serif;
         direction: rtl;
     }
-    
-    .ar-sidebar-column {
-        grid-column: 1;
-    }
-    
-    .ar-content-column {
-        grid-column: 2;
-    }
-
-    .ar-main-layout a {
-        text-decoration: none;
-        color: inherit;
-    }
-    
-    .ar-main-layout a:hover {
-        color: var(--secondary);
-    }
-    
+    .ar-content-column { grid-column: 1; }
+    .ar-sidebar-column { grid-column: 2; }
+    .ar-main-layout a { text-decoration: none; color: inherit; }
+    .ar-main-layout a:hover { color: var(--secondary); }
     .ar-text-center { text-align: center; }
-    
+
+    /* ═══════════════ Cards ═══════════════ */
     .ar-card {
         background-color: var(--light);
         border: 1px solid var(--lightgray);
-        border-radius: 8px;
-        padding: 30px;
-        margin-bottom: 30px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border-radius: 10px;
+        padding: 28px;
+        margin-bottom: 26px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
     }
-    
-    .ar-card:hover {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    
+    .ar-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+
+    /* ═══════════════ Section Headers ═══════════════ */
     .ar-section-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 20px;
-        color: var(--secondary);
+        display: flex; align-items: center; justify-content: center;
+        gap: 15px; margin-bottom: 20px; color: var(--secondary);
     }
-    
-    .ar-section-header h2 {
-        font-size: 1.5rem;
-        margin: 0;
-    }
-    
-    .ar-decorator-icon {
-        font-size: 1.2rem;
-        color: var(--tertiary);
-    }
-    
+    .ar-section-header h2 { font-size: 1.5rem; margin: 0; }
+    .ar-decorator-icon { font-size: 1.2rem; color: var(--tertiary); }
     .ar-section-title-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 25px;
-        padding-bottom: 10px;
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 22px; padding-bottom: 10px;
         border-bottom: 1px dashed var(--lightgray);
     }
-    
-    .ar-section-title-row h2 {
-        font-size: 1.6rem;
-        color: var(--dark);
-        margin: 0;
-    }
-    
-    .ar-view-all {
-        font-size: 1rem;
-        color: var(--gray);
-    }
-    
-    /* Quote */
+    .ar-section-title-row h2 { font-size: 1.45rem; color: var(--dark); margin: 0; }
+    .ar-view-all { font-size: 0.95rem; color: var(--gray); white-space: nowrap; }
+
+    /* ═══════════════ Quote of the Day ═══════════════ */
     .ar-quote-of-the-day blockquote {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: var(--dark);
-        margin-bottom: 20px;
-        line-height: 1.6;
+        font-size: 2rem; font-weight: 700; color: var(--dark);
+        margin-bottom: 18px; line-height: 1.7;
     }
-    
-    .ar-author {
-        font-size: 1.2rem;
-        color: var(--gray);
-        margin-bottom: 30px;
-    }
-    
+    .ar-author { font-size: 1.1rem; color: var(--gray); margin-bottom: 25px; }
+
+    /* ═══════════════ Buttons ═══════════════ */
     .ar-btn {
-        font-family: 'Amiri', serif;
-        font-size: 1.1rem;
-        padding: 8px 24px;
-        border-radius: 30px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        border: none;
+        font-family: 'Amiri', serif; font-size: 1.05rem;
+        padding: 8px 24px; border-radius: 30px; cursor: pointer;
+        display: inline-flex; align-items: center; gap: 8px;
+        border: none; transition: all 0.2s ease;
     }
-    
     .ar-btn-outline {
-        background-color: transparent;
-        border: 1px solid var(--lightgray);
-        color: var(--gray);
+        background-color: transparent; border: 1px solid var(--lightgray); color: var(--gray);
     }
-    
-    .ar-btn-primary {
-        background-color: var(--secondary);
-        color: var(--light);
-    }
-    
-    /* Random Quote */
+    .ar-btn-outline:hover { border-color: var(--secondary); color: var(--secondary); }
+    .ar-btn-primary { background-color: var(--secondary); color: var(--light); }
+    .ar-btn-primary:hover { opacity: 0.9; }
+
+    /* ═══════════════ Random Quote ═══════════════ */
     .ar-random-quote {
         background-color: var(--lightgray);
-        border-right: 4px solid var(--secondary);
-        border-left: none;
+        border-right: 4px solid var(--secondary); border-left: none;
     }
-    
-    .ar-random-quote blockquote {
-        font-size: 1.3rem;
-        margin-bottom: 15px;
-        color: var(--dark);
-    }
-    
-    /* Grids */
-    .ar-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
-    .ar-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-    .ar-two-col-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-    
+    .ar-random-quote blockquote { font-size: 1.25rem; margin-bottom: 15px; color: var(--dark); line-height: 1.8; }
+    .ar-read-more-link { font-size: 0.95rem; color: var(--secondary) !important; }
+
+    /* ═══════════════ Grids ═══════════════ */
+    .ar-grid-5 { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 16px; }
+    .ar-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .ar-two-col-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-bottom: 0; }
+
+    /* ═══════════════ Content Cards ═══════════════ */
     .ar-content-card { padding: 0; display: flex; flex-direction: column; }
-    .ar-card-image { height: 120px; background-size: cover; background-position: center; border-bottom: 1px solid var(--lightgray); }
-    .ar-card-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
-    .ar-content-card h3 { font-size: 1.2rem; color: var(--dark); margin: 0 0 10px 0; }
-    .ar-excerpt { font-size: 1rem; color: var(--gray); margin-bottom: 20px; flex-grow: 1; }
-    .ar-card-meta { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray); border-top: 1px solid var(--lightgray); padding-top: 15px; margin-top: auto; }
-    .ar-justify-center { justify-content: center; gap: 15px; }
-    
-    .ar-poem-calligraphy {
-        height: 120px;
-        background-color: var(--highlight);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        color: var(--secondary);
+    .ar-card-image {
+        height: 105px; background-size: cover; background-position: center;
         border-bottom: 1px solid var(--lightgray);
     }
-    
-    /* Sidebar */
-    .ar-sidebar-column .ar-card { padding: 25px; }
-    .ar-widget-title { font-size: 1.2rem; color: var(--secondary); margin-bottom: 15px; text-align: center; }
-    
-    .ar-date-large { font-size: 2rem; font-weight: bold; color: var(--dark); margin-bottom: 5px; }
-    .ar-date-hijri { font-size: 1.1rem; color: var(--gray); margin-bottom: 15px; }
-    
-    .ar-the-word { font-size: 2.5rem; color: var(--dark); margin-bottom: 10px; margin-top: 0; }
-    .ar-definition { font-size: 1.1rem; margin-bottom: 10px; }
-    .ar-root { font-size: 0.9rem; color: var(--gray); }
-    
-    .ar-stats-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 15px; }
-    .ar-stats-list li { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--lightgray); padding-bottom: 8px; }
-    .ar-stat-label { color: var(--gray); }
-    .ar-stat-value { font-size: 1.2rem; font-weight: bold; color: var(--dark); }
-    
+    .ar-card-image-placeholder {
+        background: linear-gradient(135deg, var(--lightgray) 0%, var(--highlight) 100%);
+    }
+    .ar-card-image-sm { height: 85px; }
+    .ar-card-body { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; }
+    .ar-content-card h3 { font-size: 1rem; color: var(--dark); margin: 0 0 6px 0; line-height: 1.5; }
+    .ar-excerpt { font-size: 0.88rem; color: var(--gray); margin-bottom: 10px; flex-grow: 1; line-height: 1.6; }
+    .ar-card-meta {
+        display: flex; justify-content: space-between; font-size: 0.78rem;
+        color: var(--gray); border-top: 1px solid var(--lightgray);
+        padding-top: 10px; margin-top: auto;
+    }
+    .ar-justify-center { justify-content: center; gap: 12px; }
+    .ar-small-card h3 { font-size: 0.92rem; }
+
+    /* ═══════════════ Poem Calligraphy ═══════════════ */
+    .ar-poem-calligraphy {
+        height: 95px; background-color: var(--highlight);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.7rem; color: var(--secondary);
+        border-bottom: 1px solid var(--lightgray);
+        font-family: 'Aref Ruqaa', serif;
+    }
+
+    /* ═══════════════ Poem of Week ═══════════════ */
+    .ar-poem-title { font-size: 1.5rem; color: var(--secondary); margin: 0 0 14px 0; }
+    .ar-poem-verses { font-size: 1.05rem; line-height: 2; color: var(--darkgray); margin-bottom: 18px; }
+    .mt-3 { margin-top: 1rem; }
+
+    /* ═══════════════ Sidebar ═══════════════ */
+    .ar-sidebar-column .ar-card { padding: 22px; }
+    .ar-widget-title { font-size: 1.1rem; color: var(--secondary); margin-bottom: 14px; text-align: center; }
+
+    /* Calendar */
+    .ar-day-name { font-size: 1.15rem; color: var(--secondary); margin-bottom: 6px; }
+    .ar-date-large { font-size: 1.7rem; font-weight: bold; color: var(--dark); margin-bottom: 4px; }
+    .ar-date-hijri { font-size: 0.95rem; color: var(--gray); margin-bottom: 10px; }
+    .ar-season { font-size: 0.9rem; color: var(--gray); }
+
+    /* On This Day */
+    .ar-on-this-day-title {
+        display: flex !important; align-items: center; gap: 8px; justify-content: center;
+    }
+    .ar-otd-icon { font-size: 1.3rem; }
+    .ar-on-this-day-text {
+        font-size: 0.98rem; line-height: 1.8; color: var(--darkgray); text-align: center;
+    }
+
+    /* Stats */
+    .ar-stats-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 13px; }
+    .ar-stats-list li {
+        display: flex; justify-content: space-between; align-items: center;
+        border-bottom: 1px dashed var(--lightgray); padding-bottom: 8px;
+    }
+    .ar-stat-label { color: var(--gray); font-size: 0.93rem; }
+    .ar-stat-value { font-size: 1.1rem; font-weight: bold; color: var(--dark); }
+
+    /* Guide Me */
     .ar-guide-me-widget { background-color: var(--secondary); color: var(--light); border: none; }
-    .ar-guide-me-widget h3 { color: var(--light); font-size: 1.5rem; margin: 0 0 10px 0; }
+    .ar-guide-me-widget h3 { color: var(--light); font-size: 1.35rem; margin: 0 0 8px 0; }
+    .ar-guide-me-widget p { color: rgba(255,255,255,0.85); margin: 0; }
     .ar-btn-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-    
-    /* Nodes */
-    .ar-nodes-container { display: flex; justify-content: center; align-items: center; gap: 15px; padding: 30px 0; flex-wrap: wrap; }
-    .ar-node { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--dark); }
-    .ar-node span { padding: 10px; border: 1px solid var(--lightgray); border-radius: 8px; }
-    .ar-connector { width: 30px; height: 2px; background-color: var(--lightgray); }
-    
+
+    /* Author */
+    .ar-author-avatar {
+        width: 68px; height: 68px; border-radius: 50%;
+        background-color: var(--lightgray); display: flex;
+        align-items: center; justify-content: center;
+        font-size: 1.8rem; margin: 0 auto 10px;
+        color: var(--gray); border: 2px solid var(--lightgray);
+    }
+    .ar-author-name { font-size: 1.15rem; color: var(--dark); margin: 0 0 8px 0; }
+    .ar-author-bio { font-size: 0.92rem; color: var(--gray); line-height: 1.7; margin-bottom: 10px; }
+    .ar-about-link { font-size: 0.88rem; color: var(--secondary) !important; }
+
+    /* ═══════════════ Knowledge Map ═══════════════ */
+    .ar-nodes-container {
+        display: flex; justify-content: center; align-items: flex-start;
+        gap: 18px; padding: 16px 0; flex-wrap: wrap;
+    }
+    .ar-node {
+        display: flex; flex-direction: column; align-items: center;
+        gap: 8px; color: var(--dark); transition: all 0.2s ease;
+    }
+    .ar-node:hover { transform: translateY(-3px); }
+    .ar-node-icon {
+        width: 54px; height: 54px; border-radius: 50%;
+        border: 2px solid var(--lightgray); display: flex;
+        align-items: center; justify-content: center;
+        font-size: 1.35rem; color: var(--secondary);
+        background-color: var(--light); transition: all 0.3s ease;
+    }
+    .ar-node:hover .ar-node-icon { border-color: var(--secondary); background-color: var(--highlight); }
+    .ar-node span:last-child { font-size: 0.88rem; }
+    .ar-subtitle { font-size: 0.92rem; color: var(--gray); margin-bottom: 8px; }
+
+    /* ═══════════════ Most Read ═══════════════ */
+    .ar-most-read-list {
+        list-style: none; padding: 0; margin: 0; counter-reset: most-read;
+    }
+    .ar-most-read-list li {
+        counter-increment: most-read; padding: 13px 0;
+        border-bottom: 1px solid var(--lightgray);
+        display: flex; align-items: center; gap: 12px;
+        font-size: 1rem; line-height: 1.6;
+    }
+    .ar-most-read-list li:last-child { border-bottom: none; }
+    .ar-most-read-list li::before {
+        content: counter(most-read);
+        font-size: 1.6rem; font-weight: bold; color: var(--secondary);
+        min-width: 32px; text-align: center; opacity: 0.5;
+    }
+    .ar-most-read-list a { color: var(--dark); }
+    .ar-most-read-list a:hover { color: var(--secondary); }
+
+    /* ═══════════════ Inspirational Quote ═══════════════ */
+    .ar-inspirational-quote h2 { font-size: 1.4rem; line-height: 2; color: var(--secondary); margin: 0; }
+    .ar-ornament { width: 60px; height: 2px; background: var(--lightgray); margin: 14px auto 0; }
+
+    /* ═══════════════ Archive ═══════════════ */
+    .ar-archive-section { margin-bottom: 0; }
+
+    /* ═══════════════ Responsive ═══════════════ */
     @media (max-width: 1024px) {
         .ar-main-layout { grid-template-columns: 1fr; }
-        .ar-sidebar-column, .ar-content-column { grid-column: 1; }
-        .ar-grid-5, .ar-grid-2 { grid-template-columns: repeat(3, 1fr); }
-        .ar-two-col-layout { grid-template-columns: 1fr; }
+        .ar-content-column, .ar-sidebar-column { grid-column: 1; }
+        .ar-sidebar-column {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+        .ar-sidebar-column .ar-card { margin-bottom: 0; }
     }
     @media (max-width: 768px) {
-        .ar-grid-5, .ar-grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .ar-two-col-layout { grid-template-columns: 1fr; }
+        .ar-grid-5 { grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); }
+        .ar-quote-of-the-day blockquote { font-size: 1.6rem; }
+        .ar-sidebar-column { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
     }
     @media (max-width: 480px) {
-        .ar-grid-5, .ar-grid-2 { grid-template-columns: 1fr; }
+        .ar-grid-5 { grid-template-columns: repeat(2, 1fr); }
+        .ar-grid-2 { grid-template-columns: 1fr; }
+        .ar-card { padding: 18px; margin-bottom: 18px; }
+        .ar-sidebar-column { grid-template-columns: 1fr; }
+        .ar-sidebar-column .ar-card { margin-bottom: 0; }
+        .ar-nodes-container { gap: 12px; }
+        .ar-node-icon { width: 46px; height: 46px; font-size: 1.15rem; }
+        .ar-date-large { font-size: 1.4rem; }
     }
   `
 
