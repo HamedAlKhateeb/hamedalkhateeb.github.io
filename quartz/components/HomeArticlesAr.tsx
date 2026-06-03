@@ -63,7 +63,7 @@ export default (() => {
                     <h2>آخر المقالات</h2>
                     <a href={resolveRelative(fileData.slug!, "ar/articles" as any)} class="ar-view-all">عرض الكل ←</a>
                 </div>
-                <div class="ar-grid-3">
+                <div class="ar-articles-grid">
                     {latestArticles.map((page) => {
                         const title = page.frontmatter?.title ?? "بدون عنوان"
                         const desc = page.frontmatter?.description ?? page.description ?? ""
@@ -79,7 +79,7 @@ export default (() => {
                                    : <div class="ar-card-image ar-card-image-placeholder"></div>}
                             <div class="ar-card-body">
                                 <h3><a href={resolveRelative(fileData.slug!, page.slug!)} class="ar-card-link">{title}</a></h3>
-                                <p class="ar-excerpt">{desc.length > 90 ? desc.substring(0, 90) + '...' : desc}</p>
+                                <p class="ar-excerpt">{desc.length > 70 ? desc.substring(0, 70) + '...' : desc}</p>
                                 <div class="ar-card-meta">
                                     <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
                                     <span>{minutesStr}</span>
@@ -97,7 +97,7 @@ export default (() => {
                     <h2>آخر الأشعار</h2>
                     <a href={resolveRelative(fileData.slug!, "ar/poetry" as any)} class="ar-view-all">عرض الكل ←</a>
                 </div>
-                <div class="ar-grid-3">
+                <div class="ar-poems-grid">
                     {latestPoems.map((page) => {
                         const title = page.frontmatter?.title ?? "بدون عنوان"
                         const desc = page.frontmatter?.description ?? page.description ?? ""
@@ -417,18 +417,18 @@ export default (() => {
   HomeArticlesAr.css = `
     /* ═══════════════ Global Layout Overrides for Arabic Homepage ═══════════════ */
     @media (min-width: 801px) {
-        body:has(.ar-main-layout) .page {
-            max-width: 1400px !important;
+        body.is-list .page:has(.ar-main-layout) {
+            max-width: 1500px !important;
             width: 95% !important;
             margin: 0 auto !important;
         }
-        body:has(.ar-main-layout) #quartz-body {
-            grid-template-columns: 1fr !important;
-            grid-template-areas: "grid-header" "grid-center" "grid-footer" !important;
+        body.is-list .page > #quartz-body:has(.ar-main-layout) {
+            grid-template-columns: 1fr minmax(auto, 1400px) 1fr !important;
             column-gap: 0 !important;
+            grid-template-areas: "grid-header grid-header grid-header" "grid-sidebar-left grid-center grid-sidebar-right" "grid-footer grid-footer grid-footer" !important;
         }
-        body:has(.ar-main-layout) #quartz-body .left.sidebar,
-        body:has(.ar-main-layout) #quartz-body .right.sidebar {
+        body.is-list .page > #quartz-body:has(.ar-main-layout) .left.sidebar,
+        body.is-list .page > #quartz-body:has(.ar-main-layout) .right.sidebar {
             display: none !important;
         }
     }
@@ -454,7 +454,7 @@ export default (() => {
         background-color: var(--light);
         border: 1px solid var(--lightgray);
         border-radius: 12px;
-        padding: 28px;
+        padding: 24px;
         margin-bottom: 26px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
@@ -517,14 +517,15 @@ export default (() => {
     .ar-read-more-link { font-size: 0.95rem; color: var(--secondary) !important; }
 
     /* ═══════════════ Grids ═══════════════ */
-    .ar-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .ar-articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 24px; }
+    .ar-poems-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
     .ar-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .ar-two-col-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 0; }
 
     /* ═══════════════ Content Cards ═══════════════ */
     .ar-content-card { padding: 0; display: flex; flex-direction: column; height: 100%; }
     .ar-card-image {
-        height: 180px; background-size: cover; background-position: center;
+        height: 120px; background-size: cover; background-position: center;
         border-bottom: 1px solid var(--lightgray);
         transition: transform 0.5s ease;
     }
@@ -535,7 +536,7 @@ export default (() => {
         background: linear-gradient(135deg, var(--lightgray) 0%, var(--highlight) 100%);
     }
     .ar-card-image-sm { height: 110px; }
-    .ar-card-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+    .ar-card-body { padding: 16px; display: flex; flex-direction: column; flex-grow: 1; }
     .ar-content-card h3 { font-size: 1.15rem; color: var(--dark); margin: 0 0 10px 0; line-height: 1.5; font-weight: bold; }
     .ar-excerpt { font-size: 0.92rem; color: var(--gray); margin-bottom: 12px; flex-grow: 1; line-height: 1.6; }
     .ar-card-meta {
@@ -675,11 +676,13 @@ export default (() => {
         .ar-sidebar-column .ar-card { margin-bottom: 0; }
     }
     @media (max-width: 900px) {
-        .ar-grid-3 { grid-template-columns: repeat(2, 1fr); }
+        .ar-articles-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+        .ar-poems-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
         .ar-two-col-layout { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
-        .ar-grid-3 { grid-template-columns: 1fr; }
+        .ar-articles-grid { grid-template-columns: 1fr; }
+        .ar-poems-grid { grid-template-columns: 1fr; }
         .ar-grid-2 { grid-template-columns: 1fr; }
         .ar-sidebar-column { grid-template-columns: 1fr; }
         .ar-sidebar-column .ar-card { margin-bottom: 0; }
