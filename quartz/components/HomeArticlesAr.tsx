@@ -24,8 +24,8 @@ export default (() => {
         return bDate.getTime() - aDate.getTime()
       })
 
-    const latestArticles = arabicArticles.slice(0, 5)
-    const latestPoems = arabicPoems.slice(0, 10)
+    const latestArticles = arabicArticles.slice(0, 6)
+    const latestPoems = arabicPoems.slice(0, 6)
 
     // Select poem of the week (pinned or just first)
     const featuredPoems = arabicPoems.filter((p) => p.frontmatter?.pinned === true)
@@ -63,7 +63,7 @@ export default (() => {
                     <h2>آخر المقالات</h2>
                     <a href={resolveRelative(fileData.slug!, "ar/articles" as any)} class="ar-view-all">عرض الكل ←</a>
                 </div>
-                <div class="ar-grid-5">
+                <div class="ar-grid-3">
                     {latestArticles.map((page) => {
                         const title = page.frontmatter?.title ?? "بدون عنوان"
                         const desc = page.frontmatter?.description ?? page.description ?? ""
@@ -78,8 +78,8 @@ export default (() => {
                             {cover ? <div class="ar-card-image" style={{backgroundImage: `url('${cover}')`}}></div>
                                    : <div class="ar-card-image ar-card-image-placeholder"></div>}
                             <div class="ar-card-body">
-                                <h3><a href={resolveRelative(fileData.slug!, page.slug!)}>{title}</a></h3>
-                                <p class="ar-excerpt">{desc.length > 60 ? desc.substring(0, 60) + '...' : desc}</p>
+                                <h3><a href={resolveRelative(fileData.slug!, page.slug!)} class="ar-card-link">{title}</a></h3>
+                                <p class="ar-excerpt">{desc.length > 90 ? desc.substring(0, 90) + '...' : desc}</p>
                                 <div class="ar-card-meta">
                                     <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
                                     <span>{minutesStr}</span>
@@ -97,7 +97,7 @@ export default (() => {
                     <h2>آخر الأشعار</h2>
                     <a href={resolveRelative(fileData.slug!, "ar/poetry" as any)} class="ar-view-all">عرض الكل ←</a>
                 </div>
-                <div class="ar-grid-5">
+                <div class="ar-grid-3">
                     {latestPoems.map((page) => {
                         const title = page.frontmatter?.title ?? "بدون عنوان"
                         const desc = page.frontmatter?.description ?? page.description ?? ""
@@ -107,7 +107,7 @@ export default (() => {
                         <article class="ar-card ar-content-card ar-text-center">
                             <div class="ar-poem-calligraphy">{mainTag}</div>
                             <div class="ar-card-body">
-                                <h3><a href={resolveRelative(fileData.slug!, page.slug!)}>{title}</a></h3>
+                                <h3><a href={resolveRelative(fileData.slug!, page.slug!)} class="ar-card-link">{title}</a></h3>
                                 <p class="ar-excerpt">{desc.split('|')[0].trim()}...</p>
                                 <div class="ar-card-meta ar-justify-center">
                                     <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
@@ -158,9 +158,10 @@ export default (() => {
                             const cover = (page.frontmatter?.cover ?? page.frontmatter?.image) as string | undefined
                             return (
                             <article class="ar-card ar-content-card ar-small-card">
-                                {cover && <div class="ar-card-image ar-card-image-sm" style={{backgroundImage: `url('${cover}')`}}></div>}
+                                {cover ? <div class="ar-card-image ar-card-image-sm" style={{backgroundImage: `url('${cover}')`}}></div>
+                                       : <div class="ar-card-image ar-card-image-sm ar-card-image-placeholder"></div>}
                                 <div class="ar-card-body">
-                                    <h3><a href={resolveRelative(fileData.slug!, page.slug!)}>{title}</a></h3>
+                                    <h3><a href={resolveRelative(fileData.slug!, page.slug!)} class="ar-card-link">{title}</a></h3>
                                     <div class="ar-card-meta">
                                         <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
                                     </div>
@@ -414,11 +415,29 @@ export default (() => {
   `
 
   HomeArticlesAr.css = `
+    /* ═══════════════ Global Layout Overrides for Arabic Homepage ═══════════════ */
+    @media (min-width: 801px) {
+        body:has(.ar-main-layout) .page {
+            max-width: 1400px !important;
+            width: 95% !important;
+            margin: 0 auto !important;
+        }
+        body:has(.ar-main-layout) #quartz-body {
+            grid-template-columns: 1fr !important;
+            grid-template-areas: "grid-header" "grid-center" "grid-footer" !important;
+            column-gap: 0 !important;
+        }
+        body:has(.ar-main-layout) #quartz-body .left.sidebar,
+        body:has(.ar-main-layout) #quartz-body .right.sidebar {
+            display: none !important;
+        }
+    }
+
     /* ═══════════════ Layout ═══════════════ */
     .ar-main-layout {
         display: grid;
-        grid-template-columns: 1fr 300px;
-        gap: 28px;
+        grid-template-columns: 1fr 340px;
+        gap: 32px;
         margin-top: 20px;
         margin-bottom: 60px;
         font-family: 'Amiri', serif;
@@ -434,15 +453,24 @@ export default (() => {
     .ar-card {
         background-color: var(--light);
         border: 1px solid var(--lightgray);
-        border-radius: 10px;
+        border-radius: 12px;
         padding: 28px;
         margin-bottom: 26px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
         position: relative;
         overflow: hidden;
     }
-    .ar-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .ar-card:hover { 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.06); 
+        transform: translateY(-4px);
+    }
+    .ar-card-link::after {
+        content: "";
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+        z-index: 1;
+    }
 
     /* ═══════════════ Section Headers ═══════════════ */
     .ar-section-header {
@@ -489,38 +517,52 @@ export default (() => {
     .ar-read-more-link { font-size: 0.95rem; color: var(--secondary) !important; }
 
     /* ═══════════════ Grids ═══════════════ */
-    .ar-grid-5 { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 16px; }
-    .ar-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-    .ar-two-col-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-bottom: 0; }
+    .ar-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .ar-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .ar-two-col-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 0; }
 
     /* ═══════════════ Content Cards ═══════════════ */
-    .ar-content-card { padding: 0; display: flex; flex-direction: column; }
+    .ar-content-card { padding: 0; display: flex; flex-direction: column; height: 100%; }
     .ar-card-image {
-        height: 105px; background-size: cover; background-position: center;
+        height: 180px; background-size: cover; background-position: center;
         border-bottom: 1px solid var(--lightgray);
+        transition: transform 0.5s ease;
+    }
+    .ar-card:hover .ar-card-image {
+        transform: scale(1.03);
     }
     .ar-card-image-placeholder {
         background: linear-gradient(135deg, var(--lightgray) 0%, var(--highlight) 100%);
     }
-    .ar-card-image-sm { height: 85px; }
-    .ar-card-body { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; }
-    .ar-content-card h3 { font-size: 1rem; color: var(--dark); margin: 0 0 6px 0; line-height: 1.5; }
-    .ar-excerpt { font-size: 0.88rem; color: var(--gray); margin-bottom: 10px; flex-grow: 1; line-height: 1.6; }
+    .ar-card-image-sm { height: 110px; }
+    .ar-card-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+    .ar-content-card h3 { font-size: 1.15rem; color: var(--dark); margin: 0 0 10px 0; line-height: 1.5; font-weight: bold; }
+    .ar-excerpt { font-size: 0.92rem; color: var(--gray); margin-bottom: 12px; flex-grow: 1; line-height: 1.6; }
     .ar-card-meta {
         display: flex; justify-content: space-between; font-size: 0.78rem;
         color: var(--gray); border-top: 1px solid var(--lightgray);
         padding-top: 10px; margin-top: auto;
     }
     .ar-justify-center { justify-content: center; gap: 12px; }
-    .ar-small-card h3 { font-size: 0.92rem; }
+    .ar-small-card h3 { font-size: 0.95rem; }
 
     /* ═══════════════ Poem Calligraphy ═══════════════ */
     .ar-poem-calligraphy {
-        height: 95px; background-color: var(--highlight);
+        height: 140px; 
+        background: linear-gradient(135deg, rgba(40, 75, 99, 0.05) 0%, rgba(132, 165, 157, 0.12) 100%);
         display: flex; align-items: center; justify-content: center;
-        font-size: 1.7rem; color: var(--secondary);
+        font-size: 2rem; color: var(--secondary);
         border-bottom: 1px solid var(--lightgray);
         font-family: 'Aref Ruqaa', serif;
+        position: relative;
+    }
+    .ar-poem-calligraphy::after {
+        content: "❦";
+        position: absolute;
+        bottom: 8px;
+        font-size: 1rem;
+        color: var(--tertiary);
+        opacity: 0.7;
     }
 
     /* ═══════════════ Poem of Week ═══════════════ */
@@ -529,7 +571,7 @@ export default (() => {
     .mt-3 { margin-top: 1rem; }
 
     /* ═══════════════ Sidebar ═══════════════ */
-    .ar-sidebar-column .ar-card { padding: 22px; }
+    .ar-sidebar-column .ar-card { padding: 24px; }
     .ar-widget-title { font-size: 1.1rem; color: var(--secondary); margin-bottom: 14px; text-align: center; }
 
     /* Calendar */
@@ -577,7 +619,7 @@ export default (() => {
     /* ═══════════════ Knowledge Map ═══════════════ */
     .ar-nodes-container {
         display: flex; justify-content: center; align-items: flex-start;
-        gap: 18px; padding: 16px 0; flex-wrap: wrap;
+        gap: 24px; padding: 20px 0; flex-wrap: wrap;
     }
     .ar-node {
         display: flex; flex-direction: column; align-items: center;
@@ -585,10 +627,10 @@ export default (() => {
     }
     .ar-node:hover { transform: translateY(-3px); }
     .ar-node-icon {
-        width: 54px; height: 54px; border-radius: 50%;
+        width: 60px; height: 60px; border-radius: 50%;
         border: 2px solid var(--lightgray); display: flex;
         align-items: center; justify-content: center;
-        font-size: 1.35rem; color: var(--secondary);
+        font-size: 1.45rem; color: var(--secondary);
         background-color: var(--light); transition: all 0.3s ease;
     }
     .ar-node:hover .ar-node-icon { border-color: var(--secondary); background-color: var(--highlight); }
@@ -627,26 +669,26 @@ export default (() => {
         .ar-content-column, .ar-sidebar-column { grid-column: 1; }
         .ar-sidebar-column {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
         }
         .ar-sidebar-column .ar-card { margin-bottom: 0; }
     }
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
+        .ar-grid-3 { grid-template-columns: repeat(2, 1fr); }
         .ar-two-col-layout { grid-template-columns: 1fr; }
-        .ar-grid-5 { grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); }
-        .ar-quote-of-the-day blockquote { font-size: 1.6rem; }
-        .ar-sidebar-column { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
     }
-    @media (max-width: 480px) {
-        .ar-grid-5 { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 600px) {
+        .ar-grid-3 { grid-template-columns: 1fr; }
         .ar-grid-2 { grid-template-columns: 1fr; }
-        .ar-card { padding: 18px; margin-bottom: 18px; }
         .ar-sidebar-column { grid-template-columns: 1fr; }
         .ar-sidebar-column .ar-card { margin-bottom: 0; }
-        .ar-nodes-container { gap: 12px; }
-        .ar-node-icon { width: 46px; height: 46px; font-size: 1.15rem; }
-        .ar-date-large { font-size: 1.4rem; }
+    }
+    @media (max-width: 480px) {
+        .ar-card { padding: 20px; margin-bottom: 20px; }
+        .ar-nodes-container { gap: 14px; }
+        .ar-node-icon { width: 48px; height: 48px; font-size: 1.2rem; }
+        .ar-date-large { font-size: 1.5rem; }
     }
   `
 
