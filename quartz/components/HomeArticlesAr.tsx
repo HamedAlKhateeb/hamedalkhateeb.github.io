@@ -422,13 +422,11 @@ export default (() => {
             width: 95% !important;
             margin: 0 auto !important;
         }
-        body.is-list .page > #quartz-body:has(.ar-main-layout) {
-            grid-template-columns: 1fr minmax(auto, 1400px) 1fr !important;
-            column-gap: 0 !important;
-            grid-template-areas: "grid-header grid-header grid-header" "grid-sidebar-left grid-center grid-sidebar-right" "grid-footer grid-footer grid-footer" !important;
+        body.is-list .page:has(.ar-main-layout) > #quartz-body {
+            display: block !important;
         }
-        body.is-list .page > #quartz-body:has(.ar-main-layout) .left.sidebar,
-        body.is-list .page > #quartz-body:has(.ar-main-layout) .right.sidebar {
+        body.is-list .page:has(.ar-main-layout) > #quartz-body .left.sidebar,
+        body.is-list .page:has(.ar-main-layout) > #quartz-body .right.sidebar {
             display: none !important;
         }
     }
