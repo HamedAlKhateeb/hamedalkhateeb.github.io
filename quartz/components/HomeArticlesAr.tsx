@@ -24,8 +24,8 @@ export default (() => {
         return bDate.getTime() - aDate.getTime()
       })
 
-    const latestArticles = arabicArticles.slice(0, 3)
-    const latestPoems = arabicPoems.slice(0, 4)
+    const latestArticles = arabicArticles.slice(0, 5)
+    const latestPoems = arabicPoems.slice(0, 5)
     
     // Select poem of the week (pinned or just first)
     const featuredPoems = arabicPoems.filter((p) => p.frontmatter?.pinned === true)
@@ -82,7 +82,7 @@ export default (() => {
                     <h2>آخر المقالات</h2>
                     <a href={resolveRelative(fileData.slug!, "ar/articles" as any)} class="ar-view-all">عرض الكل ←</a>
                 </div>
-                <div class="ar-grid-3">
+                <div class="ar-grid-5">
                     {latestArticles.map((page) => {
                         const title = page.frontmatter?.title ?? "بدون عنوان"
                         const desc = page.frontmatter?.description ?? page.description ?? ""
@@ -97,7 +97,7 @@ export default (() => {
                             {cover && <div class="ar-card-image" style={{backgroundImage: `url('${cover}')`}}></div>}
                             <div class="ar-card-body">
                                 <h3><a href={resolveRelative(fileData.slug!, page.slug!)}>{title}</a></h3>
-                                <p class="ar-excerpt">{desc}</p>
+                                <p class="ar-excerpt">{desc.length > 80 ? desc.substring(0, 80) + '...' : desc}</p>
                                 <div class="ar-card-meta">
                                     <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
                                     <span>{minutesStr}</span>
@@ -115,7 +115,7 @@ export default (() => {
                     <h2>آخر الأشعار</h2>
                     <a href={resolveRelative(fileData.slug!, "ar/poetry" as any)} class="ar-view-all">عرض الكل ←</a>
                 </div>
-                <div class="ar-grid-4">
+                <div class="ar-grid-5">
                     {latestPoems.map((page) => {
                         const title = page.frontmatter?.title ?? "بدون عنوان"
                         const desc = page.frontmatter?.description ?? page.description ?? ""
@@ -126,7 +126,7 @@ export default (() => {
                             <div class="ar-poem-calligraphy">{mainTag}</div>
                             <div class="ar-card-body">
                                 <h3><a href={resolveRelative(fileData.slug!, page.slug!)}>{title}</a></h3>
-                                <p class="ar-excerpt">{desc}</p>
+                                <p class="ar-excerpt">{desc.split('|')[0].trim()}...</p>
                                 <div class="ar-card-meta ar-justify-center">
                                     <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
                                 </div>
@@ -213,13 +213,6 @@ export default (() => {
                 <div class="ar-season" id="ar-cal-season">فصل الصيف</div>
             </div>
 
-            {/* كلمة اليوم */}
-            <div class="ar-card ar-word-of-day ar-text-center">
-                <h3 class="ar-widget-title">كلمة اليوم</h3>
-                <h2 class="ar-the-word">الوَجْد</h2>
-                <p class="ar-definition">الحزن المصحوب بالشوق.</p>
-                <p class="ar-root">أصلها: وجد - يجد - وجوداً</p>
-            </div>
 
             {/* إحصائيات الموقع */}
             <div class="ar-card ar-stats-widget">
@@ -336,6 +329,14 @@ export default (() => {
         direction: rtl;
     }
     
+    .ar-sidebar-column {
+        grid-column: 1;
+    }
+    
+    .ar-content-column {
+        grid-column: 2;
+    }
+
     .ar-main-layout a {
         text-decoration: none;
         color: inherit;
@@ -454,13 +455,12 @@ export default (() => {
     }
     
     /* Grids */
-    .ar-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .ar-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .ar-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
     .ar-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .ar-two-col-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
     
     .ar-content-card { padding: 0; display: flex; flex-direction: column; }
-    .ar-card-image { height: 160px; background-size: cover; background-position: center; border-bottom: 1px solid var(--lightgray); }
+    .ar-card-image { height: 120px; background-size: cover; background-position: center; border-bottom: 1px solid var(--lightgray); }
     .ar-card-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
     .ar-content-card h3 { font-size: 1.2rem; color: var(--dark); margin: 0 0 10px 0; }
     .ar-excerpt { font-size: 1rem; color: var(--gray); margin-bottom: 20px; flex-grow: 1; }
@@ -506,11 +506,15 @@ export default (() => {
     
     @media (max-width: 1024px) {
         .ar-main-layout { grid-template-columns: 1fr; }
-        .ar-grid-3, .ar-grid-4, .ar-grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .ar-sidebar-column, .ar-content-column { grid-column: 1; }
+        .ar-grid-5, .ar-grid-2 { grid-template-columns: repeat(3, 1fr); }
         .ar-two-col-layout { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
-        .ar-grid-3, .ar-grid-4, .ar-grid-2 { grid-template-columns: 1fr; }
+        .ar-grid-5, .ar-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+        .ar-grid-5, .ar-grid-2 { grid-template-columns: 1fr; }
     }
   `
 
