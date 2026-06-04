@@ -1857,43 +1857,9 @@ pre code {
   white-space: pre;
 }
 
-.sidebar-toggle {
-  display: block;
-  background-color: var(--lightgray);
-  color: var(--dark);
-  border: 1px solid var(--gray);
-  font-family: inherit;
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  border-radius: 5px;
-  margin: 1rem 0;
-  text-align: center;
-}
-
-html[dir="rtl"] .sidebar-toggle {
-  text-align: right;
-}
-
-@media screen and (min-width: 1024px) {
-  .sidebar-toggle {
-    display: none !important;
-  }
-}
-
 @media screen and (max-width: 1023px) {
   .left, .right {
     display: none;
     width: 100%;
-  }
-
-  body.sidebar-open .left,
-  body.sidebar-open .right {
-    display: block;
-    margin-top: 2rem;
-    padding: 1rem;
-    background: var(--light);
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   }
 }
