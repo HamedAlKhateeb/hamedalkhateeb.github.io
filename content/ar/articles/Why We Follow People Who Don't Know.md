@@ -1,5 +1,5 @@
 ---
-title: Why We Follow People Who Don't Know
+title: الذين عاشوا بلا نظير في جمهورية التنظير، عن الهبيدة بيننا
 tags:
   - ثقافة
   - نسيم_طالب
