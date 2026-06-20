@@ -42,7 +42,7 @@ const defaultOptions: Options = {
 function generateSiteMap(cfg: GlobalConfiguration, idx: ContentIndexMap): string {
   const base = cfg.baseUrl ?? ""
   const createURLEntry = (slug: SimpleSlug, content: ContentDetails): string => `  <url>
-    <loc>https://${joinSegments(base, encodeURI(slug))}</loc>
+    <loc>https://${escapeHTML(joinSegments(base, encodeURI(slug).replaceAll("'", "%27")))}</loc>
     ${content.date ? `<lastmod>${content.date.toISOString()}</lastmod>` : ""}
   </url>`
   const urls = Array.from(idx)
@@ -60,8 +60,8 @@ function generateRSSFeed(cfg: GlobalConfiguration, idx: ContentIndexMap, limit?:
 
   const createURLEntry = (slug: SimpleSlug, content: ContentDetails): string => `<item>
     <title>${escapeHTML(content.title)}</title>
-    <link>https://${joinSegments(base, encodeURI(slug))}</link>
-    <guid>https://${joinSegments(base, encodeURI(slug))}</guid>
+    <link>https://${escapeHTML(joinSegments(base, encodeURI(slug).replaceAll("'", "%27")))}</link>
+    <guid>https://${escapeHTML(joinSegments(base, encodeURI(slug).replaceAll("'", "%27")))}</guid>
     <description><![CDATA[ ${content.richContent ?? content.description} ]]></description>
     <pubDate>${content.date?.toUTCString()}</pubDate>
   </item>`
