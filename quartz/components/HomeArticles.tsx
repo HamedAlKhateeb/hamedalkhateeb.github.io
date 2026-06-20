@@ -41,7 +41,7 @@ export default (() => {
         {/* Hero Section */}
         <section class="homepage-hero">
           <h1 class="hero-title">Hamed</h1>
-          <p class="hero-subtitle">Structural Engineer & Applied Mathematician</p>
+          <p class="hero-subtitle">Applied Math Researcher</p>
         </section>
 
         {/* Featured Writings */}
