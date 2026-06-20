@@ -35,18 +35,31 @@ const Newsletter: QuartzComponent = ({ fileData, displayClass }: QuartzComponent
         <span class="separator-diamond">✧</span>
       </div>
 
-      <h3>{title}</h3>
-      <p>{description}</p>
-      <form
-        action="https://buttondown.email/api/emails/embed-subscribe/al-khateeb"
-        method="POST"
-        class="newsletter-form"
-        target="popupwindow"
-      >
-        <button type="submit">{buttonText}</button>
-        <input type="email" name="email" placeholder={inputPlaceholder} required />
-      </form>
-      <small>{smallText}</small>
+      {isArabic ? (
+        <>
+          <h3>{title}</h3>
+          <p>{description}</p>
+          <form
+            action="https://buttondown.email/api/emails/embed-subscribe/al-khateeb"
+            method="POST"
+            class="newsletter-form"
+            target="popupwindow"
+          >
+            <button type="submit">{buttonText}</button>
+            <input type="email" name="email" placeholder={inputPlaceholder} required />
+          </form>
+          <small>{smallText}</small>
+        </>
+      ) : (
+        <iframe
+          src="https://pragmaticreader.substack.com/embed"
+          width="100%"
+          height="320"
+          style={{ border: "1px solid #EEE", background: "white", maxWidth: "480px" }}
+          frameBorder={0}
+          scrolling="no"
+        ></iframe>
+      )}
 
       {/* 4. Separator */}
       <div class="footer-separator bottom-sep">
