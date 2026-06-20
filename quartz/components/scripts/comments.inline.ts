@@ -278,12 +278,51 @@ document.addEventListener("nav", async () => {
     const { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js")
     // prettier-ignore
     // @ts-ignore
-    const { getFirestore, collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc, updateDoc, setDoc, arrayUnion, arrayRemove } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js")
+    const { getFirestore, collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc, updateDoc, setDoc, getDoc, arrayUnion, arrayRemove } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js")
 
     const app  = getApps().length === 0 ? initializeApp(config) : getApp()
     const auth = getAuth(app)
     const db   = getFirestore(app)
     let currentUser: any = null
+
+    // ── Ban helpers ──────────────────────────────────────────────────────
+    const bannedUsersCache = new Map<string, boolean>()
+
+    const getBanDocId = (identifier: string): string => {
+      // Firestore doc IDs can't contain '/' so we replace dots/@ for safety
+      return identifier.replace(/[\/.]/g, "_")
+    }
+
+    const isUserBanned = async (identifier: string): Promise<boolean> => {
+      if (!identifier) return false
+      if (bannedUsersCache.has(identifier)) return bannedUsersCache.get(identifier)!
+      try {
+        const snap = await getDoc(doc(db, "bannedUsers", getBanDocId(identifier)))
+        const banned = snap.exists() && snap.data().banned === true
+        bannedUsersCache.set(identifier, banned)
+        return banned
+      } catch {
+        return false
+      }
+    }
+
+    const banUser = async (identifier: string, userName: string) => {
+      if (!identifier) return
+      await setDoc(doc(db, "bannedUsers", getBanDocId(identifier)), {
+        originalId: identifier,
+        userName,
+        banned: true,
+        bannedAt: serverTimestamp(),
+        bannedBy: currentUser?.email || "admin",
+      })
+      bannedUsersCache.set(identifier, true)
+    }
+
+    const unbanUser = async (identifier: string) => {
+      if (!identifier) return
+      await deleteDoc(doc(db, "bannedUsers", getBanDocId(identifier)))
+      bannedUsersCache.set(identifier, false)
+    }
 
     const doLogin = (e?: Event) => {
       e?.preventDefault()
@@ -540,6 +579,14 @@ document.addEventListener("nav", async () => {
         const text = ta.value.trim()
         if (!text) { alert("يرجى كتابة ردك أولاً."); return }
 
+          // Check if user is banned before replying
+          if (isGoogleUser && currentUser) {
+            if (await isUserBanned(currentUser.uid)) {
+              alert("عذراً، لقد تم حظرك من التعليق على هذه المدونة.")
+              btn.disabled = false; btn.textContent = "إرسال الرد"; return
+            }
+          }
+
         const btn         = form.querySelector(".fc-reply-submit-btn") as HTMLButtonElement
         btn.disabled      = true
         btn.textContent   = "جاري الإرسال..."
@@ -563,6 +610,11 @@ document.addEventListener("nav", async () => {
               alert("البريد الإلكتروني غير صحيح.")
               btn.disabled = false; btn.textContent = "إرسال الرد"; return
             }
+            // Check if guest email is banned
+            if (await isUserBanned(gEmail)) {
+              alert("عذراً، لقد تم حظرك من التعليق على هذه المدونة.")
+              btn.disabled = false; btn.textContent = "إرسال الرد"; return
+            }
 
             userName      = gName
             userPhoto     = ""
@@ -577,6 +629,7 @@ document.addEventListener("nav", async () => {
             slug, text, parentId,
             userId, userName, userPhoto,
             userGravatar, userWebsite,
+            userEmail,
             isGuest: !isGoogleUser,
             createdAt: serverTimestamp(),
             likes: [],
@@ -615,6 +668,9 @@ document.addEventListener("nav", async () => {
       const isOwner    = currentUser && currentUser.uid === d.userId
       const canDelete  = isOwner || isAdmin
       const canEdit    = isOwner
+      const canBan     = isAdmin && !isOwner
+      // Identifier for banning: Google uid for authenticated users, guest email for guests
+      const banIdentifier = d.userId || d.userEmail || ""
       const editedBadge = d.editedAt ? `<span class="fc-edited-badge">• تم التعديل</span>` : ""
 
       const likes: string[] = d.likes || []
@@ -655,6 +711,7 @@ document.addEventListener("nav", async () => {
               <button type="button" class="fc-reply-btn" data-id="${cdoc.id}">💬 <span>رد</span></button>
               ${canEdit  ? `<button type="button" class="fc-edit-btn"   data-id="${cdoc.id}">✏️ تعديل</button>` : ""}
               ${canDelete ? `<button type="button" class="fc-delete-btn" data-id="${cdoc.id}">🗑️ حذف</button>`  : ""}
+              ${canBan && banIdentifier ? `<button type="button" class="fc-ban-btn" data-id="${cdoc.id}" data-ban-id="${banIdentifier}" data-ban-name="${d.userName || 'مجهول'}">🚫 حظر</button>` : ""}
             </div>
           </div>
           <div class="fc-replies-area"></div>
@@ -688,6 +745,45 @@ document.addEventListener("nav", async () => {
         })
       }
 
+      if (canBan && banIdentifier) {
+        const banBtn = el.querySelector(".fc-ban-btn") as HTMLButtonElement
+        banBtn?.addEventListener("click", async () => {
+          const banId   = banBtn.dataset.banId!
+          const banName = banBtn.dataset.banName!
+          const isBanned = await isUserBanned(banId)
+          if (isBanned) {
+            if (confirm(`هل تريد رفع الحظر عن "${banName}"؟`)) {
+              try {
+                await unbanUser(banId)
+                banBtn.textContent = "🚫 حظر"
+                banBtn.title = "حظر هذا المستخدم"
+                alert(`تم رفع الحظر عن "${banName}".`)
+              } catch (err: any) {
+                alert("فشل رفع الحظر: " + err.message)
+              }
+            }
+          } else {
+            if (confirm(`هل أنت متأكد من حظر "${banName}"؟ لن يتمكن من التعليق بعد الآن.`)) {
+              try {
+                await banUser(banId, banName)
+                banBtn.textContent = "✅ رفع الحظر"
+                banBtn.title = "رفع الحظر عن هذا المستخدم"
+                alert(`تم حظر "${banName}" بنجاح.`)
+              } catch (err: any) {
+                alert("فشل الحظر: " + err.message)
+              }
+            }
+          }
+        })
+        // Check initial ban state and update button
+        isUserBanned(banIdentifier).then(isBanned => {
+          if (isBanned) {
+            banBtn.textContent = "✅ رفع الحظر"
+            banBtn.title = "رفع الحظر عن هذا المستخدم"
+          }
+        })
+      }
+
       return el
     }
 
@@ -696,6 +792,13 @@ document.addEventListener("nav", async () => {
       e.preventDefault()
       const text = textarea.value.trim()
       if (!text || !currentUser) return
+
+      // Check if user is banned
+      if (await isUserBanned(currentUser.uid)) {
+        alert("عذراً، لقد تم حظرك من التعليق على هذه المدونة.")
+        return
+      }
+
       submitBtn.disabled    = true
       submitBtn.textContent = "جاري الإرسال..."
       try {
@@ -741,6 +844,12 @@ document.addEventListener("nav", async () => {
       }
       if (!text)   { guestTextarea.focus();   alert("يرجى كتابة تعليقك.");        return }
 
+      // Check if guest email is banned
+      if (await isUserBanned(gEmail)) {
+        alert("عذراً، لقد تم حظرك من التعليق على هذه المدونة.")
+        return
+      }
+
       guestSubmitBtn.disabled    = true
       guestSubmitBtn.textContent = "جاري الإرسال..."
 
@@ -755,6 +864,7 @@ document.addEventListener("nav", async () => {
           userPhoto:    "",
           userGravatar: avatar,
           userWebsite:  gWeb,
+          userEmail:    gEmail,
           isGuest:      true,
           createdAt:    serverTimestamp(),
           likes:        [],

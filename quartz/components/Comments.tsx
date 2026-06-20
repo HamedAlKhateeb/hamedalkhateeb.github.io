@@ -328,6 +328,14 @@ export default ((opts: Options) => {
     .fc-delete-btn { color: #e53935; }
     .fc-delete-btn:hover { text-decoration: underline; }
 
+    /* Ban / Unban */
+    .fc-ban-btn {
+      background: none; border: none;
+      cursor: pointer; font-size: 0.78rem; padding: 0;
+      color: #e65100;
+    }
+    .fc-ban-btn:hover { text-decoration: underline; }
+
     /* ── Inline edit ── */
     .fc-edit-actions { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
     .fc-edit-textarea {
