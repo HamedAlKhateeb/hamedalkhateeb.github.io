@@ -12,6 +12,7 @@ document.addEventListener("nav", async () => {
   const EMOJIS = ["👍", "❤️", "🎉", "😄", "🤔", "😢"]
   const GUEST_STORAGE_KEY = "fc-guest-info"
   const NOTIF_COUNT_KEY = "fc-notif-count-" + slug
+  const ADMIN_EMAIL = "hsmefh@gmail.com"
 
   // ── Gravatar (SHA-256 via Web Crypto) ──────────────────────────────────
   const gravatarUrl = async (email: string): Promise<string> => {
@@ -610,7 +611,10 @@ document.addEventListener("nav", async () => {
           })
         : "الآن"
 
+      const isAdmin    = !!(currentUser && currentUser.email === ADMIN_EMAIL)
       const isOwner    = currentUser && currentUser.uid === d.userId
+      const canDelete  = isOwner || isAdmin
+      const canEdit    = isOwner
       const editedBadge = d.editedAt ? `<span class="fc-edited-badge">• تم التعديل</span>` : ""
 
       const likes: string[] = d.likes || []
@@ -649,8 +653,8 @@ document.addEventListener("nav", async () => {
                 ${liked ? "👍" : "👍🏻"}<span class="fc-like-count">${likeCount > 0 ? " " + likeCount : ""}</span>
               </button>
               <button type="button" class="fc-reply-btn" data-id="${cdoc.id}">💬 <span>رد</span></button>
-              ${isOwner ? `<button type="button" class="fc-edit-btn"   data-id="${cdoc.id}">✏️ تعديل</button>` : ""}
-              ${isOwner ? `<button type="button" class="fc-delete-btn" data-id="${cdoc.id}">🗑️ حذف</button>`   : ""}
+              ${canEdit  ? `<button type="button" class="fc-edit-btn"   data-id="${cdoc.id}">✏️ تعديل</button>` : ""}
+              ${canDelete ? `<button type="button" class="fc-delete-btn" data-id="${cdoc.id}">🗑️ حذف</button>`  : ""}
             </div>
           </div>
           <div class="fc-replies-area"></div>
@@ -665,10 +669,13 @@ document.addEventListener("nav", async () => {
         showReplyForm(area, cdoc.id)
       })
 
-      if (isOwner) {
+      if (canEdit) {
         el.querySelector(".fc-edit-btn")?.addEventListener("click", () => {
           startEdit(el.querySelector(".fc-comment-content") as HTMLElement, cdoc.id, d.text)
         })
+      }
+
+      if (canDelete) {
         el.querySelector(".fc-delete-btn")?.addEventListener("click", async () => {
           if (confirm("هل أنت متأكد من حذف هذا التعليق؟")) {
             try {
