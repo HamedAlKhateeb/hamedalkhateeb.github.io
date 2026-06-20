@@ -10,7 +10,24 @@ document.addEventListener("nav", async () => {
   const slug = container.dataset.slug || "unknown"
 
   const EMOJIS = ["👍", "❤️", "🎉", "😄", "🤔", "😢"]
+  const GUEST_STORAGE_KEY = "fc-guest-info"
+  const NOTIF_COUNT_KEY = "fc-notif-count-" + slug
 
+  // ── Gravatar (SHA-256 via Web Crypto) ──────────────────────────────────
+  const gravatarUrl = async (email: string): Promise<string> => {
+    try {
+      const clean = email.trim().toLowerCase()
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(clean))
+      const hash = Array.from(new Uint8Array(buf))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("")
+      return `https://www.gravatar.com/avatar/${hash}?d=mp&s=80`
+    } catch {
+      return "https://www.gravatar.com/avatar/0?d=mp"
+    }
+  }
+
+  // ── Anon ID ────────────────────────────────────────────────────────────
   const getAnonId = (): string => {
     let id = localStorage.getItem("fc-anon-id")
     if (!id) {
@@ -20,7 +37,20 @@ document.addEventListener("nav", async () => {
     return id
   }
 
-  const loginSVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;margin-left:6px;flex-shrink:0;"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>`
+  // ── Guest info persistence ─────────────────────────────────────────────
+  const loadGuestInfo = (): { name: string; email: string; website: string } | null => {
+    try {
+      return JSON.parse(localStorage.getItem(GUEST_STORAGE_KEY) || "null")
+    } catch {
+      return null
+    }
+  }
+  const saveGuestInfo = (name: string, email: string, website: string) => {
+    localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify({ name, email, website }))
+  }
+
+  // ── SVG / HTML constants ───────────────────────────────────────────────
+  const loginSVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;flex-shrink:0;"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>`
 
   const toolbarHTML = `
     <div class="fc-toolbar">
@@ -33,9 +63,10 @@ document.addEventListener("nav", async () => {
     </div>
   `
 
+  // ── Main HTML ──────────────────────────────────────────────────────────
   container.innerHTML = `
     <div id="fc-article-reactions" class="fc-article-reactions"></div>
-    
+
     <div class="fc-share-wrapper">
       <div class="fc-share-title">شارك المقال</div>
       <div id="fc-share-buttons" class="fc-share-buttons">
@@ -59,10 +90,23 @@ document.addEventListener("nav", async () => {
 
     <div class="fc-header">
       <div class="fc-title">التعليقات</div>
-      <div id="fc-auth-section">
-        <button type="button" id="fc-login-btn" class="fc-login-btn">${loginSVG} تسجيل الدخول بـ Google</button>
+      <div class="fc-auth-tabs" id="fc-auth-tabs">
+        <button type="button" id="fc-tab-google-btn" class="fc-tab-btn fc-tab-active">${loginSVG}&nbsp;Google</button>
+        <button type="button" id="fc-tab-guest-btn" class="fc-tab-btn">✍️ كزائر</button>
       </div>
     </div>
+
+    <div id="fc-notify-bar" class="fc-notify-bar" style="display:none;">
+      <span class="fc-notify-text">🔔 فعّل الإشعارات لتُنبَّه بالتعليقات الجديدة</span>
+      <button type="button" id="fc-notify-btn" class="fc-notify-btn">تفعيل</button>
+    </div>
+
+    <!-- Google: login area / user info -->
+    <div id="fc-google-login-area" class="fc-google-login-area">
+      <button type="button" id="fc-login-btn" class="fc-login-btn">${loginSVG} تسجيل الدخول بـ Google</button>
+    </div>
+
+    <!-- Google compose -->
     <div id="fc-compose-section" class="fc-compose" style="display:none;">
       <div class="fc-editor-wrap">
         ${toolbarHTML}
@@ -71,25 +115,103 @@ document.addEventListener("nav", async () => {
       <div id="fc-preview" class="fc-comment-text" style="display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"></div>
       <button type="button" id="fc-submit-btn" class="fc-submit-btn">إرسال التعليق</button>
     </div>
+
+    <!-- Guest compose -->
+    <div id="fc-guest-compose" class="fc-compose" style="display:none;">
+      <div class="fc-guest-form">
+        <div class="fc-guest-row">
+          <input id="fc-guest-name"    type="text"  class="fc-guest-input" placeholder="الاسم *"                      autocomplete="name"  />
+          <input id="fc-guest-email"   type="email" class="fc-guest-input" placeholder="البريد الإلكتروني *"           autocomplete="email" />
+        </div>
+        <input id="fc-guest-website" type="url"   class="fc-guest-input fc-guest-input-full" placeholder="الموقع الإلكتروني (اختياري)" autocomplete="url" />
+        <label class="fc-save-label">
+          <input type="checkbox" id="fc-save-info" class="fc-save-checkbox" />
+          <span>حفظ بياناتي للمرة القادمة</span>
+        </label>
+      </div>
+      <div class="fc-editor-wrap">
+        ${toolbarHTML}
+        <textarea id="fc-guest-textarea" class="fc-textarea" placeholder="اكتب تعليقك هنا..."></textarea>
+      </div>
+      <div id="fc-guest-preview" class="fc-comment-text" style="display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"></div>
+      <button type="button" id="fc-guest-submit-btn" class="fc-submit-btn">إرسال التعليق</button>
+    </div>
+
     <div id="fc-list" class="fc-list"><div class="fc-loading">جاري تحميل التعليقات...</div></div>
   `
 
-  const authSection = document.getElementById("fc-auth-section")!
-  const composeSection = document.getElementById("fc-compose-section")!
-  const textarea = document.getElementById("fc-textarea") as HTMLTextAreaElement
-  const submitBtn = document.getElementById("fc-submit-btn") as HTMLButtonElement
-  const listEl = document.getElementById("fc-list")!
-  const reactionsEl = document.getElementById("fc-article-reactions")!
-  const previewEl = document.getElementById("fc-preview")!
+  // ── DOM references ─────────────────────────────────────────────────────
+  const tabGoogleBtn    = document.getElementById("fc-tab-google-btn")   as HTMLButtonElement
+  const tabGuestBtn     = document.getElementById("fc-tab-guest-btn")    as HTMLButtonElement
+  const googleLoginArea = document.getElementById("fc-google-login-area")!
+  const composeSection  = document.getElementById("fc-compose-section")!
+  const guestCompose    = document.getElementById("fc-guest-compose")!
+  const textarea        = document.getElementById("fc-textarea")         as HTMLTextAreaElement
+  const submitBtn       = document.getElementById("fc-submit-btn")       as HTMLButtonElement
+  const guestTextarea   = document.getElementById("fc-guest-textarea")   as HTMLTextAreaElement
+  const guestSubmitBtn  = document.getElementById("fc-guest-submit-btn") as HTMLButtonElement
+  const guestNameInput  = document.getElementById("fc-guest-name")       as HTMLInputElement
+  const guestEmailInput = document.getElementById("fc-guest-email")      as HTMLInputElement
+  const guestWebInput   = document.getElementById("fc-guest-website")    as HTMLInputElement
+  const saveCheckbox    = document.getElementById("fc-save-info")        as HTMLInputElement
+  const listEl          = document.getElementById("fc-list")!
+  const reactionsEl     = document.getElementById("fc-article-reactions")!
+  const previewEl       = document.getElementById("fc-preview")!
+  const guestPreviewEl  = document.getElementById("fc-guest-preview")!
+  const notifyBar       = document.getElementById("fc-notify-bar")!
+  const notifyBtn       = document.getElementById("fc-notify-btn")
 
-  // Helper to insert markdown at cursor
+  // ── Restore saved guest info ───────────────────────────────────────────
+  const savedGuest = loadGuestInfo()
+  if (savedGuest) {
+    guestNameInput.value  = savedGuest.name    || ""
+    guestEmailInput.value = savedGuest.email   || ""
+    guestWebInput.value   = savedGuest.website || ""
+    saveCheckbox.checked  = true
+  }
+
+  // ── Notification bar ───────────────────────────────────────────────────
+  if ("Notification" in window && Notification.permission === "default") {
+    notifyBar.style.display = "flex"
+  }
+  notifyBtn?.addEventListener("click", async () => {
+    const perm = await Notification.requestPermission()
+    if (perm !== "default") notifyBar.style.display = "none"
+  })
+
+  // ── Tab state ──────────────────────────────────────────────────────────
+  let activeTab: "google" | "guest" = "google"
+  let currentUserRef: any = null  // forward reference for tab logic
+
+  const applyGoogleTab = () => {
+    activeTab = "google"
+    tabGoogleBtn.classList.add("fc-tab-active")
+    tabGuestBtn.classList.remove("fc-tab-active")
+    googleLoginArea.style.display = "block"
+    guestCompose.style.display = "none"
+    // composeSection shown by auth state handler
+  }
+
+  const applyGuestTab = () => {
+    activeTab = "guest"
+    tabGuestBtn.classList.add("fc-tab-active")
+    tabGoogleBtn.classList.remove("fc-tab-active")
+    googleLoginArea.style.display = "none"
+    composeSection.style.display = "none"
+    guestCompose.style.display = "flex"
+  }
+
+  tabGuestBtn.addEventListener("click", applyGuestTab)
+  // tabGoogleBtn click is bound inside Firebase block (needs signInWithPopup)
+
+  // ── Helpers ────────────────────────────────────────────────────────────
   const bindToolbar = (wrap: HTMLElement, ta: HTMLTextAreaElement) => {
     wrap.querySelectorAll(".fc-toolbar button").forEach((btn) => {
       btn.addEventListener("click", () => {
         const md = (btn as HTMLElement).dataset.md!
         const start = ta.selectionStart
-        const end = ta.selectionEnd
-        const text = ta.value
+        const end   = ta.selectionEnd
+        const text  = ta.value
 
         if (md === "[]()") {
           ta.value = text.substring(0, start) + "[النص هنا](الرابط_هنا)" + text.substring(end)
@@ -97,16 +219,12 @@ document.addEventListener("nav", async () => {
           ta.setSelectionRange(start + 1, start + 9)
         } else if (md === "## ") {
           const before = text.substring(0, start)
-          const needsNewline = before.length > 0 && !before.endsWith("\n")
-          const prefix = needsNewline ? "\n## " : "## "
-          ta.value =
-            text.substring(0, start) + prefix + text.substring(start, end) + text.substring(end)
+          const prefix = before.length > 0 && !before.endsWith("\n") ? "\n## " : "## "
+          ta.value = text.substring(0, start) + prefix + text.substring(start, end) + text.substring(end)
           ta.focus()
           ta.setSelectionRange(start + prefix.length, start + prefix.length + (end - start))
         } else {
-          // Wrapping formatting like **, *, ~~, \`
-          ta.value =
-            text.substring(0, start) + md + text.substring(start, end) + md + text.substring(end)
+          ta.value = text.substring(0, start) + md + text.substring(start, end) + md + text.substring(end)
           ta.focus()
           if (start === end) {
             ta.setSelectionRange(start + md.length, start + md.length)
@@ -114,12 +232,10 @@ document.addEventListener("nav", async () => {
             ta.setSelectionRange(start + md.length, end + md.length)
           }
         }
-        ta.dispatchEvent(new Event("input")) // Trigger update preview
+        ta.dispatchEvent(new Event("input"))
       })
     })
   }
-
-  bindToolbar(composeSection, textarea)
 
   const parseMarkdown = (text: string) => {
     let html = text.replace(/</g, "&lt;").replace(/>/g, "&gt;")
@@ -127,10 +243,7 @@ document.addEventListener("nav", async () => {
     html = html.replace(/\*(.*?)\*/g, "<em>$1</em>")
     html = html.replace(/~~(.*?)~~/g, "<del>$1</del>")
     html = html.replace(/`([^`]+)`/g, "<code>$1</code>")
-    html = html.replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
-    )
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     html = html.replace(/^## (.*?)$/gm, "<h3>$1</h3>")
     html = html.replace(/\n/g, "<br>")
     return html
@@ -149,8 +262,12 @@ document.addEventListener("nav", async () => {
     }
   }
 
-  textarea.addEventListener("input", () => updatePreview(textarea, previewEl))
+  textarea.addEventListener("input",      () => updatePreview(textarea,      previewEl))
+  guestTextarea.addEventListener("input", () => updatePreview(guestTextarea, guestPreviewEl))
+  bindToolbar(composeSection, textarea)
+  bindToolbar(guestCompose,   guestTextarea)
 
+  // ── Firebase ───────────────────────────────────────────────────────────
   try {
     // prettier-ignore
     // @ts-ignore
@@ -162,26 +279,46 @@ document.addEventListener("nav", async () => {
     // @ts-ignore
     const { getFirestore, collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc, updateDoc, setDoc, arrayUnion, arrayRemove } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js")
 
-    const app = getApps().length === 0 ? initializeApp(config) : getApp()
+    const app  = getApps().length === 0 ? initializeApp(config) : getApp()
     const auth = getAuth(app)
-    const db = getFirestore(app)
+    const db   = getFirestore(app)
     let currentUser: any = null
 
-    const doLogin = (e: Event) => {
-      e.preventDefault()
+    const doLogin = (e?: Event) => {
+      e?.preventDefault()
       signInWithPopup(auth, new GoogleAuthProvider()).catch((err: any) =>
         alert("تعذّر تسجيل الدخول: " + err.code),
       )
     }
 
-    document.getElementById("fc-login-btn")?.addEventListener("click", doLogin)
+    // ── Tab Google button ──────────────────────────────────────────────
+    tabGoogleBtn.addEventListener("click", () => {
+      if (!currentUser) {
+        doLogin()
+      } else {
+        applyGoogleTab()
+        composeSection.style.display = "flex"
+      }
+    })
+
+    // ── Telegram helper ────────────────────────────────────────────────
+    const notifyTelegram = (payload: Record<string, string>) => {
+      fetch("https://telegram-notify.hsmefh.workers.dev", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => {})
+    }
 
     let onAuthUpdateForReactions: () => void = () => {}
 
+    // ── Auth state ─────────────────────────────────────────────────────
     const unsubAuth = onAuthStateChanged(auth, (user: any) => {
       currentUser = user
+      currentUserRef = user
+
       if (user) {
-        authSection.innerHTML = `
+        googleLoginArea.innerHTML = `
           <div class="fc-user-info">
             <img src="${user.photoURL || ""}" alt="${user.displayName}" class="fc-user-avatar" referrerpolicy="no-referrer"/>
             <span style="font-size:0.9rem;color:var(--dark);">${user.displayName}</span>
@@ -191,9 +328,11 @@ document.addEventListener("nav", async () => {
           e.preventDefault()
           signOut(auth).catch(console.error)
         })
-        composeSection.style.display = "flex"
+        if (activeTab === "google") {
+          composeSection.style.display = "flex"
+        }
       } else {
-        authSection.innerHTML = `<button type="button" id="fc-login-btn" class="fc-login-btn">${loginSVG} تسجيل الدخول بـ Google</button>`
+        googleLoginArea.innerHTML = `<button type="button" id="fc-login-btn" class="fc-login-btn">${loginSVG} تسجيل الدخول بـ Google</button>`
         document.getElementById("fc-login-btn")?.addEventListener("click", doLogin)
         composeSection.style.display = "none"
       }
@@ -201,23 +340,18 @@ document.addEventListener("nav", async () => {
     })
     window.addCleanup?.(() => unsubAuth())
 
-    // ── Article Reactions ──────────────────────────────────────────────────
-
-    const safeSlug = slug.replace(/\//g, "___")
+    // ── Article Reactions ──────────────────────────────────────────────
+    const safeSlug          = slug.replace(/\//g, "___")
     const articleReactionsRef = doc(db, "articleReactions", safeSlug)
-
-    // Ensure document exists
     setDoc(articleReactionsRef, { init: true }, { merge: true }).catch(() => {})
 
-    let latestReactionData: any = null
+    let latestReactionData: any     = null
     let latestCommentsSnapshot: any = null
-
-    // forward declarations
     let renderCommentsList: () => void = () => {}
 
     const renderReactions = () => {
       const data = latestReactionData
-      if (!data) return // Not initialized yet
+      if (!data) return
       const currentReactor = currentUser ? currentUser.uid : getAnonId()
 
       const reactionsHTML = EMOJIS.map((emoji) => {
@@ -231,44 +365,31 @@ document.addEventListener("nav", async () => {
       reactionsEl.querySelectorAll<HTMLButtonElement>(".fc-reaction-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
           if (!currentUser) {
-            alert("عذراً، يجب تسجيل الدخول أولاً للتفاعل مع المقال.")
+            alert("عذراً، يجب تسجيل الدخول بـ Google للتفاعل مع المقال.")
             return
           }
-          const activeReactor = currentUser.uid
-          const clickedEmoji = btn.dataset.emoji!
+          const activeReactor  = currentUser.uid
+          const clickedEmoji   = btn.dataset.emoji!
           const currentReactors: string[] = latestReactionData[clickedEmoji] || []
-
           try {
             const isAlreadyReacted = currentReactors.includes(activeReactor)
             const updates: any = {}
-
-            // Remove user from ALL emojis to ensure only one reaction at a time
             EMOJIS.forEach((e) => {
               if ((latestReactionData[e] || []).includes(activeReactor)) {
                 updates[e] = arrayRemove(activeReactor)
               }
             })
-
-            // If they clicked a new emoji, add it
-            if (!isAlreadyReacted) {
-              updates[clickedEmoji] = arrayUnion(activeReactor)
-            }
-
+            if (!isAlreadyReacted) updates[clickedEmoji] = arrayUnion(activeReactor)
             if (Object.keys(updates).length > 0) {
               await setDoc(articleReactionsRef, updates, { merge: true })
-
               if (!isAlreadyReacted) {
-                fetch("https://telegram-notify.hsmefh.workers.dev", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    actionType: "reaction",
-                    emoji: clickedEmoji,
-                    author: currentUser.displayName || "مجهول",
-                    articleTitle: document.title,
-                    articleUrl: window.location.href,
-                  }),
-                }).catch(() => {})
+                notifyTelegram({
+                  actionType:    "reaction",
+                  emoji:         clickedEmoji,
+                  author:        currentUser.displayName || "مجهول",
+                  articleTitle:  document.title,
+                  articleUrl:    window.location.href,
+                })
               }
             }
           } catch (err: any) {
@@ -282,45 +403,35 @@ document.addEventListener("nav", async () => {
       latestReactionData = snap.exists() ? snap.data() : {}
       renderReactions()
     })
-
-    onAuthUpdateForReactions = () => {
-      renderReactions()
-      renderCommentsList()
-    }
+    onAuthUpdateForReactions = () => { renderReactions(); renderCommentsList() }
     window.addCleanup?.(() => unsubReactions())
 
-    // ── Helpers ────────────────────────────────────────────────────────────
-
+    // ── Toggle like ────────────────────────────────────────────────────
     const toggleLike = async (commentId: string, snap: any) => {
       if (!currentUser) {
         alert("عذراً، يجب تسجيل الدخول للإعجاب بالتعليقات.")
         return
       }
-
       const activeReactor = currentUser.uid
-      const ref = doc(db, "comments", commentId)
+      const ref     = doc(db, "comments", commentId)
       const current = snap.likes || []
       if (current.includes(activeReactor)) {
         await updateDoc(ref, { likes: arrayRemove(activeReactor) })
       } else {
         await updateDoc(ref, { likes: arrayUnion(activeReactor) })
-
-        fetch("https://telegram-notify.hsmefh.workers.dev", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            actionType: "like",
-            author: currentUser?.displayName || "زائر",
-            content: snap.text,
-            articleTitle: document.title,
-            articleUrl: window.location.href,
-          }),
-        }).catch(() => {})
+        notifyTelegram({
+          actionType:   "like",
+          author:       currentUser?.displayName || "زائر",
+          content:      snap.text,
+          articleTitle: document.title,
+          articleUrl:   window.location.href,
+        })
       }
     }
 
+    // ── Start edit (Google users only) ─────────────────────────────────
     const startEdit = (commentContent: HTMLElement, commentId: string, originalText: string) => {
-      const textDiv = commentContent.querySelector(".fc-comment-text") as HTMLElement
+      const textDiv   = commentContent.querySelector(".fc-comment-text") as HTMLElement
       const actionsDiv = commentContent.querySelector(".fc-comment-actions") as HTMLElement
       if (!textDiv) return
       if (actionsDiv) actionsDiv.style.display = "none"
@@ -335,21 +446,20 @@ document.addEventListener("nav", async () => {
 
       const editPreview = document.createElement("div")
       editPreview.className = "fc-comment-text"
-      editPreview.style.cssText =
-        "display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"
+      editPreview.style.cssText = "display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"
 
       editTA.addEventListener("input", () => updatePreview(editTA, editPreview))
 
       const editActions = document.createElement("div")
       editActions.className = "fc-edit-actions"
 
-      const saveBtn = document.createElement("button")
-      saveBtn.type = "button"
+      const saveBtn   = document.createElement("button")
+      saveBtn.type      = "button"
       saveBtn.className = "fc-submit-btn fc-save-edit-btn"
       saveBtn.textContent = "حفظ"
 
-      const cancelBtn = document.createElement("button")
-      cancelBtn.type = "button"
+      const cancelBtn   = document.createElement("button")
+      cancelBtn.type      = "button"
       cancelBtn.className = "fc-logout-btn"
       cancelBtn.textContent = "إلغاء"
 
@@ -357,16 +467,13 @@ document.addEventListener("nav", async () => {
       wrap.append(editTA)
 
       const fullWrap = document.createElement("div")
-      fullWrap.style.display = "flex"
-      fullWrap.style.flexDirection = "column"
-      fullWrap.style.gap = "0.5rem"
+      fullWrap.style.cssText = "display:flex;flex-direction:column;gap:0.5rem;"
       fullWrap.append(wrap, editPreview, editActions)
 
       textDiv.innerHTML = ""
       textDiv.appendChild(fullWrap)
       editTA.focus()
       updatePreview(editTA, editPreview)
-
       bindToolbar(wrap, editTA)
 
       cancelBtn.addEventListener("click", () => {
@@ -376,31 +483,40 @@ document.addEventListener("nav", async () => {
       saveBtn.addEventListener("click", async () => {
         const newText = editTA.value.trim()
         if (!newText) return
-        saveBtn.disabled = true
+        saveBtn.disabled    = true
         saveBtn.textContent = "جاري الحفظ..."
         try {
-          await updateDoc(doc(db, "comments", commentId), {
-            text: newText,
-            editedAt: serverTimestamp(),
-          })
+          await updateDoc(doc(db, "comments", commentId), { text: newText, editedAt: serverTimestamp() })
         } catch (err: any) {
           alert("فشل التعديل: " + err.message)
-          saveBtn.disabled = false
+          saveBtn.disabled    = false
           saveBtn.textContent = "حفظ"
         }
       })
     }
 
-    const showReplyForm = (container: HTMLElement, parentId: string) => {
-      const existing = container.querySelector(".fc-reply-form")
-      if (existing) {
-        existing.remove()
-        return
-      }
+    // ── Reply form (supports both Google & Guest) ──────────────────────
+    const showReplyForm = (replyArea: HTMLElement, parentId: string) => {
+      const existing = replyArea.querySelector(".fc-reply-form")
+      if (existing) { existing.remove(); return }
+
+      const isGoogleUser  = !!currentUser
+      const savedG        = loadGuestInfo()
+
+      const guestFieldsHTML = !isGoogleUser ? `
+        <div class="fc-guest-form fc-reply-guest-form">
+          <div class="fc-guest-row">
+            <input type="text"  class="fc-guest-input fc-reply-name"    placeholder="الاسم *"                 autocomplete="name"  value="${savedG?.name    || ""}" />
+            <input type="email" class="fc-guest-input fc-reply-email"   placeholder="البريد الإلكتروني *"     autocomplete="email" value="${savedG?.email   || ""}" />
+          </div>
+          <input type="url" class="fc-guest-input fc-guest-input-full fc-reply-website" placeholder="الموقع الإلكتروني (اختياري)" autocomplete="url" value="${savedG?.website || ""}" />
+        </div>
+      ` : ""
 
       const form = document.createElement("div")
       form.className = "fc-reply-form"
       form.innerHTML = `
+        ${guestFieldsHTML}
         <div class="fc-editor-wrap">
           ${toolbarHTML}
           <textarea class="fc-reply-textarea" placeholder="اكتب ردك هنا..."></textarea>
@@ -410,96 +526,121 @@ document.addEventListener("nav", async () => {
           <button type="button" class="fc-submit-btn fc-reply-submit-btn">إرسال الرد</button>
           <button type="button" class="fc-logout-btn fc-reply-cancel-btn">إلغاء</button>
         </div>`
-      container.appendChild(form)
+      replyArea.appendChild(form)
 
-      const ta = form.querySelector(".fc-reply-textarea") as HTMLTextAreaElement
-      const rpPreview = form.querySelector(".fc-reply-preview") as HTMLElement
+      const ta        = form.querySelector(".fc-reply-textarea")  as HTMLTextAreaElement
+      const rpPreview = form.querySelector(".fc-reply-preview")   as HTMLElement
       ta.addEventListener("input", () => updatePreview(ta, rpPreview))
-
       ta.focus()
       bindToolbar(form.querySelector(".fc-editor-wrap") as HTMLElement, ta)
 
       form.querySelector(".fc-reply-cancel-btn")?.addEventListener("click", () => form.remove())
       form.querySelector(".fc-reply-submit-btn")?.addEventListener("click", async () => {
         const text = ta.value.trim()
-        if (!text) return
-        const btn = form.querySelector(".fc-reply-submit-btn") as HTMLButtonElement
-        btn.disabled = true
-        btn.textContent = "جاري الإرسال..."
+        if (!text) { alert("يرجى كتابة ردك أولاً."); return }
+
+        const btn         = form.querySelector(".fc-reply-submit-btn") as HTMLButtonElement
+        btn.disabled      = true
+        btn.textContent   = "جاري الإرسال..."
+
         try {
+          let userName: string, userPhoto: string, userId: string | null
+          let userGravatar = "", userWebsite = "", userEmail = ""
+
+          if (isGoogleUser) {
+            userName   = currentUser.displayName
+            userPhoto  = currentUser.photoURL || ""
+            userId     = currentUser.uid
+          } else {
+            const gName  = (form.querySelector(".fc-reply-name")    as HTMLInputElement)?.value.trim() || ""
+            const gEmail = (form.querySelector(".fc-reply-email")   as HTMLInputElement)?.value.trim() || ""
+            const gWeb   = (form.querySelector(".fc-reply-website") as HTMLInputElement)?.value.trim() || ""
+
+            if (!gName)  { alert("الاسم مطلوب.");               btn.disabled = false; btn.textContent = "إرسال الرد"; return }
+            if (!gEmail) { alert("البريد الإلكتروني مطلوب.");   btn.disabled = false; btn.textContent = "إرسال الرد"; return }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(gEmail)) {
+              alert("البريد الإلكتروني غير صحيح.")
+              btn.disabled = false; btn.textContent = "إرسال الرد"; return
+            }
+
+            userName      = gName
+            userPhoto     = ""
+            userGravatar  = await gravatarUrl(gEmail)
+            userWebsite   = gWeb
+            userEmail     = gEmail
+            userId        = null
+            saveGuestInfo(gName, gEmail, gWeb)
+          }
+
           await addDoc(collection(db, "comments"), {
-            slug,
-            text,
-            parentId,
-            userId: currentUser?.uid || null,
-            userName: currentUser?.displayName || "زائر",
-            userPhoto: currentUser?.photoURL || "",
+            slug, text, parentId,
+            userId, userName, userPhoto,
+            userGravatar, userWebsite,
+            isGuest: !isGoogleUser,
             createdAt: serverTimestamp(),
             likes: [],
           })
 
-          // إشعار تيليجرام للردود
-          fetch("https://telegram-notify.hsmefh.workers.dev", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              author: currentUser?.displayName || "زائر (رد)",
-              content: text,
-              articleTitle: document.title,
-              articleUrl: window.location.href,
-            }),
-          }).catch((err) => console.error("Telegram notification failed", err))
+          notifyTelegram({
+            actionType:    "reply",
+            author:        userName,
+            ...(userEmail   ? { authorEmail:   userEmail   } : {}),
+            ...(userWebsite ? { authorWebsite: userWebsite } : {}),
+            content:       text,
+            articleTitle:  document.title,
+            articleUrl:    window.location.href,
+          })
 
           form.remove()
         } catch (err: any) {
           alert("خطأ في الإرسال: " + err.message)
-          btn.disabled = false
+          btn.disabled    = false
           btn.textContent = "إرسال الرد"
         }
       })
     }
 
-    const renderComment = (
-      cdoc: any,
-      currentReactor: string,
-      isReply = false,
-      depth = 0,
-    ): HTMLElement => {
-      const d = cdoc.data()
+    // ── Render single comment ──────────────────────────────────────────
+    const renderComment = (cdoc: any, currentReactor: string, isReply = false, depth = 0): HTMLElement => {
+      const d    = cdoc.data()
       const date = d.createdAt
         ? new Date(d.createdAt.toDate()).toLocaleDateString("ar-SA", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
+            year: "numeric", month: "long", day: "numeric",
+            hour: "2-digit", minute: "2-digit",
           })
         : "الآن"
 
-      const isOwner = currentUser && currentUser.uid === d.userId
+      const isOwner    = currentUser && currentUser.uid === d.userId
       const editedBadge = d.editedAt ? `<span class="fc-edited-badge">• تم التعديل</span>` : ""
 
-      // Likes (thumbs up)
       const likes: string[] = d.likes || []
-      const liked = likes.includes(currentReactor)
+      const liked     = likes.includes(currentReactor)
       const likeCount = likes.length
 
+      // Avatar: Google photo → Gravatar → default silhouette
+      const avatarSrc = d.userPhoto || d.userGravatar || "https://www.gravatar.com/avatar/0?d=mp"
+
+      // Name: clickable if guest provided website
+      const nameHtml = d.userWebsite
+        ? `<a href="${d.userWebsite}" target="_blank" rel="nofollow noopener" class="fc-comment-author fc-author-link">${d.userName || "زائر"}</a>`
+        : `<span class="fc-comment-author">${d.userName || "زائر"}</span>`
+
+      // Guest badge
+      const guestBadge = d.isGuest ? `<span class="fc-guest-badge">زائر</span>` : ""
+
       const el = document.createElement("div")
-      // Limit the reply indentation to avoid shrinking too much on deep levels
       const replyClass = isReply
-        ? depth > 3
-          ? "fc-comment fc-reply fc-reply-max-depth"
-          : "fc-comment fc-reply"
+        ? depth > 3 ? "fc-comment fc-reply fc-reply-max-depth" : "fc-comment fc-reply"
         : "fc-comment"
-      el.className = replyClass
+      el.className        = replyClass
       el.dataset.commentId = cdoc.id
 
       el.innerHTML = `
-        <img src="${d.userPhoto || "https://www.gravatar.com/avatar/0?d=mp"}" alt="${d.userName}" class="fc-comment-avatar${isReply ? " fc-reply-avatar" : ""}" referrerpolicy="no-referrer"/>
+        <img src="${avatarSrc}" alt="${d.userName}" class="fc-comment-avatar${isReply ? " fc-reply-avatar" : ""}" referrerpolicy="no-referrer"/>
         <div class="fc-comment-body">
           <div class="fc-comment-content">
             <div class="fc-comment-header">
-              <span class="fc-comment-author">${d.userName || "زائر"}</span>
+              <div class="fc-author-row">${nameHtml}${guestBadge}</div>
               <div class="fc-comment-meta">${editedBadge}<span class="fc-comment-date">${date}</span></div>
             </div>
             <div class="fc-comment-text">${parseMarkdown(d.text)}</div>
@@ -508,30 +649,22 @@ document.addEventListener("nav", async () => {
                 ${liked ? "👍" : "👍🏻"}<span class="fc-like-count">${likeCount > 0 ? " " + likeCount : ""}</span>
               </button>
               <button type="button" class="fc-reply-btn" data-id="${cdoc.id}">💬 <span>رد</span></button>
-              ${isOwner ? `<button type="button" class="fc-edit-btn" data-id="${cdoc.id}">✏️ تعديل</button>` : ""}
-              ${isOwner ? `<button type="button" class="fc-delete-btn" data-id="${cdoc.id}">🗑️ حذف</button>` : ""}
+              ${isOwner ? `<button type="button" class="fc-edit-btn"   data-id="${cdoc.id}">✏️ تعديل</button>` : ""}
+              ${isOwner ? `<button type="button" class="fc-delete-btn" data-id="${cdoc.id}">🗑️ حذف</button>`   : ""}
             </div>
           </div>
           <div class="fc-replies-area"></div>
         </div>`
 
-      // Wire like
       el.querySelector(".fc-like-btn")?.addEventListener("click", async () => {
-        const snap = cdoc.data()
-        await toggleLike(cdoc.id, snap)
+        await toggleLike(cdoc.id, cdoc.data())
       })
 
-      // Wire reply
       el.querySelector(".fc-reply-btn")?.addEventListener("click", () => {
-        if (!currentUser) {
-          alert("عذراً، يجب تسجيل الدخول للرد على التعليقات.")
-          return
-        }
         const area = el.querySelector(".fc-replies-area") as HTMLElement
         showReplyForm(area, cdoc.id)
       })
 
-      // Wire edit / delete
       if (isOwner) {
         el.querySelector(".fc-edit-btn")?.addEventListener("click", () => {
           startEdit(el.querySelector(".fc-comment-content") as HTMLElement, cdoc.id, d.text)
@@ -540,16 +673,7 @@ document.addEventListener("nav", async () => {
           if (confirm("هل أنت متأكد من حذف هذا التعليق؟")) {
             try {
               await deleteDoc(doc(db, "comments", cdoc.id))
-
-              fetch("https://telegram-notify.hsmefh.workers.dev", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  actionType: "delete",
-                  articleTitle: document.title,
-                  articleUrl: window.location.href,
-                }),
-              }).catch(() => {})
+              notifyTelegram({ actionType: "delete", articleTitle: document.title, articleUrl: window.location.href })
             } catch (err: any) {
               alert("فشل الحذف: " + err.message)
             }
@@ -560,60 +684,113 @@ document.addEventListener("nav", async () => {
       return el
     }
 
-    // ── Submit top-level comment ──────────────────────────────────────────
-
+    // ── Submit: Google comment ─────────────────────────────────────────
     submitBtn.addEventListener("click", async (e) => {
       e.preventDefault()
       const text = textarea.value.trim()
       if (!text || !currentUser) return
-      submitBtn.disabled = true
+      submitBtn.disabled    = true
       submitBtn.textContent = "جاري الإرسال..."
       try {
         await addDoc(collection(db, "comments"), {
-          slug,
-          text,
-          parentId: null,
-          userId: currentUser.uid,
-          userName: currentUser.displayName,
-          userPhoto: currentUser.photoURL || "",
-          createdAt: serverTimestamp(),
-          likes: [],
+          slug, text,
+          parentId:    null,
+          userId:      currentUser.uid,
+          userName:    currentUser.displayName,
+          userPhoto:   currentUser.photoURL || "",
+          userGravatar: "",
+          userWebsite:  "",
+          isGuest:      false,
+          createdAt:    serverTimestamp(),
+          likes:        [],
         })
-
-        // إشعار تيليجرام
-        fetch("https://telegram-notify.hsmefh.workers.dev", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            author: currentUser.displayName || "زائر",
-            content: text,
-            articleTitle: document.title,
-            articleUrl: window.location.href,
-          }),
-        }).catch((err) => console.error("Telegram notification failed", err))
-
+        notifyTelegram({
+          author:       currentUser.displayName || "زائر",
+          content:      text,
+          articleTitle: document.title,
+          articleUrl:   window.location.href,
+        })
         textarea.value = ""
         updatePreview(textarea, previewEl)
       } catch (err: any) {
         alert("خطأ في الإرسال: " + err.message)
       }
-      submitBtn.disabled = false
+      submitBtn.disabled    = false
       submitBtn.textContent = "إرسال التعليق"
     })
 
-    // ── Real-time snapshot (all docs for this slug) ───────────────────────
+    // ── Submit: Guest comment ──────────────────────────────────────────
+    guestSubmitBtn.addEventListener("click", async (e) => {
+      e.preventDefault()
+      const text    = guestTextarea.value.trim()
+      const gName   = guestNameInput.value.trim()
+      const gEmail  = guestEmailInput.value.trim()
+      const gWeb    = guestWebInput.value.trim()
 
+      if (!gName)  { guestNameInput.focus();  alert("الاسم مطلوب.");              return }
+      if (!gEmail) { guestEmailInput.focus(); alert("البريد الإلكتروني مطلوب."); return }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(gEmail)) {
+        guestEmailInput.focus(); alert("البريد الإلكتروني غير صحيح."); return
+      }
+      if (!text)   { guestTextarea.focus();   alert("يرجى كتابة تعليقك.");        return }
+
+      guestSubmitBtn.disabled    = true
+      guestSubmitBtn.textContent = "جاري الإرسال..."
+
+      try {
+        const avatar = await gravatarUrl(gEmail)
+
+        await addDoc(collection(db, "comments"), {
+          slug, text,
+          parentId:     null,
+          userId:       null,
+          userName:     gName,
+          userPhoto:    "",
+          userGravatar: avatar,
+          userWebsite:  gWeb,
+          isGuest:      true,
+          createdAt:    serverTimestamp(),
+          likes:        [],
+        })
+
+        if (saveCheckbox.checked) {
+          saveGuestInfo(gName, gEmail, gWeb)
+        } else {
+          localStorage.removeItem(GUEST_STORAGE_KEY)
+        }
+
+        notifyTelegram({
+          author:        gName,
+          authorEmail:   gEmail,
+          ...(gWeb ? { authorWebsite: gWeb } : {}),
+          content:       text,
+          articleTitle:  document.title,
+          articleUrl:    window.location.href,
+        })
+
+        guestTextarea.value = ""
+        updatePreview(guestTextarea, guestPreviewEl)
+      } catch (err: any) {
+        alert("خطأ في الإرسال: " + err.message)
+      }
+      guestSubmitBtn.disabled    = false
+      guestSubmitBtn.textContent = "إرسال التعليق"
+    })
+
+    // ── Firestore snapshot + browser notifications ─────────────────────
     const q = query(
       collection(db, "comments"),
       where("slug", "==", slug),
       orderBy("createdAt", "asc"),
     )
 
+    let isFirstLoad = true
+
     renderCommentsList = () => {
       if (!latestCommentsSnapshot) return
       const currentReactor = currentUser ? currentUser.uid : getAnonId()
 
-      const topLevel: any[] = []
+      const topLevel: any[]              = []
       const repliesMap = new Map<string, any[]>()
 
       latestCommentsSnapshot.forEach((cdoc: any) => {
@@ -629,15 +806,16 @@ document.addEventListener("nav", async () => {
 
       if (topLevel.length === 0) {
         listEl.innerHTML = `<div style="text-align:center;color:var(--gray);padding:1rem 0;">لا توجد تعليقات حتى الآن. كُن أول من يعلق!</div>`
+        localStorage.setItem(NOTIF_COUNT_KEY, "0")
         return
       }
 
       const renderTree = (docs: any[], isNested: boolean, depth: number) => {
         const frag = document.createDocumentFragment()
-        docs.forEach((doc) => {
-          const el = renderComment(doc, currentReactor, isNested, depth)
-          const area = el.querySelector(".fc-replies-area")
-          const children = repliesMap.get(doc.id)
+        docs.forEach((d) => {
+          const el      = renderComment(d, currentReactor, isNested, depth)
+          const area    = el.querySelector(".fc-replies-area")
+          const children = repliesMap.get(d.id)
           if (children && children.length > 0 && area) {
             area.appendChild(renderTree(children, true, depth + 1))
           }
@@ -652,6 +830,22 @@ document.addEventListener("nav", async () => {
     const unsubSnap = onSnapshot(
       q,
       (snapshot: any) => {
+        const newCount  = snapshot.docs.length
+        const prevCount = parseInt(localStorage.getItem(NOTIF_COUNT_KEY) || "0")
+
+        // Browser notification when new comment arrives while page is hidden
+        if (!isFirstLoad && newCount > prevCount && document.hidden) {
+          if ("Notification" in window && Notification.permission === "granted") {
+            new Notification(`💬 تعليق جديد على "${document.title}"`, {
+              body: "اضغط للاطلاع على التعليقات الجديدة",
+              icon: "/static/thumbnails/icon.png",
+            })
+          }
+        }
+
+        localStorage.setItem(NOTIF_COUNT_KEY, String(newCount))
+        isFirstLoad = false
+
         latestCommentsSnapshot = snapshot
         renderCommentsList()
       },

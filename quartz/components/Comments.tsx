@@ -197,7 +197,14 @@ export default ((opts: Options) => {
       flex-wrap: wrap;
       gap: 4px;
     }
+    .fc-author-row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
     .fc-comment-author { font-weight: 700; color: var(--dark); }
+    .fc-author-link {
+      font-weight: 700;
+      color: var(--secondary) !important;
+      text-decoration: none;
+    }
+    .fc-author-link:hover { text-decoration: underline; }
     .fc-comment-meta { display: flex; align-items: center; gap: 0.35rem; }
     .fc-comment-date { color: var(--gray); font-size: 0.8rem; }
     .fc-edited-badge { font-size: 0.7rem; color: var(--gray); font-style: italic; }
@@ -369,6 +376,124 @@ export default ((opts: Options) => {
     .fc-reply .fc-comment-text { font-size: 0.92rem; }
     .fc-reply .fc-comment-author { font-size: 0.85rem; }
     .fc-reply .fc-comment-date { font-size: 0.75rem; }
+
+    /* ══ NEW: Auth tabs (Google | Guest) ══ */
+    .fc-auth-tabs {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+    .fc-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0.35rem 0.85rem;
+      border: 1px solid var(--lightgray);
+      border-radius: 20px;
+      background: var(--light);
+      color: var(--gray);
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-family: inherit;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .fc-tab-btn:hover { border-color: var(--secondary); color: var(--secondary); }
+    .fc-tab-active {
+      border-color: var(--secondary) !important;
+      background: var(--highlight) !important;
+      color: var(--secondary) !important;
+      font-weight: 600;
+    }
+    .fc-google-login-area { margin-bottom: 1rem; }
+
+    /* ══ NEW: Guest comment form ══ */
+    .fc-guest-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: var(--lightgray);
+      border-radius: 8px;
+    }
+    .fc-guest-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    @media (max-width: 520px) { .fc-guest-row { grid-template-columns: 1fr; } }
+    .fc-guest-input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--lightgray);
+      border-radius: 6px;
+      background: var(--light);
+      color: var(--dark);
+      font-family: inherit;
+      font-size: 0.88rem;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .fc-guest-input:focus { outline: none; border-color: var(--secondary); }
+    .fc-guest-input::placeholder { color: var(--gray); }
+    .fc-guest-input-full { width: 100%; }
+    .fc-save-label {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.82rem;
+      color: var(--gray);
+      cursor: pointer;
+      user-select: none;
+    }
+    .fc-save-checkbox { width: 14px; height: 14px; accent-color: var(--secondary); cursor: pointer; }
+
+    /* Mini guest form in replies */
+    .fc-reply-guest-form { padding: 0.5rem; background: var(--highlight); border-radius: 6px; }
+    .fc-reply-guest-form .fc-guest-row { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 480px) { .fc-reply-guest-form .fc-guest-row { grid-template-columns: 1fr; } }
+
+    /* ══ NEW: Guest badge ══ */
+    .fc-guest-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: var(--lightgray);
+      border: 1px solid var(--gray);
+      color: var(--gray);
+      font-weight: 500;
+      vertical-align: middle;
+    }
+
+    /* ══ NEW: Notification bar ══ */
+    .fc-notify-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.6rem 1rem;
+      margin-bottom: 1rem;
+      background: var(--highlight);
+      border: 1px solid var(--lightgray);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: var(--darkgray);
+    }
+    .fc-notify-text { flex: 1; }
+    .fc-notify-btn {
+      padding: 0.3rem 0.9rem;
+      border: 1px solid var(--secondary);
+      border-radius: 20px;
+      background: transparent;
+      color: var(--secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .fc-notify-btn:hover { background: var(--secondary); color: var(--light); }
   `
 
   return Comments
