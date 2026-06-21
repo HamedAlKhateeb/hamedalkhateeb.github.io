@@ -142,33 +142,33 @@ document.addEventListener("nav", async () => {
   `
 
   // ── DOM references ─────────────────────────────────────────────────────
-  const tabGoogleBtn    = document.getElementById("fc-tab-google-btn")   as HTMLButtonElement
-  const tabGuestBtn     = document.getElementById("fc-tab-guest-btn")    as HTMLButtonElement
+  const tabGoogleBtn = document.getElementById("fc-tab-google-btn") as HTMLButtonElement
+  const tabGuestBtn = document.getElementById("fc-tab-guest-btn") as HTMLButtonElement
   const googleLoginArea = document.getElementById("fc-google-login-area")!
-  const composeSection  = document.getElementById("fc-compose-section")!
-  const guestCompose    = document.getElementById("fc-guest-compose")!
-  const textarea        = document.getElementById("fc-textarea")         as HTMLTextAreaElement
-  const submitBtn       = document.getElementById("fc-submit-btn")       as HTMLButtonElement
-  const guestTextarea   = document.getElementById("fc-guest-textarea")   as HTMLTextAreaElement
-  const guestSubmitBtn  = document.getElementById("fc-guest-submit-btn") as HTMLButtonElement
-  const guestNameInput  = document.getElementById("fc-guest-name")       as HTMLInputElement
-  const guestEmailInput = document.getElementById("fc-guest-email")      as HTMLInputElement
-  const guestWebInput   = document.getElementById("fc-guest-website")    as HTMLInputElement
-  const saveCheckbox    = document.getElementById("fc-save-info")        as HTMLInputElement
-  const listEl          = document.getElementById("fc-list")!
-  const reactionsEl     = document.getElementById("fc-article-reactions")!
-  const previewEl       = document.getElementById("fc-preview")!
-  const guestPreviewEl  = document.getElementById("fc-guest-preview")!
-  const notifyBar       = document.getElementById("fc-notify-bar")!
-  const notifyBtn       = document.getElementById("fc-notify-btn")
+  const composeSection = document.getElementById("fc-compose-section")!
+  const guestCompose = document.getElementById("fc-guest-compose")!
+  const textarea = document.getElementById("fc-textarea") as HTMLTextAreaElement
+  const submitBtn = document.getElementById("fc-submit-btn") as HTMLButtonElement
+  const guestTextarea = document.getElementById("fc-guest-textarea") as HTMLTextAreaElement
+  const guestSubmitBtn = document.getElementById("fc-guest-submit-btn") as HTMLButtonElement
+  const guestNameInput = document.getElementById("fc-guest-name") as HTMLInputElement
+  const guestEmailInput = document.getElementById("fc-guest-email") as HTMLInputElement
+  const guestWebInput = document.getElementById("fc-guest-website") as HTMLInputElement
+  const saveCheckbox = document.getElementById("fc-save-info") as HTMLInputElement
+  const listEl = document.getElementById("fc-list")!
+  const reactionsEl = document.getElementById("fc-article-reactions")!
+  const previewEl = document.getElementById("fc-preview")!
+  const guestPreviewEl = document.getElementById("fc-guest-preview")!
+  const notifyBar = document.getElementById("fc-notify-bar")!
+  const notifyBtn = document.getElementById("fc-notify-btn")
 
   // ── Restore saved guest info ───────────────────────────────────────────
   const savedGuest = loadGuestInfo()
   if (savedGuest) {
-    guestNameInput.value  = savedGuest.name    || ""
-    guestEmailInput.value = savedGuest.email   || ""
-    guestWebInput.value   = savedGuest.website || ""
-    saveCheckbox.checked  = true
+    guestNameInput.value = savedGuest.name || ""
+    guestEmailInput.value = savedGuest.email || ""
+    guestWebInput.value = savedGuest.website || ""
+    saveCheckbox.checked = true
   }
 
   // ── Notification bar ───────────────────────────────────────────────────
@@ -210,8 +210,8 @@ document.addEventListener("nav", async () => {
       btn.addEventListener("click", () => {
         const md = (btn as HTMLElement).dataset.md!
         const start = ta.selectionStart
-        const end   = ta.selectionEnd
-        const text  = ta.value
+        const end = ta.selectionEnd
+        const text = ta.value
 
         if (md === "[]()") {
           ta.value = text.substring(0, start) + "[النص هنا](الرابط_هنا)" + text.substring(end)
@@ -220,11 +220,13 @@ document.addEventListener("nav", async () => {
         } else if (md === "## ") {
           const before = text.substring(0, start)
           const prefix = before.length > 0 && !before.endsWith("\n") ? "\n## " : "## "
-          ta.value = text.substring(0, start) + prefix + text.substring(start, end) + text.substring(end)
+          ta.value =
+            text.substring(0, start) + prefix + text.substring(start, end) + text.substring(end)
           ta.focus()
           ta.setSelectionRange(start + prefix.length, start + prefix.length + (end - start))
         } else {
-          ta.value = text.substring(0, start) + md + text.substring(start, end) + md + text.substring(end)
+          ta.value =
+            text.substring(0, start) + md + text.substring(start, end) + md + text.substring(end)
           ta.focus()
           if (start === end) {
             ta.setSelectionRange(start + md.length, start + md.length)
@@ -243,7 +245,10 @@ document.addEventListener("nav", async () => {
     html = html.replace(/\*(.*?)\*/g, "<em>$1</em>")
     html = html.replace(/~~(.*?)~~/g, "<del>$1</del>")
     html = html.replace(/`([^`]+)`/g, "<code>$1</code>")
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    html = html.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
+    )
     html = html.replace(/^## (.*?)$/gm, "<h3>$1</h3>")
     html = html.replace(/\n/g, "<br>")
     return html
@@ -262,10 +267,10 @@ document.addEventListener("nav", async () => {
     }
   }
 
-  textarea.addEventListener("input",      () => updatePreview(textarea,      previewEl))
+  textarea.addEventListener("input", () => updatePreview(textarea, previewEl))
   guestTextarea.addEventListener("input", () => updatePreview(guestTextarea, guestPreviewEl))
   bindToolbar(composeSection, textarea)
-  bindToolbar(guestCompose,   guestTextarea)
+  bindToolbar(guestCompose, guestTextarea)
 
   // ── Firebase ───────────────────────────────────────────────────────────
   try {
@@ -279,9 +284,9 @@ document.addEventListener("nav", async () => {
     // @ts-ignore
     const { getFirestore, collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc, updateDoc, setDoc, getDoc, arrayUnion, arrayRemove } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js")
 
-    const app  = getApps().length === 0 ? initializeApp(config) : getApp()
+    const app = getApps().length === 0 ? initializeApp(config) : getApp()
     const auth = getAuth(app)
-    const db   = getFirestore(app)
+    const db = getFirestore(app)
     let currentUser: any = null
 
     // ── Ban helpers ──────────────────────────────────────────────────────
@@ -379,11 +384,11 @@ document.addEventListener("nav", async () => {
     window.addCleanup?.(() => unsubAuth())
 
     // ── Article Reactions ──────────────────────────────────────────────
-    const safeSlug          = slug.replace(/\//g, "___")
+    const safeSlug = slug.replace(/\//g, "___")
     const articleReactionsRef = doc(db, "articleReactions", safeSlug)
     setDoc(articleReactionsRef, { init: true }, { merge: true }).catch(() => {})
 
-    let latestReactionData: any     = null
+    let latestReactionData: any = null
     let latestCommentsSnapshot: any = null
     let renderCommentsList: () => void = () => {}
 
@@ -406,8 +411,8 @@ document.addEventListener("nav", async () => {
             alert("عذراً، يجب تسجيل الدخول بـ Google للتفاعل مع المقال.")
             return
           }
-          const activeReactor  = currentUser.uid
-          const clickedEmoji   = btn.dataset.emoji!
+          const activeReactor = currentUser.uid
+          const clickedEmoji = btn.dataset.emoji!
           const currentReactors: string[] = latestReactionData[clickedEmoji] || []
           try {
             const isAlreadyReacted = currentReactors.includes(activeReactor)
@@ -422,11 +427,11 @@ document.addEventListener("nav", async () => {
               await setDoc(articleReactionsRef, updates, { merge: true })
               if (!isAlreadyReacted) {
                 notifyTelegram({
-                  actionType:    "reaction",
-                  emoji:         clickedEmoji,
-                  author:        currentUser.displayName || "مجهول",
-                  articleTitle:  document.title,
-                  articleUrl:    window.location.href,
+                  actionType: "reaction",
+                  emoji: clickedEmoji,
+                  author: currentUser.displayName || "مجهول",
+                  articleTitle: document.title,
+                  articleUrl: window.location.href,
                 })
               }
             }
@@ -441,7 +446,10 @@ document.addEventListener("nav", async () => {
       latestReactionData = snap.exists() ? snap.data() : {}
       renderReactions()
     })
-    onAuthUpdateForReactions = () => { renderReactions(); renderCommentsList() }
+    onAuthUpdateForReactions = () => {
+      renderReactions()
+      renderCommentsList()
+    }
     window.addCleanup?.(() => unsubReactions())
 
     // ── Toggle like ────────────────────────────────────────────────────
@@ -451,25 +459,25 @@ document.addEventListener("nav", async () => {
         return
       }
       const activeReactor = currentUser.uid
-      const ref     = doc(db, "comments", commentId)
+      const ref = doc(db, "comments", commentId)
       const current = snap.likes || []
       if (current.includes(activeReactor)) {
         await updateDoc(ref, { likes: arrayRemove(activeReactor) })
       } else {
         await updateDoc(ref, { likes: arrayUnion(activeReactor) })
         notifyTelegram({
-          actionType:   "like",
-          author:       currentUser?.displayName || "زائر",
-          content:      snap.text,
+          actionType: "like",
+          author: currentUser?.displayName || "زائر",
+          content: snap.text,
           articleTitle: document.title,
-          articleUrl:   window.location.href,
+          articleUrl: window.location.href,
         })
       }
     }
 
     // ── Start edit (Google users only) ─────────────────────────────────
     const startEdit = (commentContent: HTMLElement, commentId: string, originalText: string) => {
-      const textDiv   = commentContent.querySelector(".fc-comment-text") as HTMLElement
+      const textDiv = commentContent.querySelector(".fc-comment-text") as HTMLElement
       const actionsDiv = commentContent.querySelector(".fc-comment-actions") as HTMLElement
       if (!textDiv) return
       if (actionsDiv) actionsDiv.style.display = "none"
@@ -484,20 +492,21 @@ document.addEventListener("nav", async () => {
 
       const editPreview = document.createElement("div")
       editPreview.className = "fc-comment-text"
-      editPreview.style.cssText = "display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"
+      editPreview.style.cssText =
+        "display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"
 
       editTA.addEventListener("input", () => updatePreview(editTA, editPreview))
 
       const editActions = document.createElement("div")
       editActions.className = "fc-edit-actions"
 
-      const saveBtn   = document.createElement("button")
-      saveBtn.type      = "button"
+      const saveBtn = document.createElement("button")
+      saveBtn.type = "button"
       saveBtn.className = "fc-submit-btn fc-save-edit-btn"
       saveBtn.textContent = "حفظ"
 
-      const cancelBtn   = document.createElement("button")
-      cancelBtn.type      = "button"
+      const cancelBtn = document.createElement("button")
+      cancelBtn.type = "button"
       cancelBtn.className = "fc-logout-btn"
       cancelBtn.textContent = "إلغاء"
 
@@ -521,13 +530,16 @@ document.addEventListener("nav", async () => {
       saveBtn.addEventListener("click", async () => {
         const newText = editTA.value.trim()
         if (!newText) return
-        saveBtn.disabled    = true
+        saveBtn.disabled = true
         saveBtn.textContent = "جاري الحفظ..."
         try {
-          await updateDoc(doc(db, "comments", commentId), { text: newText, editedAt: serverTimestamp() })
+          await updateDoc(doc(db, "comments", commentId), {
+            text: newText,
+            editedAt: serverTimestamp(),
+          })
         } catch (err: any) {
           alert("فشل التعديل: " + err.message)
-          saveBtn.disabled    = false
+          saveBtn.disabled = false
           saveBtn.textContent = "حفظ"
         }
       })
@@ -536,20 +548,25 @@ document.addEventListener("nav", async () => {
     // ── Reply form (supports both Google & Guest) ──────────────────────
     const showReplyForm = (replyArea: HTMLElement, parentId: string) => {
       const existing = replyArea.querySelector(".fc-reply-form")
-      if (existing) { existing.remove(); return }
+      if (existing) {
+        existing.remove()
+        return
+      }
 
-      const isGoogleUser  = !!currentUser
-      const savedG        = loadGuestInfo()
+      const isGoogleUser = !!currentUser
+      const savedG = loadGuestInfo()
 
-      const guestFieldsHTML = !isGoogleUser ? `
+      const guestFieldsHTML = !isGoogleUser
+        ? `
         <div class="fc-guest-form fc-reply-guest-form">
           <div class="fc-guest-row">
-            <input type="text"  class="fc-guest-input fc-reply-name"    placeholder="الاسم *"                 autocomplete="name"  value="${savedG?.name    || ""}" />
-            <input type="email" class="fc-guest-input fc-reply-email"   placeholder="البريد الإلكتروني *"     autocomplete="email" value="${savedG?.email   || ""}" />
+            <input type="text"  class="fc-guest-input fc-reply-name"    placeholder="الاسم *"                 autocomplete="name"  value="${savedG?.name || ""}" />
+            <input type="email" class="fc-guest-input fc-reply-email"   placeholder="البريد الإلكتروني *"     autocomplete="email" value="${savedG?.email || ""}" />
           </div>
           <input type="url" class="fc-guest-input fc-guest-input-full fc-reply-website" placeholder="الموقع الإلكتروني (اختياري)" autocomplete="url" value="${savedG?.website || ""}" />
         </div>
-      ` : ""
+      `
+        : ""
 
       const form = document.createElement("div")
       form.className = "fc-reply-form"
@@ -566,8 +583,8 @@ document.addEventListener("nav", async () => {
         </div>`
       replyArea.appendChild(form)
 
-      const ta        = form.querySelector(".fc-reply-textarea")  as HTMLTextAreaElement
-      const rpPreview = form.querySelector(".fc-reply-preview")   as HTMLElement
+      const ta = form.querySelector(".fc-reply-textarea") as HTMLTextAreaElement
+      const rpPreview = form.querySelector(".fc-reply-preview") as HTMLElement
       ta.addEventListener("input", () => updatePreview(ta, rpPreview))
       ta.focus()
       bindToolbar(form.querySelector(".fc-editor-wrap") as HTMLElement, ta)
@@ -575,59 +592,88 @@ document.addEventListener("nav", async () => {
       form.querySelector(".fc-reply-cancel-btn")?.addEventListener("click", () => form.remove())
       form.querySelector(".fc-reply-submit-btn")?.addEventListener("click", async () => {
         const text = ta.value.trim()
-        const btn         = form.querySelector(".fc-reply-submit-btn") as HTMLButtonElement
+        const btn = form.querySelector(".fc-reply-submit-btn") as HTMLButtonElement
 
-        if (!text) { alert("يرجى كتابة ردك أولاً."); return }
+        if (!text) {
+          alert("يرجى كتابة ردك أولاً.")
+          return
+        }
 
-          // Check if user is banned before replying
-          if (isGoogleUser && currentUser) {
-            if (await isUserBanned(currentUser.uid)) {
-              alert("عذراً، لقد تم حظرك من التعليق على هذه المدونة.")
-              btn.disabled = false; btn.textContent = "إرسال الرد"; return
-            }
+        // Check if user is banned before replying
+        if (isGoogleUser && currentUser) {
+          if (await isUserBanned(currentUser.uid)) {
+            alert("عذراً، لقد تم حظرك من التعليق على هذه المدونة.")
+            btn.disabled = false
+            btn.textContent = "إرسال الرد"
+            return
           }
+        }
 
-        btn.disabled      = true
-        btn.textContent   = "جاري الإرسال..."
+        btn.disabled = true
+        btn.textContent = "جاري الإرسال..."
 
         try {
           let userName: string, userPhoto: string, userId: string | null
-          let userGravatar = "", userWebsite = "", userEmail = ""
+          let userGravatar = "",
+            userWebsite = "",
+            userEmail = ""
 
           if (isGoogleUser) {
-            userName   = currentUser.displayName
-            userPhoto  = currentUser.photoURL || ""
-            userId     = currentUser.uid
+            userName = currentUser.displayName
+            userPhoto = currentUser.photoURL || ""
+            userId = currentUser.uid
           } else {
-            const gName  = (form.querySelector(".fc-reply-name")    as HTMLInputElement)?.value.trim() || ""
-            const gEmail = (form.querySelector(".fc-reply-email")   as HTMLInputElement)?.value.trim() || ""
-            const gWeb   = (form.querySelector(".fc-reply-website") as HTMLInputElement)?.value.trim() || ""
+            const gName =
+              (form.querySelector(".fc-reply-name") as HTMLInputElement)?.value.trim() || ""
+            const gEmail =
+              (form.querySelector(".fc-reply-email") as HTMLInputElement)?.value.trim() || ""
+            const gWeb =
+              (form.querySelector(".fc-reply-website") as HTMLInputElement)?.value.trim() || ""
 
-            if (!gName)  { alert("الاسم مطلوب.");               btn.disabled = false; btn.textContent = "إرسال الرد"; return }
-            if (!gEmail) { alert("البريد الإلكتروني مطلوب.");   btn.disabled = false; btn.textContent = "إرسال الرد"; return }
+            if (!gName) {
+              alert("الاسم مطلوب.")
+              btn.disabled = false
+              btn.textContent = "إرسال الرد"
+              return
+            }
+            if (!gEmail) {
+              alert("البريد الإلكتروني مطلوب.")
+              btn.disabled = false
+              btn.textContent = "إرسال الرد"
+              return
+            }
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(gEmail)) {
               alert("البريد الإلكتروني غير صحيح.")
-              btn.disabled = false; btn.textContent = "إرسال الرد"; return
+              btn.disabled = false
+              btn.textContent = "إرسال الرد"
+              return
             }
             // Check if guest email is banned
             if (await isUserBanned(gEmail)) {
               alert("عذراً، لقد تم حظرك من التعليق على هذه المدونة.")
-              btn.disabled = false; btn.textContent = "إرسال الرد"; return
+              btn.disabled = false
+              btn.textContent = "إرسال الرد"
+              return
             }
 
-            userName      = gName
-            userPhoto     = ""
-            userGravatar  = await gravatarUrl(gEmail)
-            userWebsite   = gWeb
-            userEmail     = gEmail
-            userId        = null
+            userName = gName
+            userPhoto = ""
+            userGravatar = await gravatarUrl(gEmail)
+            userWebsite = gWeb
+            userEmail = gEmail
+            userId = null
             saveGuestInfo(gName, gEmail, gWeb)
           }
 
           await addDoc(collection(db, "comments"), {
-            slug, text, parentId,
-            userId, userName, userPhoto,
-            userGravatar, userWebsite,
+            slug,
+            text,
+            parentId,
+            userId,
+            userName,
+            userPhoto,
+            userGravatar,
+            userWebsite,
             userEmail,
             isGuest: !isGoogleUser,
             createdAt: serverTimestamp(),
@@ -635,45 +681,53 @@ document.addEventListener("nav", async () => {
           })
 
           notifyTelegram({
-            actionType:    "reply",
-            author:        userName,
-            ...(userEmail   ? { authorEmail:   userEmail   } : {}),
+            actionType: "reply",
+            author: userName,
+            ...(userEmail ? { authorEmail: userEmail } : {}),
             ...(userWebsite ? { authorWebsite: userWebsite } : {}),
-            content:       text,
-            articleTitle:  document.title,
-            articleUrl:    window.location.href,
+            content: text,
+            articleTitle: document.title,
+            articleUrl: window.location.href,
           })
 
           form.remove()
         } catch (err: any) {
           alert("خطأ في الإرسال: " + err.message)
-          btn.disabled    = false
+          btn.disabled = false
           btn.textContent = "إرسال الرد"
         }
       })
     }
 
     // ── Render single comment ──────────────────────────────────────────
-    const renderComment = (cdoc: any, currentReactor: string, isReply = false, depth = 0): HTMLElement => {
-      const d    = cdoc.data()
+    const renderComment = (
+      cdoc: any,
+      currentReactor: string,
+      isReply = false,
+      depth = 0,
+    ): HTMLElement => {
+      const d = cdoc.data()
       const date = d.createdAt
         ? new Date(d.createdAt.toDate()).toLocaleDateString("ar-SA", {
-            year: "numeric", month: "long", day: "numeric",
-            hour: "2-digit", minute: "2-digit",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
           })
         : "الآن"
 
-      const isAdmin    = !!(currentUser && currentUser.email === ADMIN_EMAIL)
-      const isOwner    = currentUser && currentUser.uid === d.userId
-      const canDelete  = isOwner || isAdmin
-      const canEdit    = isOwner
-      const canBan     = isAdmin && !isOwner
+      const isAdmin = !!(currentUser && currentUser.email === ADMIN_EMAIL)
+      const isOwner = currentUser && currentUser.uid === d.userId
+      const canDelete = isOwner || isAdmin
+      const canEdit = isOwner
+      const canBan = isAdmin && !isOwner
       // Identifier for banning: Google uid for authenticated users, guest email for guests
       const banIdentifier = d.userId || d.userEmail || ""
       const editedBadge = d.editedAt ? `<span class="fc-edited-badge">• تم التعديل</span>` : ""
 
       const likes: string[] = d.likes || []
-      const liked     = likes.includes(currentReactor)
+      const liked = likes.includes(currentReactor)
       const likeCount = likes.length
 
       // Avatar: Google photo → Gravatar → default silhouette
@@ -689,9 +743,11 @@ document.addEventListener("nav", async () => {
 
       const el = document.createElement("div")
       const replyClass = isReply
-        ? depth > 3 ? "fc-comment fc-reply fc-reply-max-depth" : "fc-comment fc-reply"
+        ? depth > 3
+          ? "fc-comment fc-reply fc-reply-max-depth"
+          : "fc-comment fc-reply"
         : "fc-comment"
-      el.className        = replyClass
+      el.className = replyClass
       el.dataset.commentId = cdoc.id
 
       el.innerHTML = `
@@ -708,9 +764,9 @@ document.addEventListener("nav", async () => {
                 ${liked ? "👍" : "👍🏻"}<span class="fc-like-count">${likeCount > 0 ? " " + likeCount : ""}</span>
               </button>
               <button type="button" class="fc-reply-btn" data-id="${cdoc.id}">💬 <span>رد</span></button>
-              ${canEdit  ? `<button type="button" class="fc-edit-btn"   data-id="${cdoc.id}">✏️ تعديل</button>` : ""}
-              ${canDelete ? `<button type="button" class="fc-delete-btn" data-id="${cdoc.id}">🗑️ حذف</button>`  : ""}
-              ${canBan && banIdentifier ? `<button type="button" class="fc-ban-btn" data-id="${cdoc.id}" data-ban-id="${banIdentifier}" data-ban-name="${d.userName || 'مجهول'}">🚫 حظر</button>` : ""}
+              ${canEdit ? `<button type="button" class="fc-edit-btn"   data-id="${cdoc.id}">✏️ تعديل</button>` : ""}
+              ${canDelete ? `<button type="button" class="fc-delete-btn" data-id="${cdoc.id}">🗑️ حذف</button>` : ""}
+              ${canBan && banIdentifier ? `<button type="button" class="fc-ban-btn" data-id="${cdoc.id}" data-ban-id="${banIdentifier}" data-ban-name="${d.userName || "مجهول"}">🚫 حظر</button>` : ""}
             </div>
           </div>
           <div class="fc-replies-area"></div>
@@ -736,7 +792,13 @@ document.addEventListener("nav", async () => {
           if (confirm("هل أنت متأكد من حذف هذا التعليق؟")) {
             try {
               await deleteDoc(doc(db, "comments", cdoc.id))
-              notifyTelegram({ actionType: "delete", articleTitle: document.title, articleUrl: window.location.href })
+              notifyTelegram({
+                actionType: "delete",
+                author: d.userName || "مجهول",
+                content: d.text,
+                articleTitle: document.title,
+                articleUrl: window.location.href,
+              })
             } catch (err: any) {
               alert("فشل الحذف: " + err.message)
             }
@@ -747,7 +809,7 @@ document.addEventListener("nav", async () => {
       if (canBan && banIdentifier) {
         const banBtn = el.querySelector(".fc-ban-btn") as HTMLButtonElement
         banBtn?.addEventListener("click", async () => {
-          const banId   = banBtn.dataset.banId!
+          const banId = banBtn.dataset.banId!
           const banName = banBtn.dataset.banName!
           const isBanned = await isUserBanned(banId)
           if (isBanned) {
@@ -775,7 +837,7 @@ document.addEventListener("nav", async () => {
           }
         })
         // Check initial ban state and update button
-        isUserBanned(banIdentifier).then(isBanned => {
+        isUserBanned(banIdentifier).then((isBanned) => {
           if (isBanned) {
             banBtn.textContent = "✅ رفع الحظر"
             banBtn.title = "رفع الحظر عن هذا المستخدم"
@@ -798,50 +860,65 @@ document.addEventListener("nav", async () => {
         return
       }
 
-      submitBtn.disabled    = true
+      submitBtn.disabled = true
       submitBtn.textContent = "جاري الإرسال..."
       try {
         await addDoc(collection(db, "comments"), {
-          slug, text,
-          parentId:    null,
-          userId:      currentUser.uid,
-          userName:    currentUser.displayName,
-          userPhoto:   currentUser.photoURL || "",
+          slug,
+          text,
+          parentId: null,
+          userId: currentUser.uid,
+          userName: currentUser.displayName,
+          userPhoto: currentUser.photoURL || "",
           userGravatar: "",
-          userWebsite:  "",
-          isGuest:      false,
-          createdAt:    serverTimestamp(),
-          likes:        [],
+          userWebsite: "",
+          isGuest: false,
+          createdAt: serverTimestamp(),
+          likes: [],
         })
         notifyTelegram({
-          author:       currentUser.displayName || "زائر",
-          content:      text,
+          author: currentUser.displayName || "زائر",
+          content: text,
           articleTitle: document.title,
-          articleUrl:   window.location.href,
+          articleUrl: window.location.href,
         })
         textarea.value = ""
         updatePreview(textarea, previewEl)
       } catch (err: any) {
         alert("خطأ في الإرسال: " + err.message)
       }
-      submitBtn.disabled    = false
+      submitBtn.disabled = false
       submitBtn.textContent = "إرسال التعليق"
     })
 
     // ── Submit: Guest comment ──────────────────────────────────────────
     guestSubmitBtn.addEventListener("click", async (e) => {
       e.preventDefault()
-      const text    = guestTextarea.value.trim()
-      const gName   = guestNameInput.value.trim()
-      const gEmail  = guestEmailInput.value.trim()
-      const gWeb    = guestWebInput.value.trim()
+      const text = guestTextarea.value.trim()
+      const gName = guestNameInput.value.trim()
+      const gEmail = guestEmailInput.value.trim()
+      const gWeb = guestWebInput.value.trim()
 
-      if (!gName)  { guestNameInput.focus();  alert("الاسم مطلوب.");              return }
-      if (!gEmail) { guestEmailInput.focus(); alert("البريد الإلكتروني مطلوب."); return }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(gEmail)) {
-        guestEmailInput.focus(); alert("البريد الإلكتروني غير صحيح."); return
+      if (!gName) {
+        guestNameInput.focus()
+        alert("الاسم مطلوب.")
+        return
       }
-      if (!text)   { guestTextarea.focus();   alert("يرجى كتابة تعليقك.");        return }
+      if (!gEmail) {
+        guestEmailInput.focus()
+        alert("البريد الإلكتروني مطلوب.")
+        return
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(gEmail)) {
+        guestEmailInput.focus()
+        alert("البريد الإلكتروني غير صحيح.")
+        return
+      }
+      if (!text) {
+        guestTextarea.focus()
+        alert("يرجى كتابة تعليقك.")
+        return
+      }
 
       // Check if guest email is banned
       if (await isUserBanned(gEmail)) {
@@ -849,24 +926,25 @@ document.addEventListener("nav", async () => {
         return
       }
 
-      guestSubmitBtn.disabled    = true
+      guestSubmitBtn.disabled = true
       guestSubmitBtn.textContent = "جاري الإرسال..."
 
       try {
         const avatar = await gravatarUrl(gEmail)
 
         await addDoc(collection(db, "comments"), {
-          slug, text,
-          parentId:     null,
-          userId:       null,
-          userName:     gName,
-          userPhoto:    "",
+          slug,
+          text,
+          parentId: null,
+          userId: null,
+          userName: gName,
+          userPhoto: "",
           userGravatar: avatar,
-          userWebsite:  gWeb,
-          userEmail:    gEmail,
-          isGuest:      true,
-          createdAt:    serverTimestamp(),
-          likes:        [],
+          userWebsite: gWeb,
+          userEmail: gEmail,
+          isGuest: true,
+          createdAt: serverTimestamp(),
+          likes: [],
         })
 
         if (saveCheckbox.checked) {
@@ -876,12 +954,12 @@ document.addEventListener("nav", async () => {
         }
 
         notifyTelegram({
-          author:        gName,
-          authorEmail:   gEmail,
+          author: gName,
+          authorEmail: gEmail,
           ...(gWeb ? { authorWebsite: gWeb } : {}),
-          content:       text,
-          articleTitle:  document.title,
-          articleUrl:    window.location.href,
+          content: text,
+          articleTitle: document.title,
+          articleUrl: window.location.href,
         })
 
         guestTextarea.value = ""
@@ -889,7 +967,7 @@ document.addEventListener("nav", async () => {
       } catch (err: any) {
         alert("خطأ في الإرسال: " + err.message)
       }
-      guestSubmitBtn.disabled    = false
+      guestSubmitBtn.disabled = false
       guestSubmitBtn.textContent = "إرسال التعليق"
     })
 
@@ -906,7 +984,7 @@ document.addEventListener("nav", async () => {
       if (!latestCommentsSnapshot) return
       const currentReactor = currentUser ? currentUser.uid : getAnonId()
 
-      const topLevel: any[]              = []
+      const topLevel: any[] = []
       const repliesMap = new Map<string, any[]>()
 
       latestCommentsSnapshot.forEach((cdoc: any) => {
@@ -929,8 +1007,8 @@ document.addEventListener("nav", async () => {
       const renderTree = (docs: any[], isNested: boolean, depth: number) => {
         const frag = document.createDocumentFragment()
         docs.forEach((d) => {
-          const el      = renderComment(d, currentReactor, isNested, depth)
-          const area    = el.querySelector(".fc-replies-area")
+          const el = renderComment(d, currentReactor, isNested, depth)
+          const area = el.querySelector(".fc-replies-area")
           const children = repliesMap.get(d.id)
           if (children && children.length > 0 && area) {
             area.appendChild(renderTree(children, true, depth + 1))
@@ -946,7 +1024,7 @@ document.addEventListener("nav", async () => {
     const unsubSnap = onSnapshot(
       q,
       (snapshot: any) => {
-        const newCount  = snapshot.docs.length
+        const newCount = snapshot.docs.length
         const prevCount = parseInt(localStorage.getItem(NOTIF_COUNT_KEY) || "0")
 
         // Browser notification when new comment arrives while page is hidden

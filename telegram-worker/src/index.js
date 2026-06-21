@@ -26,7 +26,12 @@ export default {
       } else if (data.actionType === "like") {
         message = `إعجاب جديد 👍\nبواسطة: ${data.author || "مجهول"}\nالمقال: ${data.articleTitle || "غير معروف"}\nالرابط: ${data.articleUrl || "غير معروف"}\n\nالتعليق المُعجب به:\n${data.content}`
       } else if (data.actionType === "delete") {
-        message = `تم حذف تعليق 🗑️\nالمقال: ${data.articleTitle || "غير معروف"}\nالرابط: ${data.articleUrl || "غير معروف"}`
+        message = `تم حذف تعليق 🗑️\nبواسطة: ${data.author || "مجهول"}\nالمقال: ${data.articleTitle || "غير معروف"}\nالرابط: ${data.articleUrl || "غير معروف"}\n\nالتعليق المحذوف:\n${data.content}`
+      } else if (data.actionType === "reply") {
+        if (!data.content || data.content.length < 3) {
+          return new Response("Content too short", { status: 400, headers: corsHeaders })
+        }
+        message = `رد جديد 💬:\nالاسم: ${data.author || "مجهول"}\nالمقال: ${data.articleTitle || "غير معروف"}\nالرابط: ${data.articleUrl || "غير معروف"}\n\nالمحتوى:\n${data.content}`
       } else {
         // منع السبام في التعليقات
         if (!data.content || data.content.length < 3) {
