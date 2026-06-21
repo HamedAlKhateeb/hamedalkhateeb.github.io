@@ -446,18 +446,25 @@ export default ((opts: Options) => {
     .fc-guest-input::placeholder { color: var(--gray); }
     .fc-guest-input-full { width: 100%; }
     .fc-save-label {
-      display: inline-flex;
-      flex-direction: row;
-      direction: ltr;
+      display: flex;
+      justify-content: center;
       align-items: center;
       gap: 0.45rem;
       font-size: 0.82rem;
       color: var(--gray);
       cursor: pointer;
       user-select: none;
+      width: 100%;
+      margin: 0.5rem 0;
+      direction: rtl;
     }
     .fc-save-label span { direction: rtl; }
-    .fc-save-checkbox { width: 14px; height: 14px; flex-shrink: 0; accent-color: var(--secondary); cursor: pointer; }
+    .fc-save-checkbox { 
+      width: 14px; height: 14px; flex-shrink: 0; accent-color: var(--secondary); cursor: pointer;
+      margin: 0;
+      appearance: auto;
+      transform: none;
+    }
 
     /* Mini guest form in replies */
     .fc-reply-guest-form { padding: 0.5rem; background: var(--highlight); border-radius: 6px; }

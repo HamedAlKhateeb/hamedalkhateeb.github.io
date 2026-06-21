@@ -1,5 +1,5 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
-import { FullSlug, resolveRelative } from "../util/path"
+import { resolveRelative } from "../util/path"
 import { Date, getDate } from "./Date"
 import readingTime from "reading-time"
 import { i18n } from "../i18n"

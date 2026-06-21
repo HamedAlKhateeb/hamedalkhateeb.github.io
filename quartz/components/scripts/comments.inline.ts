@@ -182,7 +182,6 @@ document.addEventListener("nav", async () => {
 
   // ── Tab state ──────────────────────────────────────────────────────────
   let activeTab: "google" | "guest" = "google"
-  let currentUserRef: any = null  // forward reference for tab logic
 
   const applyGoogleTab = () => {
     activeTab = "google"
@@ -355,7 +354,6 @@ document.addEventListener("nav", async () => {
     // ── Auth state ─────────────────────────────────────────────────────
     const unsubAuth = onAuthStateChanged(auth, (user: any) => {
       currentUser = user
-      currentUserRef = user
 
       if (user) {
         googleLoginArea.innerHTML = `
@@ -577,6 +575,8 @@ document.addEventListener("nav", async () => {
       form.querySelector(".fc-reply-cancel-btn")?.addEventListener("click", () => form.remove())
       form.querySelector(".fc-reply-submit-btn")?.addEventListener("click", async () => {
         const text = ta.value.trim()
+        const btn         = form.querySelector(".fc-reply-submit-btn") as HTMLButtonElement
+
         if (!text) { alert("يرجى كتابة ردك أولاً."); return }
 
           // Check if user is banned before replying
@@ -587,7 +587,6 @@ document.addEventListener("nav", async () => {
             }
           }
 
-        const btn         = form.querySelector(".fc-reply-submit-btn") as HTMLButtonElement
         btn.disabled      = true
         btn.textContent   = "جاري الإرسال..."
 

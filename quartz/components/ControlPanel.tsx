@@ -33,7 +33,6 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
   const audioActiveText = isArabic ? "مفعل" : "On"
   const audioInactiveText = isArabic ? "إيقاف" : "Off"
   const toggleOpenText = isArabic ? "تفعيل" : "Open"
-  const closeLabel = isArabic ? "إغلاق" : "Close"
 
   return (
     <div class={classNames(displayClass, "control-panel-root")}>

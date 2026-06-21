@@ -35,6 +35,16 @@ export default (() => {
     const allArPages = allFiles.filter((page) => page.slug && page.slug.startsWith("ar/") && !page.slug.endsWith("/index"))
     const archivePages = [...allArPages].sort(() => 0.5 - Math.random()).slice(0, 4)
 
+    // Extract unique tags from Arabic pages
+    const arTags = new Set<string>()
+    for (const page of allArPages) {
+      const tags = page.frontmatter?.tags ?? []
+      for (const tag of tags) {
+        if (tag) arTags.add(tag)
+      }
+    }
+    const arTagsList = Array.from(arTags).sort()
+
     // Random Quote from content
     const randomPage = allArPages.length > 0 ? allArPages[Math.floor(Math.random() * allArPages.length)] : null
 
@@ -192,30 +202,16 @@ export default (() => {
                 {/* خريطة المعرفة — first child → RIGHT in RTL */}
                 <section class="ar-card ar-knowledge-map">
                     <div class="ar-section-header">
-                        <h2>خريطة المعرفة</h2>
+                        <h2>خريطة المعرفة (الوسوم)</h2>
                     </div>
-                    <p class="ar-subtitle ar-text-center">اختر موضوعاً لتستكشف المحتوى المرتبط به</p>
-                    <div class="ar-nodes-container">
-                        <a href={resolveRelative(fileData.slug!, "tags/رياضيات" as any)} class="ar-node">
-                            <span class="ar-node-icon">∑</span>
-                            <span>رياضيات</span>
-                        </a>
-                        <a href={resolveRelative(fileData.slug!, "tags/فلسفة" as any)} class="ar-node">
-                            <span class="ar-node-icon">φ</span>
-                            <span>فلسفة</span>
-                        </a>
-                        <a href={resolveRelative(fileData.slug!, "tags/لغة" as any)} class="ar-node">
-                            <span class="ar-node-icon">ع</span>
-                            <span>لغة</span>
-                        </a>
-                        <a href={resolveRelative(fileData.slug!, "tags/أدب" as any)} class="ar-node">
-                            <span class="ar-node-icon">📖</span>
-                            <span>أدب</span>
-                        </a>
-                        <a href={resolveRelative(fileData.slug!, "tags/شعر" as any)} class="ar-node">
-                            <span class="ar-node-icon">✒</span>
-                            <span>شعر</span>
-                        </a>
+                    <p class="ar-subtitle ar-text-center">اختر وسماً لتستكشف المحتوى المرتبط به</p>
+                    <div class="ar-tags-container">
+                        {arTagsList.map((tag) => (
+                            <a href={resolveRelative(fileData.slug!, `tags/${tag}` as any)} class="ar-tag-pill">
+                                <span class="ar-tag-hash">#</span>
+                                <span class="ar-tag-name">{tag.replace(/_/g, " ")}</span>
+                            </a>
+                        ))}
                     </div>
                 </section>
 
@@ -284,134 +280,119 @@ export default (() => {
                     </li>
                 </ul>
             </div>
-
-            {/* دلني على شيء */}
-            <div class="ar-card ar-guide-me-widget ar-text-center">
-                <h3>دلّني على شيء</h3>
-                <p>اقرأ شيئاً عشوائياً من الموقع</p>
-                {randomPage && <a href={resolveRelative(fileData.slug!, randomPage.slug!)} class="ar-btn-overlay stretched-link"></a>}
-            </div>
-
-            {/* عن الكاتب */}
-            <div class="ar-card ar-author-widget ar-text-center">
-                <h3 class="ar-widget-title">عن الكاتب</h3>
-                <div class="ar-author-avatar">👤</div>
-                <h4 class="ar-author-name">حامد</h4>
-                <p class="ar-author-bio">مهندس يهتم بالرياضيات والفلسفة والأدب والشعر. يكتب ليفهم، ويقرأ ليتأمل.</p>
-                <a href={resolveRelative(fileData.slug!, "ar/" as any)} class="ar-about-link">حول الموقع →</a>
-            </div>
-
         </aside>
       </div>
     )
-  }
+}
 
-  HomeArticlesAr.afterDOMLoaded = `
-    // ── Calendar ──
-    const updateCalendar = () => {
-        const today = new Date();
-        const gregorianDate = today.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
-        const hijriDate = today.toLocaleDateString('ar-SA-u-ca-islamic', { day: 'numeric', month: 'long', year: 'numeric' });
-        const dayName = today.toLocaleDateString('ar-EG', { weekday: 'long' });
-        const month = today.getMonth() + 1;
-        let season = '🌸 فصل الربيع';
-        if (month >= 3 && month <= 5) season = '🌸 فصل الربيع';
-        else if (month >= 6 && month <= 8) season = '☀ فصل الصيف';
-        else if (month >= 9 && month <= 11) season = '🍂 فصل الخريف';
-        else season = '❄ فصل الشتاء';
+HomeArticlesAr.afterDOMLoaded = `
+    document.addEventListener("nav", () => {
+        // ── Calendar ──
+        const updateCalendar = () => {
+            const today = new Date();
+            const gregorianDate = today.toLocaleDateString('ar-EG-u-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' });
+            const hijriDate = today.toLocaleDateString('ar-SA-u-ca-islamic-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' });
+            const dayName = today.toLocaleDateString('ar-EG', { weekday: 'long' });
+            const month = today.getMonth() + 1;
+            let season = '🌸 فصل الربيع';
+            if (month >= 3 && month <= 5) season = '🌸 فصل الربيع';
+            else if (month >= 6 && month <= 8) season = '☀ فصل الصيف';
+            else if (month >= 9 && month <= 11) season = '🍂 فصل الخريف';
+            else season = '❄ فصل الشتاء';
 
-        const dn = document.getElementById('ar-cal-day-name');
-        if(dn) dn.textContent = dayName;
-        const g = document.getElementById('ar-cal-gregorian');
-        if(g) g.textContent = gregorianDate;
-        const h = document.getElementById('ar-cal-hijri');
-        if(h) h.textContent = hijriDate;
-        const s = document.getElementById('ar-cal-season');
-        if(s) s.textContent = season;
-    };
+            const dn = document.getElementById('ar-cal-day-name');
+            if(dn) dn.textContent = dayName;
+            const g = document.getElementById('ar-cal-gregorian');
+            if(g) g.textContent = gregorianDate;
+            const h = document.getElementById('ar-cal-hijri');
+            if(h) h.textContent = hijriDate;
+            const s = document.getElementById('ar-cal-season');
+            if(s) s.textContent = season;
+        };
 
-    // ── On This Day ──
-    const updateOnThisDay = () => {
-        const events = [
-            { m:1, d:1,  t:"في عام 622م بدأ التقويم الهجري، تخليداً لهجرة النبي محمد ﷺ من مكة إلى المدينة." },
-            { m:1, d:15, t:"في عام 1929 ولد مارتن لوثر كينغ جونيور، قائد حركة الحقوق المدنية الأمريكية." },
-            { m:1, d:27, t:"في عام 1756 ولد فولفغانغ أماديوس موتسارت، أحد أعظم المؤلفين الموسيقيين في التاريخ." },
-            { m:2, d:7,  t:"في عام 1812 ولد الروائي الإنجليزي تشارلز ديكنز، صاحب «قصة مدينتين»." },
-            { m:2, d:19, t:"في عام 1473 ولد نيكولاس كوبرنيكوس، الذي أثبت أن الأرض تدور حول الشمس." },
-            { m:3, d:14, t:"في عام 1879 ولد ألبرت أينشتاين، صاحب نظرية النسبية وأحد أعظم علماء الفيزياء." },
-            { m:3, d:21, t:"اليوم العالمي للشعر، اعتمدته اليونسكو عام 1999 للاحتفاء بالتنوع اللغوي والإبداع الشعري." },
-            { m:3, d:22, t:"في عام 1945 تأسست جامعة الدول العربية في القاهرة بعضوية سبع دول عربية مؤسسة." },
-            { m:4, d:15, t:"في عام 1452 ولد ليوناردو دا فينشي، الفنان والعالم والمخترع الإيطالي." },
-            { m:4, d:23, t:"اليوم العالمي للكتاب وحقوق المؤلف، اعتمدته اليونسكو عام 1995." },
-            { m:5, d:5,  t:"في عام 1818 ولد كارل ماركس، الفيلسوف والاقتصادي الألماني مؤسس الفلسفة المادية." },
-            { m:5, d:27, t:"في عام 1332 ولد عبد الرحمن بن خلدون في تونس، مؤسس علم العمران والاجتماع البشري." },
-            { m:6, d:3,  t:"في عام 1769 رصد الكابتن جيمس كوك عبور كوكب الزهرة أمام الشمس من تاهيتي، حدث فلكي نادر." },
-            { m:6, d:15, t:"في عام 1215 صدرت وثيقة الماغنا كارتا في إنجلترا، أول ميثاق لتقييد السلطة المطلقة." },
-            { m:6, d:28, t:"في عام 1889 ولد الأديب المصري عباس محمود العقاد، صاحب سلسلة العبقريات الشهيرة." },
-            { m:7, d:14, t:"في عام 1789 اقتحم الشعب الفرنسي سجن الباستيل، إيذاناً ببدء الثورة الفرنسية." },
-            { m:7, d:20, t:"في عام 1969 هبط أول إنسان على سطح القمر، نيل أرمسترونغ في مهمة أبولو 11." },
-            { m:8, d:15, t:"في عام 1947 استقلت الهند عن الإمبراطورية البريطانية بقيادة المهاتما غاندي." },
-            { m:8, d:25, t:"في عام 1530 توفي ظهير الدين بابر، مؤسس الإمبراطورية المغولية في الهند." },
-            { m:9, d:1,  t:"في عام 1939 بدأت الحرب العالمية الثانية بغزو ألمانيا النازية لبولندا." },
-            { m:9, d:23, t:"في عام 1932 أُعلن توحيد المملكة العربية السعودية باسمها الحالي." },
-            { m:10,d:6,  t:"في عام 1973 بدأت حرب أكتوبر / العاشر من رمضان بين العرب وإسرائيل." },
-            { m:10,d:16, t:"في عام 1868 ولد أمير الشعراء أحمد شوقي، أحد أعلام الشعر العربي الحديث." },
-            { m:10,d:24, t:"في عام 1945 تأسست منظمة الأمم المتحدة بهدف حفظ السلام والأمن الدوليين." },
-            { m:11,d:9,  t:"في عام 1989 سقط جدار برلين، رمزاً لنهاية الحرب الباردة وبداية عصر جديد." },
-            { m:11,d:14, t:"في عام 1889 ولد طه حسين في المنيا بمصر، الذي أصبح عميد الأدب العربي." },
-            { m:12,d:10, t:"في عام 1948 تبنت الأمم المتحدة الإعلان العالمي لحقوق الإنسان في باريس." },
-            { m:12,d:18, t:"اليوم العالمي للغة العربية، اعتمدته اليونسكو تقديراً لإسهامها الكبير في الحضارة الإنسانية." },
-            { m:12,d:25, t:"في عام 1642 ولد إسحاق نيوتن، مؤسس الميكانيكا الكلاسيكية وحساب التفاضل والتكامل." },
+        // ── On This Day ──
+        const updateOnThisDay = () => {
+            const events = [
+                { m:1, d:1,  t:"في عام 622م بدأ التقويم الهجري، تخليداً لهجرة النبي محمد ﷺ من مكة إلى المدينة." },
+                { m:1, d:15, t:"في عام 1929 ولد مارتن لوثر كينغ جونيور، قائد حركة الحقوق المدنية الأمريكية." },
+                { m:1, d:27, t:"في عام 1756 ولد فولفغانغ أماديوس موتسارت، أحد أعظم المؤلفين الموسيقيين في التاريخ." },
+                { m:2, d:7,  t:"في عام 1812 ولد الروائي الإنجليزي تشارلز ديكنز، صاحب «قصة مدينتين»." },
+                { m:2, d:19, t:"في عام 1473 ولد نيكولاس كوبرنيكوس، الذي أثبت أن الأرض تدور حول الشمس." },
+                { m:3, d:14, t:"في عام 1879 ولد ألبرت أينشتاين، صاحب نظرية النسبية وأحد أعظم علماء الفيزياء." },
+                { m:3, d:21, t:"اليوم العالمي للشعر، اعتمدته اليونسكو عام 1999 للاحتفاء بالتنوع اللغوي والإبداع الشعري." },
+                { m:3, d:22, t:"في عام 1945 تأسست جامعة الدول العربية في القاهرة بعضوية سبع دول عربية مؤسسة." },
+                { m:4, d:15, t:"في عام 1452 ولد ليوناردو دا فينشي، الفنان والعالم والمخترع الإيطالي." },
+                { m:4, d:23, t:"اليوم العالمي للكتاب وحقوق المؤلف، اعتمدته اليونسكو عام 1995." },
+                { m:5, d:5,  t:"في عام 1818 ولد كارل ماركس، الفيلسوف والاقتصادي الألماني مؤسس الفلسفة المادية." },
+                { m:5, d:27, t:"في عام 1332 ولد عبد الرحمن بن خلدون في تونس، مؤسس علم العمران والاجتماع البشري." },
+                { m:6, d:3,  t:"في عام 1769 رصد الكابتن جيمس كوك عبور كوكب الزهرة أمام الشمس من تاهيتي، حدث فلكي نادر." },
+                { m:6, d:15, t:"في عام 1215 صدرت وثيقة الماغنا كارتا في إنجلترا، أول ميثاق لتقييد السلطة المطلقة." },
+                { m:6, d:28, t:"في عام 1889 ولد الأديب المصري عباس محمود العقاد، صاحب سلسلة العبقريات الشهيرة." },
+                { m:7, d:14, t:"في عام 1789 اقتحم الشعب الفرنسي سجن الباستيل، إيذاناً ببدء الثورة الفرنسية." },
+                { m:7, d:20, t:"في عام 1969 هبط أول إنسان على سطح القمر، نيل أرمسترونغ في مهمة أبولو 11." },
+                { m:8, d:15, t:"في عام 1947 استقلت الهند عن الإمبراطورية البريطانية بقيادة المهاتما غاندي." },
+                { m:8, d:25, t:"في عام 1530 توفي ظهير الدين بابر، مؤسس الإمبراطورية المغولية في الهند." },
+                { m:9, d:1,  t:"في عام 1939 بدأت الحرب العالمية الثانية بغزو ألمانيا النازية لبولندا." },
+                { m:9, d:23, t:"في عام 1932 أُعلن توحيد المملكة العربية السعودية باسمها الحالي." },
+                { m:10,d:6,  t:"في عام 1973 بدأت حرب أكتوبر / العاشر من رمضان بين العرب وإسرائيل." },
+                { m:10,d:16, t:"في عام 1868 ولد أمير الشعراء أحمد شوقي، أحد أعلام الشعر العربي الحديث." },
+                { m:10,d:24, t:"في عام 1945 تأسست منظمة الأمم المتحدة بهدف حفظ السلام والأمن الدوليين." },
+                { m:11,d:9,  t:"في عام 1989 سقط جدار برلين، رمزاً لنهاية الحرب الباردة وبداية عصر جديد." },
+                { m:11,d:14, t:"في عام 1889 ولد طه حسين في المنيا بمصر، الذي أصبح عميد الأدب العربي." },
+                { m:12,d:10, t:"في عام 1948 تبنت الأمم المتحدة الإعلان العالمي لحقوق الإنسان في باريس." },
+                { m:12,d:18, t:"اليوم العالمي للغة العربية، اعتمدته اليونسكو تقديراً لإسهامها الكبير في الحضارة الإنسانية." },
+                { m:12,d:25, t:"في عام 1642 ولد إسحاق نيوتن، مؤسس الميكانيكا الكلاسيكية وحساب التفاضل والتكامل." },
+            ];
+            const today = new Date();
+            const m = today.getMonth() + 1;
+            const d = today.getDate();
+            let best = events[0];
+            let bestDist = 400;
+            for (const e of events) {
+                const dist = Math.abs((e.m * 31 + e.d) - (m * 31 + d));
+                if (dist < bestDist) { bestDist = dist; best = e; }
+            }
+            const el = document.getElementById('ar-on-this-day-text');
+            if (el) el.textContent = best.t;
+        };
+
+        // ── Quotes ──
+        const fallbackQuotes = [
+            { quote: "الناس أعداء ما جهلوا", author: "علي بن أبي طالب" },
+            { quote: "على قدر أهل العزم تأتي العزائم", author: "المتنبي" },
+            { quote: "الأيام صحائف الأعمار، فخلدوها بأحسن الأعمال", author: "ابن الجوزي" },
+            { quote: "إنما الأمم الأخلاق ما بقيت، فإن هم ذهبت أخلاقهم ذهبوا", author: "أحمد شوقي" },
+            { quote: "العلم صيد والكتابة قيده", author: "الإمام الشافعي" },
+            { quote: "من طلب العلا سهر الليالي", author: "الإمام الشافعي" },
+            { quote: "إذا أردت أن تطاع فأمر بما يستطاع", author: "حكمة عربية" },
+            { quote: "ما ندمت على سكوتي مرة، لكنني ندمت على الكلام مراراً", author: "حكمة عربية" },
         ];
-        const today = new Date();
-        const m = today.getMonth() + 1;
-        const d = today.getDate();
-        let best = events[0];
-        let bestDist = 400;
-        for (const e of events) {
-            const dist = Math.abs((e.m * 31 + e.d) - (m * 31 + d));
-            if (dist < bestDist) { bestDist = dist; best = e; }
-        }
-        const el = document.getElementById('ar-on-this-day-text');
-        if (el) el.textContent = best.t;
-    };
 
-    // ── Quotes ──
-    const fallbackQuotes = [
-        { quote: "الناس أعداء ما جهلوا", author: "علي بن أبي طالب" },
-        { quote: "على قدر أهل العزم تأتي العزائم", author: "المتنبي" },
-        { quote: "الأيام صحائف الأعمار، فخلدوها بأحسن الأعمال", author: "ابن الجوزي" },
-        { quote: "إنما الأمم الأخلاق ما بقيت، فإن هم ذهبت أخلاقهم ذهبوا", author: "أحمد شوقي" },
-        { quote: "العلم صيد والكتابة قيده", author: "الإمام الشافعي" },
-        { quote: "من طلب العلا سهر الليالي", author: "الإمام الشافعي" },
-        { quote: "إذا أردت أن تطاع فأمر بما يستطاع", author: "حكمة عربية" },
-        { quote: "ما ندمت على سكوتي مرة، لكنني ندمت على الكلام مراراً", author: "حكمة عربية" },
-    ];
+        const fetchQuote = (isRefresh = false) => {
+            const quoteEl = document.getElementById('ar-daily-quote-text');
+            const authorEl = document.getElementById('ar-daily-quote-author');
+            if(!quoteEl) return;
+        
+            let randomQuote;
+            if (isRefresh) {
+                randomQuote = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+            } else {
+                const today = new Date();
+                const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
+                const index = dayOfYear % fallbackQuotes.length;
+                randomQuote = fallbackQuotes[index];
+            }
+            
+            quoteEl.textContent = "\\"" + randomQuote.quote + "\\"";
+            if(authorEl) authorEl.textContent = "- " + randomQuote.author;
+        };
 
-    const fetchQuote = async () => {
-        const quoteEl = document.getElementById('ar-daily-quote-text');
-        const authorEl = document.getElementById('ar-daily-quote-author');
-        if(!quoteEl) return;
-        try {
-            const response = await fetch('https://kalimatapi.com/api/v1/quotes/random', {
-                headers: { 'Authorization': "Bearer YOUR_TOKEN" }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                quoteEl.textContent = "\\"" + (data.quote || data.content) + "\\"";
-                authorEl.textContent = "- " + (data.author || data.author_name);
-            } else { throw new Error('API error'); }
-        } catch (error) {
-            const random = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
-            quoteEl.textContent = "\\"" + random.quote + "\\"";
-            authorEl.textContent = "- " + random.author;
-        }
-    };
-
-    updateCalendar();
-    updateOnThisDay();
-    const refreshBtn = document.getElementById('ar-refresh-quote');
-    if(refreshBtn) { refreshBtn.addEventListener('click', fetchQuote); }
+        updateCalendar();
+        updateOnThisDay();
+        fetchQuote();
+        const refreshBtn = document.getElementById('ar-refresh-quote');
+        if(refreshBtn) { refreshBtn.addEventListener('click', () => fetchQuote(true)); }
+    });
   `
 
   HomeArticlesAr.css = `
