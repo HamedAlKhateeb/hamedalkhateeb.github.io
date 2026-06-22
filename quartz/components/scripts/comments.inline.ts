@@ -239,6 +239,20 @@ document.addEventListener("nav", async () => {
     })
   }
 
+  const ensureAbsoluteUrl = (url: string) => {
+    url = url.trim()
+    if (
+      url.startsWith("/") ||
+      url.startsWith(".") ||
+      url.startsWith("#") ||
+      /^[a-z0-9+.-]+:/i.test(url) ||
+      url.startsWith("//")
+    ) {
+      return url
+    }
+    return `https://${url}`
+  }
+
   const parseMarkdown = (text: string) => {
     let html = text.replace(/</g, "&lt;").replace(/>/g, "&gt;")
     html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
@@ -247,7 +261,9 @@ document.addEventListener("nav", async () => {
     html = html.replace(/`([^`]+)`/g, "<code>$1</code>")
     html = html.replace(
       /\[([^\]]+)\]\(([^)]+)\)/g,
-      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
+      (match, text, url) => {
+        return `<a href="${ensureAbsoluteUrl(url)}" target="_blank" rel="noopener noreferrer">${text}</a>`
+      },
     )
     html = html.replace(/^## (.*?)$/gm, "<h3>$1</h3>")
     html = html.replace(/\n/g, "<br>")
@@ -735,7 +751,7 @@ document.addEventListener("nav", async () => {
 
       // Name: clickable if guest provided website
       const nameHtml = d.userWebsite
-        ? `<a href="${d.userWebsite}" target="_blank" rel="nofollow noopener" class="fc-comment-author fc-author-link">${d.userName || "زائر"}</a>`
+        ? `<a href="${ensureAbsoluteUrl(d.userWebsite)}" target="_blank" rel="nofollow noopener" class="fc-comment-author fc-author-link">${d.userName || "زائر"}</a>`
         : `<span class="fc-comment-author">${d.userName || "زائر"}</span>`
 
       // Guest badge
