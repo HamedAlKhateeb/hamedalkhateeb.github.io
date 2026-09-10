@@ -1,5 +1,5 @@
 import { i18n } from "../i18n"
-import { FullSlug, getFileExtension, joinSegments, pathToRoot } from "../util/path"
+import { FullSlug, getFileExtension, joinSegments, pathToRoot, simplifySlug } from "../util/path"
 import { CSSResourceToStyleElement, JSResourceToScriptElement } from "../util/resources"
 import { googleFontHref, googleFontSubsetHref } from "../util/theme"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
@@ -27,9 +27,18 @@ export default (() => {
     const baseDir = fileData.slug === "404" ? path : pathToRoot(fileData.slug!)
     const iconPath = joinSegments(baseDir, "static/thumbnails/icon.png")
 
-    // Url of current page
-    const socialUrl =
-      fileData.slug === "404" ? url.toString() : joinSegments(url.toString(), fileData.slug!)
+    // Url of current page (canonical: strip trailing `/index` via simplifySlug,
+    // which keeps trailing `/` for folder indexes so Google doesn't discover
+    // `/index` or `/ar` variants that 301 to `/` or `/ar/`)
+    const slug = fileData.slug!
+    const simplified = simplifySlug(slug)
+    let canonicalUrl: string
+    if (fileData.slug === "404" || simplified === "/") {
+      canonicalUrl = url.toString()
+    } else {
+      canonicalUrl = joinSegments(url.toString(), simplified)
+    }
+    const socialUrl = canonicalUrl
 
     const usesCustomOgImage = ctx.cfg.plugins.emitters.some(
       (e) => e.name === CustomOgImagesEmitterName,
@@ -94,6 +103,7 @@ export default (() => {
 
         {cfg.baseUrl && (
           <>
+            <link rel="canonical" href={canonicalUrl}></link>
             <meta property="twitter:domain" content={cfg.baseUrl}></meta>
             <meta property="og:url" content={socialUrl}></meta>
             <meta property="twitter:url" content={socialUrl}></meta>
