@@ -4,4 +4,4 @@ description: مفيش وصف.
 created: '2026-09-11'
 draft: true
 ---
-ص الصندوق…
+$$\frac{a}{b}$$
