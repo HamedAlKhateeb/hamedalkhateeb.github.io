@@ -8,6 +8,156 @@ document.addEventListener("nav", async () => {
   if (!configStr) return
   const config = JSON.parse(configStr)
   const slug = container.dataset.slug || "unknown"
+  // لغة الواجهة من الخادم (data-lang) مع بديل تلقائي من اتجاه الصفحة
+  const lang: "ar" | "en" =
+    container.dataset.lang === "en" ||
+    (container.dataset.lang !== "ar" && document.documentElement.lang === "en")
+      ? "en"
+      : "ar"
+
+  const STRINGS = {
+    ar: {
+      bold: "عريض (Bold)",
+      italic: "مائل (Italic)",
+      strike: "شطب (Strikethrough)",
+      heading: "عنوان (Heading)",
+      code: "كود (Code)",
+      link: "رابط (Link)",
+      linkText: "النص هنا",
+      linkUrl: "الرابط_هنا",
+      shareTitle: "شارك المقال",
+      commentsTitle: "التعليقات",
+      tabGuest: "✍️ كزائر",
+      notifyText: "🔔 فعّل الإشعارات لتُنبَّه بالتعليقات الجديدة",
+      notifyBtn: "تفعيل",
+      loginGoogle: "تسجيل الدخول بـ Google",
+      logout: "تسجيل الخروج",
+      loginFail: "تعذّر تسجيل الدخول: ",
+      commentPh: "اكتب تعليقك هنا...",
+      submitComment: "إرسال التعليق",
+      replyPh: "اكتب ردك هنا...",
+      replySubmit: "إرسال الرد",
+      replyEmpty: "يرجى كتابة ردك أولاً.",
+      commentEmpty: "يرجى كتابة تعليقك.",
+      guestName: "الاسم *",
+      guestEmail: "البريد الإلكتروني *",
+      guestEmailInvalid: "البريد الإلكتروني غير صحيح.",
+      guestWebsite: "الموقع الإلكتروني (اختياري)",
+      saveInfo: "حفظ بياناتي للمرة القادمة",
+      nameRequired: "الاسم مطلوب.",
+      emailRequired: "البريد الإلكتروني مطلوب.",
+      loading: "جاري تحميل التعليقات...",
+      emptyList: "لا توجد تعليقات حتى الآن. كُن أول من يعلق!",
+      preview: "معاينة:",
+      reactionsTitle: "ما رأيك؟",
+      reactLogin: "عذراً، يجب تسجيل الدخول بـ Google للتفاعل مع المقال.",
+      likeLogin: "عذراً، يجب تسجيل الدخول للإعجاب بالتعليقات.",
+      likeTitle: "إعجاب",
+      replyBtn: "رد",
+      editBtn: "✏️ تعديل",
+      deleteBtn: "🗑️ حذف",
+      banBtn: "🚫 حظر",
+      unbanBtn: "✅ رفع الحظر",
+      banBtnTitle: "حظر هذا المستخدم",
+      unbanBtnTitle: "رفع الحظر عن هذا المستخدم",
+      save: "حفظ",
+      cancel: "إلغاء",
+      saving: "جاري الحفظ...",
+      sending: "جاري الإرسال...",
+      sendFail: "خطأ في الإرسال: ",
+      editFail: "فشل التعديل: ",
+      deleteConfirm: "هل أنت متأكد من حذف هذا التعليق؟",
+      deleteFail: "فشل الحذف: ",
+      banConfirm: (n: string) => `هل أنت متأكد من حظر "${n}"؟ لن يتمكن من التعليق بعد الآن.`,
+      bannedOk: (n: string) => `تم حظر "${n}" بنجاح.`,
+      banFail: "فشل الحظر: ",
+      unbanConfirm: (n: string) => `هل تريد رفع الحظر عن "${n}"؟`,
+      unbannedOk: (n: string) => `تم رفع الحظر عن "${n}".`,
+      unbanFail: "فشل رفع الحظر: ",
+      bannedMsg: "عذراً، لقد تم حظرك من التعليق على هذه المدونة.",
+      now: "الآن",
+      edited: "• تم التعديل",
+      visitor: "زائر",
+      anonymous: "مجهول",
+      guestBadge: "زائر",
+      loadFail: (c: string) => `خطأ في تحميل التعليقات (${c})`,
+      initFail: "تعذر تحميل نظام التعليقات.",
+      notifTitle: (t: string) => `💬 تعليق جديد على "${t}"`,
+      notifBody: "اضغط للاطلاع على التعليقات الجديدة",
+      dateLocale: "ar-SA",
+    },
+    en: {
+      bold: "Bold",
+      italic: "Italic",
+      strike: "Strikethrough",
+      heading: "Heading",
+      code: "Code",
+      link: "Link",
+      linkText: "text here",
+      linkUrl: "url_here",
+      shareTitle: "Share this article",
+      commentsTitle: "Comments",
+      tabGuest: "✍️ As guest",
+      notifyText: "🔔 Enable notifications for new comments",
+      notifyBtn: "Enable",
+      loginGoogle: "Sign in with Google",
+      logout: "Sign out",
+      loginFail: "Sign-in failed: ",
+      commentPh: "Write your comment...",
+      submitComment: "Post comment",
+      replyPh: "Write your reply...",
+      replySubmit: "Post reply",
+      replyEmpty: "Please write your reply first.",
+      commentEmpty: "Please write your comment.",
+      guestName: "Name *",
+      guestEmail: "Email *",
+      guestEmailInvalid: "Invalid email address.",
+      guestWebsite: "Website (optional)",
+      saveInfo: "Remember me next time",
+      nameRequired: "Name is required.",
+      emailRequired: "Email is required.",
+      loading: "Loading comments...",
+      emptyList: "No comments yet. Be the first to comment!",
+      preview: "Preview:",
+      reactionsTitle: "What do you think?",
+      reactLogin: "Please sign in with Google to react to the article.",
+      likeLogin: "Please sign in to like comments.",
+      likeTitle: "Like",
+      replyBtn: "Reply",
+      editBtn: "✏️ Edit",
+      deleteBtn: "🗑️ Delete",
+      banBtn: "🚫 Ban",
+      unbanBtn: "✅ Unban",
+      banBtnTitle: "Ban this user",
+      unbanBtnTitle: "Unban this user",
+      save: "Save",
+      cancel: "Cancel",
+      saving: "Saving...",
+      sending: "Sending...",
+      sendFail: "Send failed: ",
+      editFail: "Edit failed: ",
+      deleteConfirm: "Are you sure you want to delete this comment?",
+      deleteFail: "Delete failed: ",
+      banConfirm: (n: string) => `Are you sure you want to ban "${n}"? They won't be able to comment anymore.`,
+      bannedOk: (n: string) => `"${n}" has been banned.`,
+      banFail: "Ban failed: ",
+      unbanConfirm: (n: string) => `Unban "${n}"?`,
+      unbannedOk: (n: string) => `"${n}" has been unbanned.`,
+      unbanFail: "Unban failed: ",
+      bannedMsg: "Sorry, you have been banned from commenting on this blog.",
+      now: "Just now",
+      edited: "• Edited",
+      visitor: "Guest",
+      anonymous: "Anonymous",
+      guestBadge: "Guest",
+      loadFail: (c: string) => `Failed to load comments (${c})`,
+      initFail: "Could not load the comments system.",
+      notifTitle: (t: string) => `💬 New comment on "${t}"`,
+      notifBody: "Click to view the new comments",
+      dateLocale: "en-US",
+    },
+  } as const
+  const T = STRINGS[lang]
 
   const EMOJIS = ["👍", "❤️", "🎉", "😄", "🤔", "😢"]
   const GUEST_STORAGE_KEY = "fc-guest-info"
@@ -55,12 +205,12 @@ document.addEventListener("nav", async () => {
 
   const toolbarHTML = `
     <div class="fc-toolbar">
-      <button type="button" data-md="**" title="عريض (Bold)"><b>B</b></button>
-      <button type="button" data-md="*" title="مائل (Italic)"><i>I</i></button>
-      <button type="button" data-md="~~" title="شطب (Strikethrough)"><strike>S</strike></button>
-      <button type="button" data-md="## " title="عنوان (Heading)"><b>H</b></button>
-      <button type="button" data-md="\`" title="كود (Code)"><code>&lt;/&gt;</code></button>
-      <button type="button" data-md="[]()" title="رابط (Link)">🔗</button>
+      <button type="button" data-md="**" title="${T.bold}"><b>B</b></button>
+      <button type="button" data-md="*" title="${T.italic}"><i>I</i></button>
+      <button type="button" data-md="~~" title="${T.strike}"><strike>S</strike></button>
+      <button type="button" data-md="## " title="${T.heading}"><b>H</b></button>
+      <button type="button" data-md="\`" title="${T.code}"><code>&lt;/&gt;</code></button>
+      <button type="button" data-md="[]()" title="${T.link}">🔗</button>
     </div>
   `
 
@@ -69,7 +219,7 @@ document.addEventListener("nav", async () => {
     <div id="fc-article-reactions" class="fc-article-reactions"></div>
 
     <div class="fc-share-wrapper">
-      <div class="fc-share-title">شارك المقال</div>
+      <div class="fc-share-title">${T.shareTitle}</div>
       <div id="fc-share-buttons" class="fc-share-buttons">
         <a class="fc-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" target="_blank" rel="noopener noreferrer" title="Facebook">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
@@ -90,55 +240,55 @@ document.addEventListener("nav", async () => {
     </div>
 
     <div class="fc-header">
-      <div class="fc-title">التعليقات</div>
+      <div class="fc-title">${T.commentsTitle}</div>
       <div class="fc-auth-tabs" id="fc-auth-tabs">
         <button type="button" id="fc-tab-google-btn" class="fc-tab-btn fc-tab-active">${loginSVG}&nbsp;Google</button>
-        <button type="button" id="fc-tab-guest-btn" class="fc-tab-btn">✍️ كزائر</button>
+        <button type="button" id="fc-tab-guest-btn" class="fc-tab-btn">${T.tabGuest}</button>
       </div>
     </div>
 
     <div id="fc-notify-bar" class="fc-notify-bar" style="display:none;">
-      <span class="fc-notify-text">🔔 فعّل الإشعارات لتُنبَّه بالتعليقات الجديدة</span>
-      <button type="button" id="fc-notify-btn" class="fc-notify-btn">تفعيل</button>
+      <span class="fc-notify-text">${T.notifyText}</span>
+      <button type="button" id="fc-notify-btn" class="fc-notify-btn">${T.notifyBtn}</button>
     </div>
 
     <!-- Google: login area / user info -->
     <div id="fc-google-login-area" class="fc-google-login-area">
-      <button type="button" id="fc-login-btn" class="fc-login-btn">${loginSVG} تسجيل الدخول بـ Google</button>
+      <button type="button" id="fc-login-btn" class="fc-login-btn">${loginSVG} ${T.loginGoogle}</button>
     </div>
 
     <!-- Google compose -->
     <div id="fc-compose-section" class="fc-compose" style="display:none;">
       <div class="fc-editor-wrap">
         ${toolbarHTML}
-        <textarea id="fc-textarea" class="fc-textarea" placeholder="اكتب تعليقك هنا..."></textarea>
+        <textarea id="fc-textarea" class="fc-textarea" placeholder="${T.commentPh}"></textarea>
       </div>
       <div id="fc-preview" class="fc-comment-text" style="display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"></div>
-      <button type="button" id="fc-submit-btn" class="fc-submit-btn">إرسال التعليق</button>
+      <button type="button" id="fc-submit-btn" class="fc-submit-btn">${T.submitComment}</button>
     </div>
 
     <!-- Guest compose -->
     <div id="fc-guest-compose" class="fc-compose" style="display:none;">
       <div class="fc-guest-form">
         <div class="fc-guest-row">
-          <input id="fc-guest-name"    type="text"  class="fc-guest-input" placeholder="الاسم *"                      autocomplete="name"  />
-          <input id="fc-guest-email"   type="email" class="fc-guest-input" placeholder="البريد الإلكتروني *"           autocomplete="email" />
+          <input id="fc-guest-name"    type="text"  class="fc-guest-input" placeholder="${T.guestName}"                      autocomplete="name"  />
+          <input id="fc-guest-email"   type="email" class="fc-guest-input" placeholder="${T.guestEmail}"           autocomplete="email" />
         </div>
-        <input id="fc-guest-website" type="url"   class="fc-guest-input fc-guest-input-full" placeholder="الموقع الإلكتروني (اختياري)" autocomplete="url" />
+        <input id="fc-guest-website" type="url"   class="fc-guest-input fc-guest-input-full" placeholder="${T.guestWebsite}" autocomplete="url" />
         <label class="fc-save-label">
           <input type="checkbox" id="fc-save-info" class="fc-save-checkbox" />
-          <span>حفظ بياناتي للمرة القادمة</span>
+          <span>${T.saveInfo}</span>
         </label>
       </div>
       <div class="fc-editor-wrap">
         ${toolbarHTML}
-        <textarea id="fc-guest-textarea" class="fc-textarea" placeholder="اكتب تعليقك هنا..."></textarea>
+        <textarea id="fc-guest-textarea" class="fc-textarea" placeholder="${T.commentPh}"></textarea>
       </div>
       <div id="fc-guest-preview" class="fc-comment-text" style="display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"></div>
-      <button type="button" id="fc-guest-submit-btn" class="fc-submit-btn">إرسال التعليق</button>
+      <button type="button" id="fc-guest-submit-btn" class="fc-submit-btn">${T.submitComment}</button>
     </div>
 
-    <div id="fc-list" class="fc-list"><div class="fc-loading">جاري تحميل التعليقات...</div></div>
+    <div id="fc-list" class="fc-list"><div class="fc-loading">${T.loading}</div></div>
   `
 
   // ── DOM references ─────────────────────────────────────────────────────
@@ -214,7 +364,7 @@ document.addEventListener("nav", async () => {
         const text = ta.value
 
         if (md === "[]()") {
-          ta.value = text.substring(0, start) + "[النص هنا](الرابط_هنا)" + text.substring(end)
+          ta.value = text.substring(0, start) + `[${T.linkText}](${T.linkUrl})` + text.substring(end)
           ta.focus()
           ta.setSelectionRange(start + 1, start + 9)
         } else if (md === "## ") {
@@ -275,7 +425,7 @@ document.addEventListener("nav", async () => {
     if (text) {
       preview.style.display = "block"
       preview.innerHTML =
-        `<div style="font-size:0.85em;opacity:0.7;margin-bottom:0.4rem;border-bottom:1px solid var(--lightgray);padding-bottom:0.2rem;">معاينة:</div>` +
+        `<div style="font-size:0.85em;opacity:0.7;margin-bottom:0.4rem;border-bottom:1px solid var(--lightgray);padding-bottom:0.2rem;">${T.preview}</div>` +
         parseMarkdown(text)
     } else {
       preview.style.display = "none"
@@ -347,7 +497,7 @@ document.addEventListener("nav", async () => {
     const doLogin = (e?: Event) => {
       e?.preventDefault()
       signInWithPopup(auth, new GoogleAuthProvider()).catch((err: any) =>
-        alert("تعذّر تسجيل الدخول: " + err.code),
+        alert(T.loginFail + err.code),
       )
     }
 
@@ -381,7 +531,7 @@ document.addEventListener("nav", async () => {
           <div class="fc-user-info">
             <img src="${user.photoURL || ""}" alt="${user.displayName}" class="fc-user-avatar" referrerpolicy="no-referrer"/>
             <span style="font-size:0.9rem;color:var(--dark);">${user.displayName}</span>
-            <button type="button" id="fc-logout-btn" class="fc-logout-btn">تسجيل الخروج</button>
+            <button type="button" id="fc-logout-btn" class="fc-logout-btn">${T.logout}</button>
           </div>`
         document.getElementById("fc-logout-btn")?.addEventListener("click", (e) => {
           e.preventDefault()
@@ -391,7 +541,7 @@ document.addEventListener("nav", async () => {
           composeSection.style.display = "flex"
         }
       } else {
-        googleLoginArea.innerHTML = `<button type="button" id="fc-login-btn" class="fc-login-btn">${loginSVG} تسجيل الدخول بـ Google</button>`
+        googleLoginArea.innerHTML = `<button type="button" id="fc-login-btn" class="fc-login-btn">${loginSVG} ${T.loginGoogle}</button>`
         document.getElementById("fc-login-btn")?.addEventListener("click", doLogin)
         composeSection.style.display = "none"
       }
@@ -419,12 +569,12 @@ document.addEventListener("nav", async () => {
         return `<button type="button" class="fc-reaction-btn${reacted ? " reacted" : ""}" data-emoji="${emoji}" title="${emoji}">${emoji}${reactors.length > 0 ? `<span class="fc-reaction-count">${reactors.length}</span>` : ""}</button>`
       }).join("")
 
-      reactionsEl.innerHTML = `<div class="fc-reactions-title">ما رأيك؟</div><div class="fc-reactions">${reactionsHTML}</div>`
+      reactionsEl.innerHTML = `<div class="fc-reactions-title">${T.reactionsTitle}</div><div class="fc-reactions">${reactionsHTML}</div>`
 
       reactionsEl.querySelectorAll<HTMLButtonElement>(".fc-reaction-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
           if (!currentUser) {
-            alert("عذراً، يجب تسجيل الدخول بـ Google للتفاعل مع المقال.")
+            alert(T.reactLogin)
             return
           }
           const activeReactor = currentUser.uid
@@ -445,7 +595,7 @@ document.addEventListener("nav", async () => {
                 notifyTelegram({
                   actionType: "reaction",
                   emoji: clickedEmoji,
-                  author: currentUser.displayName || "مجهول",
+                  author: currentUser.displayName || T.anonymous,
                   articleTitle: document.title,
                   articleUrl: window.location.href,
                 })
@@ -471,7 +621,7 @@ document.addEventListener("nav", async () => {
     // ── Toggle like ────────────────────────────────────────────────────
     const toggleLike = async (commentId: string, snap: any) => {
       if (!currentUser) {
-        alert("عذراً، يجب تسجيل الدخول للإعجاب بالتعليقات.")
+        alert(T.likeLogin)
         return
       }
       const activeReactor = currentUser.uid
@@ -483,7 +633,7 @@ document.addEventListener("nav", async () => {
         await updateDoc(ref, { likes: arrayUnion(activeReactor) })
         notifyTelegram({
           actionType: "like",
-          author: currentUser?.displayName || "زائر",
+          author: currentUser?.displayName || T.visitor,
           content: snap.text,
           articleTitle: document.title,
           articleUrl: window.location.href,
@@ -519,12 +669,12 @@ document.addEventListener("nav", async () => {
       const saveBtn = document.createElement("button")
       saveBtn.type = "button"
       saveBtn.className = "fc-submit-btn fc-save-edit-btn"
-      saveBtn.textContent = "حفظ"
+      saveBtn.textContent = T.save
 
       const cancelBtn = document.createElement("button")
       cancelBtn.type = "button"
       cancelBtn.className = "fc-logout-btn"
-      cancelBtn.textContent = "إلغاء"
+      cancelBtn.textContent = T.cancel
 
       editActions.append(saveBtn, cancelBtn)
       wrap.append(editTA)
@@ -547,16 +697,16 @@ document.addEventListener("nav", async () => {
         const newText = editTA.value.trim()
         if (!newText) return
         saveBtn.disabled = true
-        saveBtn.textContent = "جاري الحفظ..."
+        saveBtn.textContent = T.saving
         try {
           await updateDoc(doc(db, "comments", commentId), {
             text: newText,
             editedAt: serverTimestamp(),
           })
         } catch (err: any) {
-          alert("فشل التعديل: " + err.message)
+          alert(T.editFail + err.message)
           saveBtn.disabled = false
-          saveBtn.textContent = "حفظ"
+          saveBtn.textContent = T.save
         }
       })
     }
@@ -576,10 +726,10 @@ document.addEventListener("nav", async () => {
         ? `
         <div class="fc-guest-form fc-reply-guest-form">
           <div class="fc-guest-row">
-            <input type="text"  class="fc-guest-input fc-reply-name"    placeholder="الاسم *"                 autocomplete="name"  value="${savedG?.name || ""}" />
-            <input type="email" class="fc-guest-input fc-reply-email"   placeholder="البريد الإلكتروني *"     autocomplete="email" value="${savedG?.email || ""}" />
+            <input type="text"  class="fc-guest-input fc-reply-name"    placeholder="${T.guestName}"                 autocomplete="name"  value="${savedG?.name || ""}" />
+            <input type="email" class="fc-guest-input fc-reply-email"   placeholder="${T.guestEmail}"     autocomplete="email" value="${savedG?.email || ""}" />
           </div>
-          <input type="url" class="fc-guest-input fc-guest-input-full fc-reply-website" placeholder="الموقع الإلكتروني (اختياري)" autocomplete="url" value="${savedG?.website || ""}" />
+          <input type="url" class="fc-guest-input fc-guest-input-full fc-reply-website" placeholder="${T.guestWebsite}" autocomplete="url" value="${savedG?.website || ""}" />
         </div>
       `
         : ""
@@ -590,12 +740,12 @@ document.addEventListener("nav", async () => {
         ${guestFieldsHTML}
         <div class="fc-editor-wrap">
           ${toolbarHTML}
-          <textarea class="fc-reply-textarea" placeholder="اكتب ردك هنا..."></textarea>
+          <textarea class="fc-reply-textarea" placeholder="${T.replyPh}"></textarea>
         </div>
         <div class="fc-reply-preview fc-comment-text" style="display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"></div>
         <div class="fc-reply-actions">
-          <button type="button" class="fc-submit-btn fc-reply-submit-btn">إرسال الرد</button>
-          <button type="button" class="fc-logout-btn fc-reply-cancel-btn">إلغاء</button>
+          <button type="button" class="fc-submit-btn fc-reply-submit-btn">${T.replySubmit}</button>
+          <button type="button" class="fc-logout-btn fc-reply-cancel-btn">${T.cancel}</button>
         </div>`
       replyArea.appendChild(form)
 
@@ -611,22 +761,22 @@ document.addEventListener("nav", async () => {
         const btn = form.querySelector(".fc-reply-submit-btn") as HTMLButtonElement
 
         if (!text) {
-          alert("يرجى كتابة ردك أولاً.")
+          alert(T.replyEmpty)
           return
         }
 
         // Check if user is banned before replying
         if (isGoogleUser && currentUser) {
           if (await isUserBanned(currentUser.uid)) {
-            alert("عذراً، لقد تم حظرك من التعليق على هذه المدونة.")
+            alert(T.bannedMsg)
             btn.disabled = false
-            btn.textContent = "إرسال الرد"
+            btn.textContent = T.replySubmit
             return
           }
         }
 
         btn.disabled = true
-        btn.textContent = "جاري الإرسال..."
+        btn.textContent = T.sending
 
         try {
           let userName: string, userPhoto: string, userId: string | null
@@ -647,28 +797,28 @@ document.addEventListener("nav", async () => {
               (form.querySelector(".fc-reply-website") as HTMLInputElement)?.value.trim() || ""
 
             if (!gName) {
-              alert("الاسم مطلوب.")
+              alert(T.nameRequired)
               btn.disabled = false
-              btn.textContent = "إرسال الرد"
+              btn.textContent = T.replySubmit
               return
             }
             if (!gEmail) {
-              alert("البريد الإلكتروني مطلوب.")
+              alert(T.emailRequired)
               btn.disabled = false
-              btn.textContent = "إرسال الرد"
+              btn.textContent = T.replySubmit
               return
             }
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(gEmail)) {
-              alert("البريد الإلكتروني غير صحيح.")
+              alert(T.guestEmailInvalid)
               btn.disabled = false
-              btn.textContent = "إرسال الرد"
+              btn.textContent = T.replySubmit
               return
             }
             // Check if guest email is banned
             if (await isUserBanned(gEmail)) {
-              alert("عذراً، لقد تم حظرك من التعليق على هذه المدونة.")
+              alert(T.bannedMsg)
               btn.disabled = false
-              btn.textContent = "إرسال الرد"
+              btn.textContent = T.replySubmit
               return
             }
 
@@ -708,9 +858,9 @@ document.addEventListener("nav", async () => {
 
           form.remove()
         } catch (err: any) {
-          alert("خطأ في الإرسال: " + err.message)
+          alert(T.sendFail + err.message)
           btn.disabled = false
-          btn.textContent = "إرسال الرد"
+          btn.textContent = T.replySubmit
         }
       })
     }
@@ -724,14 +874,14 @@ document.addEventListener("nav", async () => {
     ): HTMLElement => {
       const d = cdoc.data()
       const date = d.createdAt
-        ? new Date(d.createdAt.toDate()).toLocaleDateString("ar-SA", {
+        ? new Date(d.createdAt.toDate()).toLocaleDateString(T.dateLocale, {
             year: "numeric",
             month: "long",
             day: "numeric",
             hour: "2-digit",
             minute: "2-digit",
           })
-        : "الآن"
+        : T.now
 
       const isAdmin = !!(currentUser && currentUser.email === ADMIN_EMAIL)
       const isOwner = currentUser && currentUser.uid === d.userId
@@ -740,7 +890,7 @@ document.addEventListener("nav", async () => {
       const canBan = isAdmin && !isOwner
       // Identifier for banning: Google uid for authenticated users, guest email for guests
       const banIdentifier = d.userId || d.userEmail || ""
-      const editedBadge = d.editedAt ? `<span class="fc-edited-badge">• تم التعديل</span>` : ""
+      const editedBadge = d.editedAt ? `<span class="fc-edited-badge">${T.edited}</span>` : ""
 
       const likes: string[] = d.likes || []
       const liked = likes.includes(currentReactor)
@@ -751,11 +901,11 @@ document.addEventListener("nav", async () => {
 
       // Name: clickable if guest provided website
       const nameHtml = d.userWebsite
-        ? `<a href="${ensureAbsoluteUrl(d.userWebsite)}" target="_blank" rel="nofollow noopener" class="fc-comment-author fc-author-link">${d.userName || "زائر"}</a>`
-        : `<span class="fc-comment-author">${d.userName || "زائر"}</span>`
+        ? `<a href="${ensureAbsoluteUrl(d.userWebsite)}" target="_blank" rel="nofollow noopener" class="fc-comment-author fc-author-link">${d.userName || T.visitor}</a>`
+        : `<span class="fc-comment-author">${d.userName || T.visitor}</span>`
 
       // Guest badge
-      const guestBadge = d.isGuest ? `<span class="fc-guest-badge">زائر</span>` : ""
+      const guestBadge = d.isGuest ? `<span class="fc-guest-badge">${T.guestBadge}</span>` : ""
 
       const el = document.createElement("div")
       const replyClass = isReply
@@ -776,13 +926,13 @@ document.addEventListener("nav", async () => {
             </div>
             <div class="fc-comment-text">${parseMarkdown(d.text)}</div>
             <div class="fc-comment-actions" style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-              <button type="button" class="fc-like-btn${liked ? " liked" : ""}" data-id="${cdoc.id}" title="إعجاب">
+              <button type="button" class="fc-like-btn${liked ? " liked" : ""}" data-id="${cdoc.id}" title="${T.likeTitle}">
                 ${liked ? "👍" : "👍🏻"}<span class="fc-like-count">${likeCount > 0 ? " " + likeCount : ""}</span>
               </button>
-              <button type="button" class="fc-reply-btn" data-id="${cdoc.id}">💬 <span>رد</span></button>
-              ${canEdit ? `<button type="button" class="fc-edit-btn"   data-id="${cdoc.id}">✏️ تعديل</button>` : ""}
-              ${canDelete ? `<button type="button" class="fc-delete-btn" data-id="${cdoc.id}">🗑️ حذف</button>` : ""}
-              ${canBan && banIdentifier ? `<button type="button" class="fc-ban-btn" data-id="${cdoc.id}" data-ban-id="${banIdentifier}" data-ban-name="${d.userName || "مجهول"}">🚫 حظر</button>` : ""}
+              <button type="button" class="fc-reply-btn" data-id="${cdoc.id}">💬 <span>${T.replyBtn}</span></button>
+              ${canEdit ? `<button type="button" class="fc-edit-btn"   data-id="${cdoc.id}">${T.editBtn}</button>` : ""}
+              ${canDelete ? `<button type="button" class="fc-delete-btn" data-id="${cdoc.id}">${T.deleteBtn}</button>` : ""}
+              ${canBan && banIdentifier ? `<button type="button" class="fc-ban-btn" data-id="${cdoc.id}" data-ban-id="${banIdentifier}" data-ban-name="${d.userName || T.anonymous}">${T.banBtn}</button>` : ""}
             </div>
           </div>
           <div class="fc-replies-area"></div>
@@ -805,18 +955,18 @@ document.addEventListener("nav", async () => {
 
       if (canDelete) {
         el.querySelector(".fc-delete-btn")?.addEventListener("click", async () => {
-          if (confirm("هل أنت متأكد من حذف هذا التعليق؟")) {
+          if (confirm(T.deleteConfirm)) {
             try {
               await deleteDoc(doc(db, "comments", cdoc.id))
               notifyTelegram({
                 actionType: "delete",
-                author: d.userName || "مجهول",
+                author: d.userName || T.anonymous,
                 content: d.text,
                 articleTitle: document.title,
                 articleUrl: window.location.href,
               })
             } catch (err: any) {
-              alert("فشل الحذف: " + err.message)
+              alert(T.deleteFail + err.message)
             }
           }
         })
@@ -829,25 +979,25 @@ document.addEventListener("nav", async () => {
           const banName = banBtn.dataset.banName!
           const isBanned = await isUserBanned(banId)
           if (isBanned) {
-            if (confirm(`هل تريد رفع الحظر عن "${banName}"؟`)) {
+            if (confirm(T.unbanConfirm(banName))) {
               try {
                 await unbanUser(banId)
-                banBtn.textContent = "🚫 حظر"
-                banBtn.title = "حظر هذا المستخدم"
-                alert(`تم رفع الحظر عن "${banName}".`)
+                banBtn.textContent = T.banBtn
+                banBtn.title = T.banBtnTitle
+                alert(T.unbannedOk(banName))
               } catch (err: any) {
-                alert("فشل رفع الحظر: " + err.message)
+                alert(T.unbanFail + err.message)
               }
             }
           } else {
-            if (confirm(`هل أنت متأكد من حظر "${banName}"؟ لن يتمكن من التعليق بعد الآن.`)) {
+            if (confirm(T.banConfirm(banName))) {
               try {
                 await banUser(banId, banName)
-                banBtn.textContent = "✅ رفع الحظر"
-                banBtn.title = "رفع الحظر عن هذا المستخدم"
-                alert(`تم حظر "${banName}" بنجاح.`)
+                banBtn.textContent = T.unbanBtn
+                banBtn.title = T.unbanBtnTitle
+                alert(T.bannedOk(banName))
               } catch (err: any) {
-                alert("فشل الحظر: " + err.message)
+                alert(T.banFail + err.message)
               }
             }
           }
@@ -855,8 +1005,8 @@ document.addEventListener("nav", async () => {
         // Check initial ban state and update button
         isUserBanned(banIdentifier).then((isBanned) => {
           if (isBanned) {
-            banBtn.textContent = "✅ رفع الحظر"
-            banBtn.title = "رفع الحظر عن هذا المستخدم"
+            banBtn.textContent = T.unbanBtn
+            banBtn.title = T.unbanBtnTitle
           }
         })
       }
@@ -872,12 +1022,12 @@ document.addEventListener("nav", async () => {
 
       // Check if user is banned
       if (await isUserBanned(currentUser.uid)) {
-        alert("عذراً، لقد تم حظرك من التعليق على هذه المدونة.")
+        alert(T.bannedMsg)
         return
       }
 
       submitBtn.disabled = true
-      submitBtn.textContent = "جاري الإرسال..."
+      submitBtn.textContent = T.sending
       try {
         await addDoc(collection(db, "comments"), {
           slug,
@@ -893,7 +1043,7 @@ document.addEventListener("nav", async () => {
           likes: [],
         })
         notifyTelegram({
-          author: currentUser.displayName || "زائر",
+          author: currentUser.displayName || T.visitor,
           content: text,
           articleTitle: document.title,
           articleUrl: window.location.href,
@@ -901,10 +1051,10 @@ document.addEventListener("nav", async () => {
         textarea.value = ""
         updatePreview(textarea, previewEl)
       } catch (err: any) {
-        alert("خطأ في الإرسال: " + err.message)
+        alert(T.sendFail + err.message)
       }
       submitBtn.disabled = false
-      submitBtn.textContent = "إرسال التعليق"
+      submitBtn.textContent = T.submitComment
     })
 
     // ── Submit: Guest comment ──────────────────────────────────────────
@@ -917,33 +1067,33 @@ document.addEventListener("nav", async () => {
 
       if (!gName) {
         guestNameInput.focus()
-        alert("الاسم مطلوب.")
+        alert(T.nameRequired)
         return
       }
       if (!gEmail) {
         guestEmailInput.focus()
-        alert("البريد الإلكتروني مطلوب.")
+        alert(T.emailRequired)
         return
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(gEmail)) {
         guestEmailInput.focus()
-        alert("البريد الإلكتروني غير صحيح.")
+        alert(T.guestEmailInvalid)
         return
       }
       if (!text) {
         guestTextarea.focus()
-        alert("يرجى كتابة تعليقك.")
+        alert(T.commentEmpty)
         return
       }
 
       // Check if guest email is banned
       if (await isUserBanned(gEmail)) {
-        alert("عذراً، لقد تم حظرك من التعليق على هذه المدونة.")
+        alert(T.bannedMsg)
         return
       }
 
       guestSubmitBtn.disabled = true
-      guestSubmitBtn.textContent = "جاري الإرسال..."
+      guestSubmitBtn.textContent = T.sending
 
       try {
         const avatar = await gravatarUrl(gEmail)
@@ -981,10 +1131,10 @@ document.addEventListener("nav", async () => {
         guestTextarea.value = ""
         updatePreview(guestTextarea, guestPreviewEl)
       } catch (err: any) {
-        alert("خطأ في الإرسال: " + err.message)
+        alert(T.sendFail + err.message)
       }
       guestSubmitBtn.disabled = false
-      guestSubmitBtn.textContent = "إرسال التعليق"
+      guestSubmitBtn.textContent = T.submitComment
     })
 
     // ── Firestore snapshot + browser notifications ─────────────────────
@@ -1015,7 +1165,7 @@ document.addEventListener("nav", async () => {
       listEl.innerHTML = ""
 
       if (topLevel.length === 0) {
-        listEl.innerHTML = `<div style="text-align:center;color:var(--gray);padding:1rem 0;">لا توجد تعليقات حتى الآن. كُن أول من يعلق!</div>`
+        listEl.innerHTML = `<div style="text-align:center;color:var(--gray);padding:1rem 0;">${T.emptyList}</div>`
         localStorage.setItem(NOTIF_COUNT_KEY, "0")
         return
       }
@@ -1046,8 +1196,8 @@ document.addEventListener("nav", async () => {
         // Browser notification when new comment arrives while page is hidden
         if (!isFirstLoad && newCount > prevCount && document.hidden) {
           if ("Notification" in window && Notification.permission === "granted") {
-            new Notification(`💬 تعليق جديد على "${document.title}"`, {
-              body: "اضغط للاطلاع على التعليقات الجديدة",
+            new Notification(T.notifTitle(document.title), {
+              body: T.notifBody,
               icon: "/static/thumbnails/icon.png",
             })
           }
@@ -1061,13 +1211,13 @@ document.addEventListener("nav", async () => {
       },
       (err: any) => {
         console.error("Firestore error:", err)
-        listEl.innerHTML = `<div style="text-align:center;color:#e53935;padding:1rem 0;">خطأ في تحميل التعليقات (${err.code})</div>`
+        listEl.innerHTML = `<div style="text-align:center;color:#e53935;padding:1rem 0;">${T.loadFail(err.code)}</div>`
       },
     )
 
     window.addCleanup?.(() => unsubSnap())
   } catch (err: any) {
     console.error("Firebase init error:", err)
-    container.innerHTML = `<div style="text-align:center;color:#e53935;">تعذر تحميل نظام التعليقات.</div>`
+    container.innerHTML = `<div style="text-align:center;color:#e53935;">${T.initFail}</div>`
   }
 })

@@ -28,11 +28,15 @@ export default ((opts: Options) => {
 
     if (disableComment || !isContentPage) return <></>
 
+    // لغة واجهة التعليقات تتبع لغة الصفحة (العربية للعربي والإنجليزية لغيره)
+    const lang = slug.toLowerCase().startsWith("ar/") || slug.toLowerCase() === "ar" ? "ar" : "en"
+
     return (
       <div
         class={classNames(displayClass, "firebase-comments")}
         data-firebase-config={JSON.stringify(opts.options)}
         data-slug={slug}
+        data-lang={lang}
       ></div>
     )
   }
@@ -511,7 +515,20 @@ export default ((opts: Options) => {
       transition: background 0.2s, color 0.2s;
       white-space: nowrap;
     }
-    .fc-notify-btn:hover { background: var(--secondary); color: var(--light); }
+    /* ── LTR (English pages): mirror reply indent + guest save row ── */
+    .firebase-comments[data-lang="en"] .fc-reply {
+      border-right: none;
+      border-left: 2px solid var(--lightgray);
+      padding-right: 0;
+      padding-left: 0.75rem;
+    }
+    .firebase-comments[data-lang="en"] .fc-save-label,
+    .firebase-comments[data-lang="en"] .fc-save-label span {
+      direction: ltr;
+    }
+    .firebase-comments[data-lang="en"] .fc-reply .fc-comment-content {
+      text-align: left;
+    }
   `
 
   return Comments
