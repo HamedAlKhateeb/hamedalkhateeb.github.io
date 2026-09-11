@@ -4,6 +4,4 @@ description: مفيش وصف.
 created: '2026-09-11'
 draft: true
 ---
-$$\frac{a}{b}$$
-
----
+![](/static/uploads/20260911-8y7p1-voulneteer.png)
