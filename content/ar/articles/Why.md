@@ -4,5 +4,4 @@ description: مفيش وصف.
 created: '2026-09-11'
 draft: true
 ---
-> [!tip] 6565
-> ص الصندوق…
+ص الصندوق…
