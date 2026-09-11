@@ -26,9 +26,14 @@ const isSamePage = (url: URL): boolean => {
 
 const getOpts = ({ target }: Event): { url: URL; scroll?: boolean } | undefined => {
   if (!isElement(target)) return
-  if (target.attributes.getNamedItem("target")?.value === "_blank") return
   const a = target.closest("a")
   if (!a) return
+  // احترام target="_blank" سواء على العنصر المضغوط أو على رابط المقال (يفتح في تاب جديدة)
+  if (
+    target.attributes.getNamedItem("target")?.value === "_blank" ||
+    a.getAttribute("target") === "_blank"
+  )
+    return
   if ("routerIgnore" in a.dataset) return
   const { href } = a
   if (!isLocalUrl(href)) return
@@ -166,9 +171,12 @@ window.spaNavigate = navigate
 function createRouter() {
   if (typeof window !== "undefined") {
     window.addEventListener("click", async (event) => {
+      // زر العجلة (تاب جديدة) أو Ctrl/Cmd/Shift: خلّي المتصفح يتصرف طبيعي
+      const mevent = event as MouseEvent
+      if (mevent.button !== 0 || mevent.ctrlKey || mevent.metaKey || mevent.shiftKey) return
       const { url } = getOpts(event) ?? {}
       // dont hijack behaviour, just let browser act normally
-      if (!url || event.ctrlKey || event.metaKey) return
+      if (!url) return
       event.preventDefault()
 
       if (isSamePage(url) && url.hash) {

@@ -63,6 +63,8 @@ export default (() => {
                           <a
                             href={resolveRelative(fileData.slug!, page.slug!)}
                             class="en-card-link"
+                            target="_blank"
+                            rel="noopener noreferrer"
                           >
                             {title}
                           </a>
@@ -96,6 +98,8 @@ export default (() => {
                       <a
                         href={resolveRelative(fileData.slug!, page.slug!)}
                         class="en-recent-link internal"
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         {title}
                       </a>

@@ -88,7 +88,7 @@ export default (() => {
                             {cover ? <div class="ar-card-image" style={{backgroundImage: `url('${cover}')`}}></div>
                                    : <div class="ar-card-image ar-card-image-placeholder"></div>}
                             <div class="ar-card-body">
-                                <h3><a href={resolveRelative(fileData.slug!, page.slug!)} class="ar-card-link">{title}</a></h3>
+                                <h3><a href={resolveRelative(fileData.slug!, page.slug!)} class="ar-card-link" target="_blank" rel="noopener noreferrer">{title}</a></h3>
                                 <p class="ar-excerpt">{desc.length > 70 ? desc.substring(0, 70) + '...' : desc}</p>
                                 <div class="ar-card-meta">
                                     <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
@@ -117,7 +117,7 @@ export default (() => {
                         <article class="ar-card ar-content-card ar-text-center">
                             <div class="ar-poem-calligraphy">{mainTag}</div>
                             <div class="ar-card-body">
-                                <h3><a href={resolveRelative(fileData.slug!, page.slug!)} class="ar-card-link">{title}</a></h3>
+                                <h3><a href={resolveRelative(fileData.slug!, page.slug!)} class="ar-card-link" target="_blank" rel="noopener noreferrer">{title}</a></h3>
                                 <p class="ar-excerpt">{desc.split('|')[0].trim()}...</p>
                                 <div class="ar-card-meta ar-justify-center">
                                     <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
@@ -149,7 +149,7 @@ export default (() => {
                         <h2>اقتباس عشوائي من الموقع</h2>
                     </div>
                     <blockquote>{randomPage.frontmatter?.description ?? randomPage.description ?? randomPage.frontmatter?.title}</blockquote>
-                    <a href={resolveRelative(fileData.slug!, randomPage.slug!)} class="ar-read-more-link">اقرأ المقال ←</a>
+                    <a href={resolveRelative(fileData.slug!, randomPage.slug!)} class="ar-read-more-link" target="_blank" rel="noopener noreferrer">اقرأ المقال ←</a>
                 </div>
             </section>
             )}
@@ -171,7 +171,7 @@ export default (() => {
                                 {cover ? <div class="ar-card-image ar-card-image-sm" style={{backgroundImage: `url('${cover}')`}}></div>
                                        : <div class="ar-card-image ar-card-image-sm ar-card-image-placeholder"></div>}
                                 <div class="ar-card-body">
-                                    <h3><a href={resolveRelative(fileData.slug!, page.slug!)} class="ar-card-link">{title}</a></h3>
+                                    <h3><a href={resolveRelative(fileData.slug!, page.slug!)} class="ar-card-link" target="_blank" rel="noopener noreferrer">{title}</a></h3>
                                     <div class="ar-card-meta">
                                         <span>{page.dates && <DateComponent date={getDate(cfg, page)!} locale="ar-EG" />}</span>
                                     </div>
@@ -192,7 +192,7 @@ export default (() => {
                     <div class="ar-poem-verses">
                         <p>{poemOfWeek.frontmatter?.description ?? poemOfWeek.description}</p>
                     </div>
-                    <a href={resolveRelative(fileData.slug!, poemOfWeek.slug!)} class="ar-btn ar-btn-primary mt-3">اقرأ القصيدة كاملة ←</a>
+                    <a href={resolveRelative(fileData.slug!, poemOfWeek.slug!)} class="ar-btn ar-btn-primary mt-3" target="_blank" rel="noopener noreferrer">اقرأ القصيدة كاملة ←</a>
                 </section>
                 )}
             </div>
@@ -226,7 +226,7 @@ export default (() => {
                             const title = page.frontmatter?.title ?? "بدون عنوان"
                             return (
                             <li>
-                                <a href={resolveRelative(fileData.slug!, page.slug!)}>{title}</a>
+                                <a href={resolveRelative(fileData.slug!, page.slug!)} target="_blank" rel="noopener noreferrer">{title}</a>
                             </li>
                             )
                         })}

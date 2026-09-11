@@ -84,6 +84,8 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
               <a
                 href={resolveRelative(fileData.slug!, page.slug!)}
                 class="card-thumbnail-link internal"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <img
                   src={cover}
@@ -96,7 +98,12 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
               </a>
               <div class="card-content-area">
                 <h3 class="card-title">
-                  <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
+                  <a
+                    href={resolveRelative(fileData.slug!, page.slug!)}
+                    class="internal"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {title}
                   </a>
                 </h3>
