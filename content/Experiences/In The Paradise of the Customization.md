@@ -1,7 +1,7 @@
 ---
 title: In the Paradise of the Customization
 description: A personal account of learning to code by accident ,building browser extensions and internal tools with AI before knowing what programming was, and the growing realization that real understanding can't be outsourced to a model.
-image: /quartz/static/thumbnails/myphoto.png
+image: /static/thumbnails/myphoto.png
 date: 2026-09-11
 tags:
   - writing
