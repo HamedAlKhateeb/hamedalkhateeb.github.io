@@ -73,3 +73,4 @@ There is no virtue in letting A.I do what you should have done, with your own ha
 
 And this does not conflict with using AI for productivity, or anything of the sort. Perhaps it should be temporary, or perhaps it is simply an inevitable reality. But the virtue of genuine understanding can only be cultivated through actual scientific practice.
 
+I only used A.I to generate a thumbnail for this article, please leave a comment so I know you got something out of it, or just say hello.
