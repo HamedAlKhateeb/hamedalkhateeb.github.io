@@ -22,14 +22,28 @@ export default ((opts: Options) => {
       typeof fileData.frontmatter?.comments !== "undefined" &&
       (!fileData.frontmatter?.comments || fileData.frontmatter?.comments === "false")
 
-    const slug = fileData.slug
-    const isContentPage =
-      slug && slug !== "index" && !slug.startsWith("tags/") && !slug.endsWith("/index")
+    const slug = (fileData.slug ?? "").toLowerCase()
 
-    if (disableComment || !isContentPage) return <></>
+    // التعليقات مسموحة فقط في: التدوينات العربية، التدوينات الإنجليزية، الشذرات، والقصائد
+    const isArabicArticle = slug.startsWith("ar/articles/") && !slug.endsWith("/index")
+    const isMicro = slug.startsWith("ar/micro/") && !slug.endsWith("/index")
+    const isPoetry = slug.startsWith("ar/poetry/") && !slug.endsWith("/index")
+    const isEnglishArticle =
+      !slug.startsWith("ar/") &&
+      (slug.startsWith("experiences/") ||
+        slug.startsWith("engineering/") ||
+        slug.startsWith("math/") ||
+        slug.startsWith("culture/") ||
+        slug.startsWith("en/")) &&
+      !slug.endsWith("/index") &&
+      slug !== "en"
+
+    const isAllowed = isArabicArticle || isMicro || isPoetry || isEnglishArticle
+
+    if (disableComment || !isAllowed) return <></>
 
     // لغة واجهة التعليقات تتبع لغة الصفحة (العربية للعربي والإنجليزية لغيره)
-    const lang = slug.toLowerCase().startsWith("ar/") || slug.toLowerCase() === "ar" ? "ar" : "en"
+    const lang = slug.startsWith("ar/") || slug === "ar" ? "ar" : "en"
 
     return (
       <div

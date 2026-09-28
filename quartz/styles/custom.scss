@@ -59,10 +59,12 @@
 }
 
 body,
-html {
+html,
+.page,
+#quartz-body {
   font-family: var(--font-arabic);
   text-align: right;
-  background-color: var(--site-bg);
+  background-color: var(--site-bg) !important;
   color: var(--color-ink);
   overflow-x: hidden;
 }
@@ -146,13 +148,14 @@ figure,
 
 .page > #quartz-body > .center {
   width: 100% !important;
-  max-width: 840px !important;
+  max-width: var(--reading-width, 840px) !important;
   margin: 0 auto !important;
   padding: 0 16px !important;
   box-sizing: border-box !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: stretch !important;
+  transition: max-width 0.2s ease;
 }
 
 @media (max-width: 640px) {
@@ -170,12 +173,17 @@ body.is-article .center > article table,
 body.is-article .center > article th,
 body.is-article .center > article td,
 body.is-article .center > article figcaption,
-body.is-article .center > article dd {
-  font-size: var(--main-font-size);
-  line-height: var(--main-line-height) !important;
+body.is-article .center > article dd,
+.post-content,
+.post-content p,
+.post-content li,
+.post-content blockquote {
+  font-size: var(--main-font-size, 19px) !important;
+  line-height: var(--main-line-height, 1.8) !important;
+  font-family: var(--font-arabic) !important;
   transition:
-    font-size 0.3s ease,
-    line-height 0.3s ease;
+    font-size 0.2s ease,
+    line-height 0.2s ease;
 }
 
 .center > article {
@@ -2651,14 +2659,15 @@ pre code {
 
 /* ── Single Article View (Post Single Card) ── */
 .post-single-card {
-  max-width: 860px;
+  max-width: var(--reading-width, 860px) !important;
   margin: 0 auto;
-  background: var(--color-surface-elevated);
-  border: var(--nb-border);
-  box-shadow: var(--nb-shadow);
+  background: var(--container-bg, var(--color-surface-elevated)) !important;
+  border: var(--container-border, var(--nb-border)) !important;
+  box-shadow: var(--container-shadow, var(--nb-shadow)) !important;
   border-radius: var(--border-radius);
   padding: 2.5rem 2.5rem 3.5rem 2.5rem;
   margin-bottom: 3rem;
+  transition: background-color 0.2s ease, max-width 0.2s ease;
 }
 
 .post-single-head {
@@ -3023,20 +3032,21 @@ html {
 /* Home Page Container & Cards */
 .alfarhan-home-container {
   width: 100%;
-  max-width: 840px;
+  max-width: var(--reading-width, 840px) !important;
   margin: 0 auto;
   padding: 0 12px;
   box-sizing: border-box;
+  transition: max-width 0.2s ease;
 }
 
 .alfarhan-card-box {
-  background: #ffffff;
-  border: 2px solid #000000;
-  box-shadow: 4px 4px 0 #000000;
+  background: var(--container-bg, #ffffff) !important;
+  border: var(--container-border, 2px solid #000000) !important;
+  box-shadow: var(--container-shadow, 4px 4px 0 #000000) !important;
   border-radius: 6px;
   margin-bottom: 28px;
   overflow: hidden;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
 }
 
 [saved-theme="dark"] .alfarhan-card-box {

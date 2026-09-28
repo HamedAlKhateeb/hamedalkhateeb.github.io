@@ -2,7 +2,7 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 import { FullSlug, resolveRelative, pathToRoot } from "../util/path"
 
 const readingSettingsScript = `
-document.addEventListener("nav", () => {
+function initReadingSettings() {
   const toggleBtn = document.getElementById("btn-reading-settings");
   const modal = document.getElementById("reading-modal");
   const backdrop = document.getElementById("reading-backdrop");
@@ -53,7 +53,9 @@ document.addEventListener("nav", () => {
     }
   };
   document.addEventListener("click", onDocClick);
-  window.addCleanup(() => document.removeEventListener("click", onDocClick));
+  if (typeof window.addCleanup === "function") {
+    window.addCleanup(() => document.removeEventListener("click", onDocClick));
+  }
 
   const onKeyDown = (e) => {
     if (e.key === "Escape" && !modal.classList.contains("is-hidden")) {
@@ -61,11 +63,14 @@ document.addEventListener("nav", () => {
     }
   };
   document.addEventListener("keydown", onKeyDown);
-  window.addCleanup(() => document.removeEventListener("keydown", onKeyDown));
+  if (typeof window.addCleanup === "function") {
+    window.addCleanup(() => document.removeEventListener("keydown", onKeyDown));
+  }
 
   // 1. Site Background
   const applySiteBg = (bg) => {
     document.documentElement.style.setProperty("--site-bg", bg);
+    if (document.body) document.body.style.setProperty("--site-bg", bg);
     localStorage.setItem("user-site-bg", bg);
     if (bg === "#181816") {
       document.documentElement.setAttribute("saved-theme", "dark");
@@ -85,12 +90,16 @@ document.addEventListener("nav", () => {
   applySiteBg(savedSiteBg);
 
   document.querySelectorAll(".site-bg-btn").forEach((b) => {
-    b.onclick = () => applySiteBg(b.getAttribute("data-site-bg"));
+    b.onclick = (e) => {
+      e.stopPropagation();
+      applySiteBg(b.getAttribute("data-site-bg"));
+    };
   });
 
   // 2. Container Background
   const applyContainerBg = (bg) => {
     document.documentElement.style.setProperty("--container-bg", bg);
+    if (document.body) document.body.style.setProperty("--container-bg", bg);
     localStorage.setItem("user-container-bg", bg);
     if (bg === "transparent") {
       document.documentElement.style.setProperty("--container-border", "none");
@@ -108,7 +117,10 @@ document.addEventListener("nav", () => {
   applyContainerBg(savedContainerBg);
 
   document.querySelectorAll(".container-bg-btn").forEach((b) => {
-    b.onclick = () => applyContainerBg(b.getAttribute("data-container-bg"));
+    b.onclick = (e) => {
+      e.stopPropagation();
+      applyContainerBg(b.getAttribute("data-container-bg"));
+    };
   });
 
   // 3. Font Family
@@ -122,6 +134,7 @@ document.addEventListener("nav", () => {
   const applyFontFamily = (key) => {
     const val = fontMap[key] || fontMap.amiri;
     document.documentElement.style.setProperty("--font-arabic", val);
+    if (document.body) document.body.style.setProperty("--font-arabic", val);
     localStorage.setItem("user-font-family", key);
     document.querySelectorAll(".font-family-btn").forEach((b) => {
       b.classList.toggle("active", b.getAttribute("data-font") === key);
@@ -132,12 +145,16 @@ document.addEventListener("nav", () => {
   applyFontFamily(savedFont);
 
   document.querySelectorAll(".font-family-btn").forEach((b) => {
-    b.onclick = () => applyFontFamily(b.getAttribute("data-font"));
+    b.onclick = (e) => {
+      e.stopPropagation();
+      applyFontFamily(b.getAttribute("data-font"));
+    };
   });
 
   // 4. Font Size
   const applyFontSize = (size) => {
     document.documentElement.style.setProperty("--main-font-size", size);
+    if (document.body) document.body.style.setProperty("--main-font-size", size);
     localStorage.setItem("user-font-size", size);
     document.querySelectorAll(".font-size-btn").forEach((b) => {
       b.classList.toggle("active", b.getAttribute("data-size") === size);
@@ -148,12 +165,16 @@ document.addEventListener("nav", () => {
   applyFontSize(savedSize);
 
   document.querySelectorAll(".font-size-btn").forEach((b) => {
-    b.onclick = () => applyFontSize(b.getAttribute("data-size"));
+    b.onclick = (e) => {
+      e.stopPropagation();
+      applyFontSize(b.getAttribute("data-size"));
+    };
   });
 
   // 5. Line Height
   const applyLineHeight = (lh) => {
     document.documentElement.style.setProperty("--main-line-height", lh);
+    if (document.body) document.body.style.setProperty("--main-line-height", lh);
     localStorage.setItem("user-line-height", lh);
     document.querySelectorAll(".line-height-btn").forEach((b) => {
       b.classList.toggle("active", b.getAttribute("data-line") === lh);
@@ -164,12 +185,16 @@ document.addEventListener("nav", () => {
   applyLineHeight(savedLine);
 
   document.querySelectorAll(".line-height-btn").forEach((b) => {
-    b.onclick = () => applyLineHeight(b.getAttribute("data-line"));
+    b.onclick = (e) => {
+      e.stopPropagation();
+      applyLineHeight(b.getAttribute("data-line"));
+    };
   });
 
   // 6. Reading Width
   const applyReadingWidth = (w) => {
     document.documentElement.style.setProperty("--reading-width", w);
+    if (document.body) document.body.style.setProperty("--reading-width", w);
     localStorage.setItem("user-reading-width", w);
     document.querySelectorAll(".reading-width-btn").forEach((b) => {
       b.classList.toggle("active", b.getAttribute("data-width") === w);
@@ -180,9 +205,19 @@ document.addEventListener("nav", () => {
   applyReadingWidth(savedWidth);
 
   document.querySelectorAll(".reading-width-btn").forEach((b) => {
-    b.onclick = () => applyReadingWidth(b.getAttribute("data-width"));
+    b.onclick = (e) => {
+      e.stopPropagation();
+      applyReadingWidth(b.getAttribute("data-width"));
+    };
   });
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initReadingSettings);
+} else {
+  initReadingSettings();
+}
+document.addEventListener("nav", initReadingSettings);
 `
 
 const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) => {
@@ -195,6 +230,7 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
   const isArticles = slug.startsWith("ar/articles") || slug === "post" || slug.startsWith("post/")
   const isPoetry = slug.startsWith("ar/poetry")
   const isAbout = slug.startsWith("about") || slug.startsWith("ar/about")
+  const isNewsletter = slug === "ar/newsletter" || slug.startsWith("ar/newsletter")
 
   return (
     <header class="site-header alfarhan-header" dir={isEnglish ? "ltr" : "rtl"}>
@@ -225,7 +261,10 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
                 <span class="nav-ico">🖊️</span>
                 <span>تدوينات</span>
               </a>
-              <a href="#newsletter" class="site-nav-link alfarhan-nav-link">
+              <a
+                href={resolveRelative(fileData.slug!, "ar/newsletter" as FullSlug)}
+                class={`site-nav-link alfarhan-nav-link ${isNewsletter ? "is-active" : ""}`}
+              >
                 <span class="nav-ico">✉️</span>
                 <span>النشرة</span>
               </a>

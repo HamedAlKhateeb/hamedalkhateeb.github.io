@@ -18,7 +18,6 @@ export const sharedPageComponents: SharedLayout = {
         measurementId: "G-KDJLN0GLCH",
       },
     }),
-    Component.Newsletter(),
     Component.ArticleFooter(),
     Component.ControlPanel(),
   ],
@@ -41,7 +40,7 @@ export const defaultContentPageLayout: PageLayout = {
 
 // components for pages that display lists of pages  (e.g. tags or folders)
 export const defaultListPageLayout: PageLayout = {
-  beforeBody: [Component.Breadcrumbs(), Component.HomeArticlesAr()],
+  beforeBody: [Component.Breadcrumbs(), Component.HomeArticles(), Component.HomeArticlesAr()],
   left: [],
   right: [],
 }
