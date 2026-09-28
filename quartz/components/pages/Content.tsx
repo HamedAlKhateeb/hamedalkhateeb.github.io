@@ -10,6 +10,18 @@ import readingTime from "reading-time"
 const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzComponentProps) => {
   let processedTree = tree as Root
   const slug = fileData.slug?.toLowerCase() ?? ""
+  const isHome =
+    slug === "" ||
+    slug === "index" ||
+    slug === "ar" ||
+    slug === "ar/index" ||
+    slug === "en" ||
+    slug === "en/index"
+
+  if (isHome) {
+    return <></>
+  }
+
   const isArticle = !slug.endsWith("index")
   const isPoetry =
     (slug.startsWith("ar/poetry/") || slug.startsWith("poetry/")) && !slug.endsWith("index")

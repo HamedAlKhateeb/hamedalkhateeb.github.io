@@ -35,8 +35,14 @@ export default ((opts?: Partial<FolderContentOptions>) => {
     const { tree, fileData, allFiles, cfg } = props
     const slug = fileData.slug?.toLowerCase() ?? ""
 
-    const isArabicHome = slug === "ar" || slug === "ar/index"
-    if (isArabicHome) {
+    const isHome =
+      slug === "" ||
+      slug === "index" ||
+      slug === "ar" ||
+      slug === "ar/index" ||
+      slug === "en" ||
+      slug === "en/index"
+    if (isHome) {
       return null
     }
 
