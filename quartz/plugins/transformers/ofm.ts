@@ -60,7 +60,7 @@ const defaultOptions: Options = {
   disableBrokenWikilinks: false,
 }
 
-const calloutMapping = {
+const calloutMapping: Record<string, string> = {
   note: "note",
   abstract: "abstract",
   summary: "abstract",
@@ -88,7 +88,22 @@ const calloutMapping = {
   example: "example",
   quote: "quote",
   cite: "quote",
-} as const
+  "ملاحظة": "note",
+  "ملاحظة-هامة": "warning",
+  "ملاحظة_هامة": "warning",
+  "ملاحظة هامة": "warning",
+  "تنبيه": "warning",
+  "تحذير": "danger",
+  "خطر": "danger",
+  "نصيحة": "tip",
+  "فائدة": "tip",
+  "إضاءة": "tip",
+  "مهم": "tip",
+  "هام": "tip",
+  "اقتباس": "quote",
+  "سؤال": "question",
+  "معلومات": "info",
+}
 
 const arrowMapping: Record<string, string> = {
   "->": "&rarr;",
@@ -101,9 +116,8 @@ const arrowMapping: Record<string, string> = {
   "<==": "&lArr;",
 }
 
-function canonicalizeCallout(calloutName: string): keyof typeof calloutMapping {
-  const normalizedCallout = calloutName.toLowerCase() as keyof typeof calloutMapping
-  // if callout is not recognized, make it a custom one
+function canonicalizeCallout(calloutName: string): string {
+  const normalizedCallout = calloutName.toLowerCase()
   return calloutMapping[normalizedCallout] ?? calloutName
 }
 
@@ -131,8 +145,8 @@ export const tableWikilinkRegex = new RegExp(/(!?\[\[[^\]]*?\]\]|\[\^[^\]]*?\])/
 const highlightRegex = new RegExp(/==([^=]+)==/g)
 const commentRegex = new RegExp(/%%[\s\S]*?%%/g)
 // from https://github.com/escwxyz/remark-obsidian-callout/blob/main/src/index.ts
-const calloutRegex = new RegExp(/^\[\!([\w-]+)\|?(.+?)?\]([+-]?)/)
-const calloutLineRegex = new RegExp(/^> *\[\!\w+\|?.*?\][+-]?.*$/gm)
+const calloutRegex = new RegExp(/^\[!([^\]|]+)\|?(.+?)?\]([+-]?)/u)
+const calloutLineRegex = new RegExp(/^> *\[![^\]|]+\|?.*?\][+-]?.*$/gmu)
 // (?<=^| )             -> a lookbehind assertion, tag should start be separated by a space or be the start of the line
 // #(...)               -> capturing group, tag itself must start with #
 // (?:[-_\p{L}\d\p{Z}])+       -> non-capturing group, non-empty string of (Unicode-aware) alpha-numeric characters and symbols, hyphens and/or underscores
