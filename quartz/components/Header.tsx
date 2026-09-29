@@ -201,7 +201,7 @@ function initReadingSettings() {
     });
   };
 
-  const savedWidth = localStorage.getItem("user-reading-width") || "1100px";
+  const savedWidth = localStorage.getItem("user-reading-width") || "1150px";
   applyReadingWidth(savedWidth);
 
   document.querySelectorAll(".reading-width-btn").forEach((b) => {
@@ -457,9 +457,9 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           <div class="reading-setting-section">
             <div class="reading-setting-title">{isEnglish ? "Reading Width" : "عرض المحتوى"}</div>
             <div class="reading-options-row">
-              <button type="button" class="reading-width-btn" data-width="900px">ضيق</button>
-              <button type="button" class="reading-width-btn" data-width="1100px">قياسي</button>
-              <button type="button" class="reading-width-btn" data-width="1300px">واسع</button>
+              <button type="button" class="reading-width-btn" data-width="950px">{isEnglish ? "Narrow" : "ضيق"}</button>
+              <button type="button" class="reading-width-btn" data-width="1150px">{isEnglish ? "Standard" : "قياسي"}</button>
+              <button type="button" class="reading-width-btn" data-width="1400px">{isEnglish ? "Wide" : "واسع"}</button>
             </div>
           </div>
         </div>

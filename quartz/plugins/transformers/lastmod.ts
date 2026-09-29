@@ -74,13 +74,18 @@ export const CreatedModifiedDate: QuartzTransformerPlugin<Partial<Options>> = (u
                 created ||= st.birthtimeMs
                 modified ||= st.mtimeMs
               } else if (source === "frontmatter" && file.data.frontmatter) {
-                created ||= file.data.frontmatter.created as MaybeDate
-                modified ||= file.data.frontmatter.modified as MaybeDate
-                published ||= file.data.frontmatter.published as MaybeDate
+                const fm = file.data.frontmatter
+                const fmDate = (fm.date ?? fm.created ?? fm.published) as MaybeDate
+                created ||= (fm.created ?? fmDate) as MaybeDate
+                modified ||= (fm.modified ?? fm.updated ?? fmDate) as MaybeDate
+                published ||= (fm.published ?? fmDate) as MaybeDate
               } else if (source === "git" && repo) {
                 try {
                   const relativePath = path.relative(repositoryWorkdir, fullFp)
-                  modified ||= await repo.getFileLatestModifiedDateAsync(relativePath)
+                  const gitMod = await repo.getFileLatestModifiedDateAsync(relativePath)
+                  modified ||= gitMod
+                  created ||= gitMod
+                  published ||= gitMod
                 } catch {
                   console.log(
                     styleText(
@@ -91,6 +96,10 @@ export const CreatedModifiedDate: QuartzTransformerPlugin<Partial<Options>> = (u
                 }
               }
             }
+
+            // If created or published is still missing, fallback to modified or filesystem
+            created ||= modified
+            published ||= created ?? modified
 
             file.data.dates = {
               created: coerceDate(fp, created),

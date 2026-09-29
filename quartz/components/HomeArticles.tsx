@@ -70,7 +70,7 @@ export default (() => {
 
     return (
       <div class="alfarhan-home-container" dir="ltr">
-        <h1 class="sr-only">Hamed Alkhateeb — Writings, Essays, and Ideas</h1>
+        <h1 class="sr-only">Hamed Alkhateeb — Seeking Clarity and Understanding</h1>
 
         {/* ═══════════════ Card 1: Latest Writings ═══════════════ */}
         {latestWritings.length > 0 && (
@@ -250,7 +250,7 @@ export default (() => {
               Hamed Alkhateeb
             </h3>
             <p style={{ margin: "0 0 16px 0", fontSize: "0.95rem", lineHeight: 1.6, color: "var(--color-ink-muted, #6b665f)" }}>
-              Civil engineer turned software & mathematics enthusiast. Documenting ideas, code experiments, and essays.
+              Product Manager & Applied Math Researcher. Documenting ideas, code experiments, and essays.
             </p>
 
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>

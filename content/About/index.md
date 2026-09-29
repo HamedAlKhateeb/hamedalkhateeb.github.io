@@ -2,7 +2,7 @@
 title: About Me
 ---
 
-I am a structural engineer from Egypt, currently pursuing a Master's degree in Applied Mathematics.
+I am a Product Manager and Applied Mathematics researcher based in Egypt.
 
 My interests lie at the intersection of engineering mechanics, analytical mathematics, and digital writing.
 
