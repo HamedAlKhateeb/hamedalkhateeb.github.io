@@ -12,7 +12,6 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
 
   // Localization variables
   const scrollTopTitle = isArabic ? "أعلى الصفحة" : "Top of Page"
-  const goBackTitle = isArabic ? "رجوع للصفحة السابقة" : "Go Back"
 
   return (
     <div class={classNames(displayClass, "control-panel-root")}>
@@ -41,29 +40,6 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
           </svg>
         </button>
       </div>
-
-      {/* Back Button - Top Right */}
-      {slug !== "index" && (
-        <div class="back-to-prev-dock">
-          <button id="btn-back" class="dock-btn" title={goBackTitle}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-          </button>
-        </div>
-      )}
-
     </div>
   )
 }
