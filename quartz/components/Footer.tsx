@@ -46,13 +46,21 @@ export default ((opts?: Options) => {
       <footer class={`${displayClass ?? ""}`}>
         <p>&copy; {year}</p>
         <ul>
-          {Object.entries(links).map(([text, link]) => (
-            <li>
-              <a href={link} aria-label={text} title={text}>
-                {getIcon(text) ?? text}
-              </a>
-            </li>
-          ))}
+          {Object.entries(links).map(([text, link]) => {
+            const isExternal = link.startsWith("http://") || link.startsWith("https://")
+            return (
+              <li>
+                <a
+                  href={link}
+                  aria-label={text}
+                  title={text}
+                  {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                >
+                  {getIcon(text) ?? text}
+                </a>
+              </li>
+            )
+          })}
         </ul>
       </footer>
     )

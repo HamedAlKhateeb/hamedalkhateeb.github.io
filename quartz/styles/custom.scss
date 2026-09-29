@@ -3061,14 +3061,39 @@ html {
   color: #f6c445;
 }
 
+/* Home Page Constraints - Keep Narrow (950px) & default layout */
+body.is-home-page,
+body:has(.alfarhan-home-container) {
+  --reading-width: 950px !important;
+  --content-width: 950px !important;
+
+  .page {
+    width: 100% !important;
+    max-width: 950px !important;
+  }
+
+  .alfarhan-header {
+    width: 100% !important;
+    max-width: 950px !important;
+  }
+
+  .alfarhan-home-container {
+    width: 100% !important;
+    max-width: 950px !important;
+  }
+
+  .reading-settings-anchor {
+    display: none !important;
+  }
+}
+
 /* Home Page Container & Cards */
 .alfarhan-home-container {
   width: 100%;
-  max-width: var(--reading-width, 950px) !important;
+  max-width: 950px !important;
   margin: 0 auto;
   padding: 0 12px;
   box-sizing: border-box;
-  transition: max-width 0.2s ease;
 }
 
 .alfarhan-card-box {

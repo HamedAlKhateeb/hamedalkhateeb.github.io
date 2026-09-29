@@ -60,6 +60,24 @@ export default (() => {
     const latestMicro = arabicMicro.slice(0, 8)
     const latestPoems = arabicPoems.slice(0, 6)
 
+    // 4. Arabic tags
+    const tagCounts = new Map<string, number>()
+    for (const page of allFiles) {
+      if (
+        !page.slug ||
+        (!page.slug.startsWith("ar/articles/") && !page.slug.startsWith("ar/micro/"))
+      )
+        continue
+      const tags = page.frontmatter?.tags ?? []
+      for (const t of tags) {
+        if (!t) continue
+        tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1)
+      }
+    }
+    const topTags = Array.from(tagCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 15)
+
     // Helper for kind icons
     const getKindMeta = (item: any) => {
       const kind = (item.frontmatter?.kind as string) || "خاطرة"
@@ -219,6 +237,63 @@ export default (() => {
                     </div>
                   )
                 })}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ═══════════════ البطاقة الرابعة: وسوم (Tags) ═══════════════ */}
+        {topTags.length > 0 && (
+          <section class="alfarhan-card-box tags-box">
+            <div class="alfarhan-card-banner">
+              <div class="alfarhan-banner-right">
+                <span class="alfarhan-icon-badge">🏷️</span>
+                <span class="alfarhan-banner-title">وسوم</span>
+              </div>
+              <a
+                href={resolveRelative(fileData.slug!, "tags" as any)}
+                class="alfarhan-btn-all"
+              >
+                كل الوسوم —
+              </a>
+            </div>
+
+            <div class="alfarhan-card-content" style={{ padding: "16px 20px" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {topTags.map(([tag, count]) => (
+                  <a
+                    href={resolveRelative(fileData.slug!, `tags/${tag}` as any)}
+                    key={tag}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "4px 10px",
+                      background: "var(--color-field, #fdfbf7)",
+                      border: "1.5px solid var(--nb-line, #000)",
+                      boxShadow: "1.5px 1.5px 0 0 var(--nb-line, #000)",
+                      borderRadius: "4px",
+                      fontSize: "0.86rem",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
+                    <span>#{tag.replace(/_/g, " ")}</span>
+                    <span
+                      style={{
+                        background: "var(--nb-main, #f6c445)",
+                        color: "#000",
+                        padding: "1px 6px",
+                        borderRadius: "10px",
+                        fontSize: "0.75rem",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {count}
+                    </span>
+                  </a>
+                ))}
               </div>
             </div>
           </section>

@@ -238,3 +238,28 @@ if (!customElements.get("route-announcer")) {
     },
   )
 }
+
+function setupExternalLinks() {
+  document.querySelectorAll("a[href]").forEach((el) => {
+    const a = el as HTMLAnchorElement
+    const href = a.getAttribute("href")
+    if (!href) return
+    if (/^https?:\/\//i.test(href)) {
+      try {
+        const targetUrl = new URL(href, window.location.href)
+        if (targetUrl.origin !== window.location.origin) {
+          a.setAttribute("target", "_blank")
+          a.setAttribute("rel", "noopener noreferrer")
+        }
+      } catch (_) {}
+    }
+  })
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", setupExternalLinks)
+} else {
+  setupExternalLinks()
+}
+document.addEventListener("nav", setupExternalLinks)
+

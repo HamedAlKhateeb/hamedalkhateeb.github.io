@@ -302,10 +302,11 @@ export function renderPage(
   const lang = isArabic ? "ar" : "en"
   const direction = isArabic ? "rtl" : "ltr"
   const isArticle = !slug.endsWith("index")
+  const isHome = slug === "index" || slug === "" || slug === "en" || slug === "en/index"
   const doc = (
     <html lang={lang} dir={direction}>
       <Head {...componentData} />
-      <body data-slug={slug} class={isArticle ? "is-article" : "is-list"}>
+      <body data-slug={slug} class={`${isArticle ? "is-article" : "is-list"} ${isHome ? "is-home-page" : ""}`}>
         <div id="quartz-root" class="page">
           <Body {...componentData}>
             {LeftComponent}

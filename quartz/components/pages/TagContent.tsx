@@ -119,33 +119,6 @@ export default ((opts?: Partial<TagContentOptions>) => {
               })}
             </div>
           </div>
-
-          <div class="tags-sections-list">
-            {tags.map((t) => {
-              const pages = tagItemMap.get(t)!
-              const listProps = {
-                ...props,
-                allFiles: pages,
-              }
-              const tagListingPage = `/tags/${t}` as FullSlug
-              const href = resolveRelative(fileData.slug!, tagListingPage)
-
-              return (
-                <div key={t} class="post-tl-card" style={{ marginBottom: "1.5rem" }}>
-                  <div style={{ padding: "1rem 1.25rem 0.5rem 1.25rem" }}>
-                    <h2 style={{ margin: "0", fontSize: "1.25rem", fontWeight: "700" }}>
-                      <a class="internal tag-link" href={href} style={{ textDecoration: "none" }}>
-                        #{t} <span style={{ fontSize: "0.85rem", opacity: 0.7 }}>({pages.length})</span>
-                      </a>
-                    </h2>
-                  </div>
-                  <div style={{ padding: "0 1.25rem 1rem 1.25rem" }}>
-                    <PageList limit={options.numPages} {...listProps} sort={options?.sort} />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
         </div>
       )
     } else {

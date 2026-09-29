@@ -67,6 +67,14 @@ function initReadingSettings() {
     window.addCleanup(() => document.removeEventListener("keydown", onKeyDown));
   }
 
+  // Reading settings apply strictly to articles, poems, and snippets — NOT the homepage
+  const isHome = (document.body && document.body.classList.contains("is-home-page")) || document.querySelector(".alfarhan-home-container") !== null;
+  if (isHome) {
+    document.documentElement.style.setProperty("--reading-width", "950px");
+    if (document.body) document.body.style.setProperty("--reading-width", "950px");
+    return;
+  }
+
   // 1. Site Background
   const applySiteBg = (bg) => {
     document.documentElement.style.setProperty("--site-bg", bg);
@@ -279,13 +287,6 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
               >
                 <span class="nav-ico">📍</span>
                 <span>شذرات</span>
-              </a>
-              <a
-                href={resolveRelative(fileData.slug!, "tags" as FullSlug)}
-                class={`site-nav-link alfarhan-nav-link ${isTags ? "is-active" : ""}`}
-              >
-                <span class="nav-ico">🏷️</span>
-                <span>وسوم</span>
               </a>
               <a
                 href={resolveRelative(fileData.slug!, "ar/newsletter" as FullSlug)}
