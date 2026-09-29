@@ -201,7 +201,11 @@ function initReadingSettings() {
     });
   };
 
-  const savedWidth = localStorage.getItem("user-reading-width") || "1150px";
+  const validWidths = ["950px", "1150px", "1400px"];
+  let savedWidth = localStorage.getItem("user-reading-width");
+  if (!savedWidth || !validWidths.includes(savedWidth)) {
+    savedWidth = "950px";
+  }
   applyReadingWidth(savedWidth);
 
   document.querySelectorAll(".reading-width-btn").forEach((b) => {
@@ -222,7 +226,21 @@ document.addEventListener("nav", initReadingSettings);
 
 const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) => {
   const slug = (fileData.slug ?? "").toLowerCase()
-  const isEnglish = slug.startsWith("en/") || slug === "en" || slug.includes("/en/")
+  const isEnglish =
+    slug.startsWith("en/") ||
+    slug === "en" ||
+    slug.includes("/en/") ||
+    fileData.frontmatter?.lang === "en" ||
+    (!slug.startsWith("ar/") &&
+      slug !== "index" &&
+      slug !== "" &&
+      fileData.frontmatter?.lang !== "ar" &&
+      (slug.startsWith("experiences") ||
+        slug.startsWith("engineering") ||
+        slug.startsWith("math") ||
+        slug.startsWith("culture") ||
+        slug.startsWith("about") ||
+        slug.startsWith("personal")))
   const baseDir = pathToRoot(fileData.slug!)
 
   // Path matches
@@ -355,13 +373,13 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
 
       {/* ── Dynamic Popover Modal ── */}
       <div id="reading-backdrop" class="reading-backdrop is-hidden" />
-      <div id="reading-modal" class="reading-modal is-hidden" role="dialog" aria-modal="true">
+      <div id="reading-modal" class="reading-modal is-hidden" role="dialog" aria-modal="true" dir={isEnglish ? "ltr" : "rtl"}>
         <div class="reading-modal-head">
           <div class="reading-modal-title">
             <span class="reading-modal-ico">⚙️</span>
             <span>{isEnglish ? "Reading & Display Settings" : "إعدادات القراءة والمظهر"}</span>
           </div>
-          <button id="btn-close-reading" class="reading-modal-close" type="button" aria-label="إغلاق">
+          <button id="btn-close-reading" class="reading-modal-close" type="button" aria-label={isEnglish ? "Close" : "إغلاق"}>
             ✕
           </button>
         </div>
@@ -371,52 +389,52 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           <div class="reading-setting-section">
             <div class="reading-setting-title">{isEnglish ? "Site Background" : "خلفية الموقع"}</div>
             <div class="reading-swatches-grid">
-              <button type="button" class="site-bg-btn" data-site-bg="#f4f0ea" title="ورقي دافئ (افتراضي)">
+              <button type="button" class="site-bg-btn" data-site-bg="#f4f0ea" title={isEnglish ? "Warm Paper (Default)" : "ورقي دافئ (افتراضي)"}>
                 <span class="swatch-circle" style={{ background: "#f4f0ea", borderColor: "#000" }} />
-                <span class="swatch-name">ورقي</span>
+                <span class="swatch-name">{isEnglish ? "Paper" : "ورقي"}</span>
               </button>
-              <button type="button" class="site-bg-btn" data-site-bg="#faf9f6" title="أبيض ناصع">
+              <button type="button" class="site-bg-btn" data-site-bg="#faf9f6" title={isEnglish ? "Pure White" : "أبيض ناصع"}>
                 <span class="swatch-circle" style={{ background: "#faf9f6", borderColor: "#000" }} />
-                <span class="swatch-name">أبيض</span>
+                <span class="swatch-name">{isEnglish ? "White" : "أبيض"}</span>
               </button>
-              <button type="button" class="site-bg-btn" data-site-bg="#ebe7de" title="رمادي عاجي">
+              <button type="button" class="site-bg-btn" data-site-bg="#ebe7de" title={isEnglish ? "Ivory Gray" : "رمادي عاجي"}>
                 <span class="swatch-circle" style={{ background: "#ebe7de", borderColor: "#000" }} />
-                <span class="swatch-name">عاجي</span>
+                <span class="swatch-name">{isEnglish ? "Ivory" : "عاجي"}</span>
               </button>
-              <button type="button" class="site-bg-btn" data-site-bg="#f4ecd8" title="سيبيا كلاسيك">
+              <button type="button" class="site-bg-btn" data-site-bg="#f4ecd8" title={isEnglish ? "Classic Sepia" : "سيبيا كلاسيك"}>
                 <span class="swatch-circle" style={{ background: "#f4ecd8", borderColor: "#000" }} />
-                <span class="swatch-name">سيبيا</span>
+                <span class="swatch-name">{isEnglish ? "Sepia" : "سيبيا"}</span>
               </button>
-              <button type="button" class="site-bg-btn" data-site-bg="#181816" title="داكن ليلي">
+              <button type="button" class="site-bg-btn" data-site-bg="#181816" title={isEnglish ? "Night Dark" : "داكن ليلي"}>
                 <span class="swatch-circle" style={{ background: "#181816", borderColor: "#555" }} />
-                <span class="swatch-name">داكن</span>
+                <span class="swatch-name">{isEnglish ? "Dark" : "داكن"}</span>
               </button>
             </div>
           </div>
 
           {/* Container Background */}
           <div class="reading-setting-section">
-            <div class="reading-setting-title">{isEnglish ? "Text Container Background" : "خلفية حاوية النص والمقال"}</div>
+            <div class="reading-setting-title">{isEnglish ? "Content Container Background" : "خلفية حاوية النص والمقال"}</div>
             <div class="reading-swatches-grid">
-              <button type="button" class="container-bg-btn" data-container-bg="#ffffff" title="بطاقة بيضاء ناصعة">
+              <button type="button" class="container-bg-btn" data-container-bg="#ffffff" title={isEnglish ? "Pure White Card" : "بطاقة بيضاء ناصعة"}>
                 <span class="swatch-box" style={{ background: "#ffffff", borderColor: "#000" }} />
-                <span class="swatch-name">أبيض</span>
+                <span class="swatch-name">{isEnglish ? "White" : "أبيض"}</span>
               </button>
-              <button type="button" class="container-bg-btn" data-container-bg="#fdfbf7" title="بطاقة ورقية ناعمة">
+              <button type="button" class="container-bg-btn" data-container-bg="#fdfbf7" title={isEnglish ? "Soft Paper Card" : "بطاقة ورقية ناعمة"}>
                 <span class="swatch-box" style={{ background: "#fdfbf7", borderColor: "#888" }} />
-                <span class="swatch-name">ورقي</span>
+                <span class="swatch-name">{isEnglish ? "Paper" : "ورقي"}</span>
               </button>
-              <button type="button" class="container-bg-btn" data-container-bg="#f7f1e1" title="بطاقة سيبيا دافئة">
+              <button type="button" class="container-bg-btn" data-container-bg="#f7f1e1" title={isEnglish ? "Warm Sepia Card" : "بطاقة سيبيا دافئة"}>
                 <span class="swatch-box" style={{ background: "#f7f1e1", borderColor: "#b09e7a" }} />
-                <span class="swatch-name">سيبيا</span>
+                <span class="swatch-name">{isEnglish ? "Sepia" : "سيبيا"}</span>
               </button>
-              <button type="button" class="container-bg-btn" data-container-bg="#22201d" title="بطاقة داكنة فخمة">
+              <button type="button" class="container-bg-btn" data-container-bg="#22201d" title={isEnglish ? "Rich Dark Card" : "بطاقة داكنة فخمة"}>
                 <span class="swatch-box" style={{ background: "#22201d", borderColor: "#555" }} />
-                <span class="swatch-name">داكن</span>
+                <span class="swatch-name">{isEnglish ? "Dark" : "داكن"}</span>
               </button>
-              <button type="button" class="container-bg-btn" data-container-bg="transparent" title="بلا بطاقة (شفاف)">
+              <button type="button" class="container-bg-btn" data-container-bg="transparent" title={isEnglish ? "Transparent (No Card)" : "بلا بطاقة (شفاف)"}>
                 <span class="swatch-box swatch-transparent" />
-                <span class="swatch-name">شفاف</span>
+                <span class="swatch-name">{isEnglish ? "Clear" : "شفاف"}</span>
               </button>
             </div>
           </div>
@@ -425,10 +443,10 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           <div class="reading-setting-section">
             <div class="reading-setting-title">{isEnglish ? "Font Family" : "نوع الخط"}</div>
             <div class="reading-options-row">
-              <button type="button" class="font-family-btn font-amiri" data-font="amiri">أميري</button>
-              <button type="button" class="font-family-btn font-cairo" data-font="cairo">كايرو</button>
-              <button type="button" class="font-family-btn font-ibm" data-font="ibm">آي بي إم</button>
-              <button type="button" class="font-family-btn font-ruqaa" data-font="ruqaa">عارف رقعة</button>
+              <button type="button" class="font-family-btn font-amiri" data-font="amiri">{isEnglish ? "Amiri" : "أميري"}</button>
+              <button type="button" class="font-family-btn font-cairo" data-font="cairo">{isEnglish ? "Cairo" : "كايرو"}</button>
+              <button type="button" class="font-family-btn font-ibm" data-font="ibm">{isEnglish ? "IBM Plex" : "آي بي إم"}</button>
+              <button type="button" class="font-family-btn font-ruqaa" data-font="ruqaa">{isEnglish ? "Aref Ruqaa" : "عارف رقعة"}</button>
             </div>
           </div>
 
@@ -436,10 +454,10 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           <div class="reading-setting-section">
             <div class="reading-setting-title">{isEnglish ? "Font Size" : "حجم الخط"}</div>
             <div class="reading-options-row">
-              <button type="button" class="font-size-btn" data-size="16px">صغير</button>
-              <button type="button" class="font-size-btn" data-size="19px">متوسط</button>
-              <button type="button" class="font-size-btn" data-size="22px">كبير</button>
-              <button type="button" class="font-size-btn" data-size="25px">ضخم</button>
+              <button type="button" class="font-size-btn" data-size="16px">{isEnglish ? "Small" : "صغير"}</button>
+              <button type="button" class="font-size-btn" data-size="19px">{isEnglish ? "Medium" : "متوسط"}</button>
+              <button type="button" class="font-size-btn" data-size="22px">{isEnglish ? "Large" : "كبير"}</button>
+              <button type="button" class="font-size-btn" data-size="25px">{isEnglish ? "Huge" : "ضخم"}</button>
             </div>
           </div>
 
@@ -447,15 +465,15 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           <div class="reading-setting-section">
             <div class="reading-setting-title">{isEnglish ? "Line Height" : "ارتفاع السطر"}</div>
             <div class="reading-options-row">
-              <button type="button" class="line-height-btn" data-line="1.5">ضيق</button>
-              <button type="button" class="line-height-btn" data-line="1.8">متوازن</button>
-              <button type="button" class="line-height-btn" data-line="2.1">مريح</button>
+              <button type="button" class="line-height-btn" data-line="1.5">{isEnglish ? "Compact" : "ضيق"}</button>
+              <button type="button" class="line-height-btn" data-line="1.8">{isEnglish ? "Normal" : "متوازن"}</button>
+              <button type="button" class="line-height-btn" data-line="2.1">{isEnglish ? "Spacious" : "مريح"}</button>
             </div>
           </div>
 
           {/* Reading Width */}
           <div class="reading-setting-section">
-            <div class="reading-setting-title">{isEnglish ? "Reading Width" : "عرض المحتوى"}</div>
+            <div class="reading-setting-title">{isEnglish ? "Content Width" : "عرض المحتوى"}</div>
             <div class="reading-options-row">
               <button type="button" class="reading-width-btn" data-width="950px">{isEnglish ? "Narrow" : "ضيق"}</button>
               <button type="button" class="reading-width-btn" data-width="1150px">{isEnglish ? "Standard" : "قياسي"}</button>

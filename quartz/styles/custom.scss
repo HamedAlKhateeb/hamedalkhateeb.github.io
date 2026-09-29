@@ -9,8 +9,8 @@
   direction: ltr;
   --main-font-size: 19px;
   --main-line-height: 1.8;
-  --reading-width: 1150px;
-  --content-width: 1150px;
+  --reading-width: 950px;
+  --content-width: 950px;
 
   /* Theme Backgrounds */
   --site-bg: #f4f0ea;
@@ -149,7 +149,7 @@ figure,
 
 .page > #quartz-body > .center {
   width: 100% !important;
-  max-width: var(--reading-width, 1150px) !important;
+  max-width: var(--reading-width, 950px) !important;
   margin: 0 auto !important;
   padding: 0 16px !important;
   box-sizing: border-box !important;
@@ -1511,7 +1511,7 @@ html[lang="ar"] {
   }
 
   body.is-list .center > article {
-    max-width: var(--reading-width, 1150px) !important;
+    max-width: var(--reading-width, 950px) !important;
   }
 
   // Mobile card styling responsiveness
@@ -2005,7 +2005,7 @@ pre code {
 
 .page {
   width: 100%;
-  max-width: var(--reading-width, 1150px) !important;
+  max-width: var(--reading-width, 950px) !important;
   margin: 0 auto !important;
   padding: 0 1.25rem 3rem 1.25rem !important;
   box-sizing: border-box;
@@ -2405,7 +2405,7 @@ pre code {
 /* ── Shatharat Timeline Page (شذرات) ── */
 .micro-timeline-page {
   width: 100%;
-  max-width: var(--reading-width, 1150px);
+  max-width: var(--reading-width, 950px);
   margin: 0 auto;
 }
 
@@ -2608,7 +2608,7 @@ pre code {
 
 /* ── Articles Timeline (/ar/articles) ── */
 .post-tl-page {
-  max-width: var(--reading-width, 1150px);
+  max-width: var(--reading-width, 950px);
   margin: 0 auto;
 }
 
@@ -2683,7 +2683,7 @@ pre code {
 
 /* ── Single Article View (Post Single Card) ── */
 .post-single-card {
-  max-width: var(--reading-width, 1150px) !important;
+  max-width: var(--reading-width, 950px) !important;
   margin: 0 auto;
   background: var(--container-bg, var(--color-surface-elevated)) !important;
   border: var(--container-border, var(--nb-border)) !important;
@@ -2811,7 +2811,7 @@ pre code {
 }
 
 .poetry-verses-container {
-  max-width: var(--reading-width, 1150px);
+  max-width: var(--reading-width, 950px);
   margin: 2.5rem auto;
   display: flex;
   flex-direction: column;
@@ -2978,7 +2978,7 @@ html {
 /* Top Navigation Card */
 .alfarhan-header {
   width: 100%;
-  max-width: var(--reading-width, 1150px);
+  max-width: var(--reading-width, 950px);
   margin: 24px auto 26px auto;
   padding: 0 12px;
   box-sizing: border-box;
@@ -3064,7 +3064,7 @@ html {
 /* Home Page Container & Cards */
 .alfarhan-home-container {
   width: 100%;
-  max-width: var(--reading-width, 1150px) !important;
+  max-width: var(--reading-width, 950px) !important;
   margin: 0 auto;
   padding: 0 12px;
   box-sizing: border-box;
