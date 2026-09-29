@@ -6,6 +6,7 @@ export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [Component.Search(), Component.Darkmode()],
   afterBody: [
+    Component.ArticleFooter(),
     Component.Comments({
       provider: "firebase",
       options: {
@@ -18,7 +19,6 @@ export const sharedPageComponents: SharedLayout = {
         measurementId: "G-KDJLN0GLCH",
       },
     }),
-    Component.ArticleFooter(),
     Component.ControlPanel(),
   ],
   footer: Component.Footer({

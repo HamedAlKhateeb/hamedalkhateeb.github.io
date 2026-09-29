@@ -52,11 +52,31 @@ export default ((opts?: Partial<FolderContentOptions>) => {
       slug === "micro" ||
       slug === "micro/index"
 
-    const isArticlesIndex =
+    const isArabicArticles =
       slug === "ar/articles" ||
       slug === "ar/articles/index" ||
+      slug === "articles" ||
+      slug === "articles/index" ||
       slug === "post" ||
       slug === "post/index"
+
+    const isEnglishArticles =
+      slug === "experiences" ||
+      slug === "experiences/index" ||
+      slug === "writings" ||
+      slug === "writings/index" ||
+      slug === "en/articles" ||
+      slug === "en/articles/index" ||
+      slug === "culture" ||
+      slug === "culture/index" ||
+      slug === "engineering" ||
+      slug === "engineering/index" ||
+      slug === "math" ||
+      slug === "math/index" ||
+      slug === "personal" ||
+      slug === "personal/index"
+
+    const isArticlesIndex = isArabicArticles || isEnglishArticles
 
     const isPoetryIndex =
       slug === "ar/poetry" ||
@@ -203,66 +223,121 @@ export default ((opts?: Partial<FolderContentOptions>) => {
     }
 
     // ══════════════════════════════════════════════════════════════
-    // 2. ARTICLES TIMELINE VIEW (alfarhan.ws/post parity)
+    // 2. ARTICLES TIMELINE VIEW (Parity with User's Reference Image)
     // ══════════════════════════════════════════════════════════════
     if (isArticlesIndex) {
-      const articles = allFiles
-        .filter(
-          (f) =>
-            f.slug &&
-            (f.slug.startsWith("ar/articles/") || f.slug.startsWith("articles/")) &&
-            !f.slug.endsWith("index"),
-        )
-        .sort((a, b) => {
-          const aDate = a.dates?.published ?? new globalThis.Date("1970-01-01")
-          const bDate = b.dates?.published ?? new globalThis.Date("1970-01-01")
-          return bDate.getTime() - aDate.getTime()
-        })
+      const isRtl = isArabicArticles
+      let articles: QuartzPluginData[] = []
+
+      if (isRtl) {
+        articles = allFiles
+          .filter(
+            (f) =>
+              f.slug &&
+              (f.slug.startsWith("ar/articles/") || f.slug.startsWith("articles/")) &&
+              !f.slug.endsWith("index"),
+          )
+      } else {
+        // English articles: check if specific folder or general writings
+        if (slug.startsWith("culture")) {
+          articles = allFiles.filter((f) => f.slug?.startsWith("culture/") && !f.slug.endsWith("index"))
+        } else if (slug.startsWith("engineering")) {
+          articles = allFiles.filter((f) => f.slug?.startsWith("engineering/") && !f.slug.endsWith("index"))
+        } else if (slug.startsWith("math")) {
+          articles = allFiles.filter((f) => f.slug?.startsWith("math/") && !f.slug.endsWith("index"))
+        } else if (slug.startsWith("personal")) {
+          articles = allFiles.filter((f) => f.slug?.startsWith("personal/") && !f.slug.endsWith("index"))
+        } else {
+          // General English writings / experiences: include all English non-index posts
+          articles = allFiles.filter(
+            (f) =>
+              f.slug &&
+              !f.slug.toLowerCase().startsWith("ar/") &&
+              !f.slug.endsWith("index") &&
+              !f.slug.startsWith("tags/") &&
+              f.slug !== "index" &&
+              f.slug !== "en" &&
+              f.slug.toLowerCase() !== "about",
+          )
+        }
+      }
+
+      articles.sort((a, b) => {
+        const aDate = a.dates?.published ?? new globalThis.Date("1970-01-01")
+        const bDate = b.dates?.published ?? new globalThis.Date("1970-01-01")
+        return bDate.getTime() - aDate.getTime()
+      })
 
       // Group by Month/Year
       const groups = new Map<string, QuartzPluginData[]>()
       for (const doc of articles) {
         const dateObj = getDate(cfg, doc)
-        const key = dateObj
-          ? dateObj.toLocaleDateString("ar-EG", { year: "numeric", month: "long" })
-          : "أرشيف عام"
+        let key = ""
+        if (dateObj) {
+          key = isRtl
+            ? dateObj.toLocaleDateString("ar-u-nu-latn", { year: "numeric", month: "long" })
+            : dateObj.toLocaleDateString("en-US", { year: "numeric", month: "long" })
+        } else {
+          key = isRtl ? "أرشيف عام" : "Archive"
+        }
         if (!groups.has(key)) groups.set(key, [])
         groups.get(key)!.push(doc)
       }
 
+      const headerTitle = isRtl
+        ? "التدوينات"
+        : (fileData.frontmatter?.title ?? "Writings")
+      const headerDesc = isRtl
+        ? `مقالات مطولة وأفكار وتجارب حول المعرفة والهندسة والحياة (${articles.length} تدوينة)`
+        : `Essays, thoughts, and experiments on software, engineering, and life (${articles.length} article${articles.length === 1 ? "" : "s"})`
+
       return (
-        <div class="post-tl-page" dir="rtl">
-          <header class="post-tl-header">
-            <h1>التدوينات</h1>
-            <p style="color: var(--color-ink-muted); margin: 0;">مقالات مطولة وأفكار وتجارب حول المعرفة والهندسة والحياة ({articles.length} تدوينة)</p>
+        <div class="post-timeline-page" dir={isRtl ? "rtl" : "ltr"}>
+          <header class="post-timeline-header">
+            <h1>{headerTitle}</h1>
+            <p>{headerDesc}</p>
           </header>
 
-          {Array.from(groups.entries()).map(([monthName, docs]) => (
-            <section key={monthName} style="margin-bottom: 2rem;">
-              <span class="post-tl-month">{monthName}</span>
-              <div class="post-tl">
-                {docs.map((doc) => {
-                  const dateObj = getDate(cfg, doc)
-                  const dateFormatted = dateObj
-                    ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
-                    : ""
-                  let readTime = ""
-                  if (doc.text) {
-                    const { minutes } = readingTime(doc.text)
-                    readTime = `${Math.ceil(minutes)} دقائق`
-                  }
+          <div class="timeline-tree-container">
+            {Array.from(groups.entries()).map(([monthName, docs]) => (
+              <div class="timeline-month-block" key={monthName}>
+                {/* Node on the spine line */}
+                <div class="timeline-spine-node">
+                  <span class="timeline-node-square" />
+                  <span class="timeline-node-branch" />
+                </div>
 
-                  return (
-                    <a href={resolveRelative(fileData.slug!, doc.slug!)} class="post-tl-item" key={doc.slug}>
-                      <span class="post-tl-date">{dateFormatted}</span>
-                      <span class="post-tl-link">{doc.frontmatter?.title ?? "بدون عنوان"}</span>
-                      {readTime && <span class="post-tl-reading">{readTime}</span>}
-                    </a>
-                  )
-                })}
+                {/* Month Badge */}
+                <div class="timeline-badge-wrap">
+                  <span class="timeline-month-badge">{monthName}</span>
+                </div>
+
+                {/* Month Articles Card */}
+                <div class="timeline-month-card">
+                  {docs.map((doc) => {
+                    const dateObj = getDate(cfg, doc)
+                    const dateFormatted = dateObj
+                      ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
+                      : ""
+                    const title = doc.frontmatter?.title ?? (isRtl ? "بدون عنوان" : "Untitled")
+
+                    return (
+                      <div class="timeline-article-row" key={doc.slug}>
+                        <a
+                          href={resolveRelative(fileData.slug!, doc.slug!)}
+                          class="timeline-article-title"
+                        >
+                          {title}
+                        </a>
+                        <span class="timeline-article-dots" />
+                        <time class="timeline-article-date">{dateFormatted}</time>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
-            </section>
-          ))}
+            ))}
+          </div>
         </div>
       )
     }

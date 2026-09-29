@@ -2606,79 +2606,231 @@ pre code {
   transform: translate(-1px, -1px);
 }
 
-/* ── Articles Timeline (/ar/articles) ── */
-.post-tl-page {
+/* ── Articles Timeline (Image 1 Parity - Both RTL & LTR) ── */
+.post-timeline-page {
   max-width: var(--reading-width, 950px);
   margin: 0 auto;
+  padding: 1.5rem 0 4rem 0;
 }
 
-.post-tl-header {
-  margin-bottom: 2rem;
-  border-bottom: 2px solid var(--nb-line);
-  padding-bottom: 0.75rem;
+.post-timeline-header {
+  margin-bottom: 3rem;
+  border-bottom: 2px solid var(--nb-line, #000);
+  padding-bottom: 1.25rem;
+
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+    color: var(--color-ink, #000);
+  }
+
+  p {
+    color: var(--color-ink-muted, #666);
+    font-size: 1rem;
+    margin: 0;
+  }
 }
 
-.post-tl-header h1 {
-  font-size: 2.2rem;
-  font-weight: 900;
-  margin: 0 0 0.5rem 0;
-}
-
-.post-tl-month {
-  display: inline-block;
-  padding: 0.35rem 0.85rem;
-  background: var(--nb-line);
-  color: var(--color-surface);
-  font-weight: 700;
-  font-size: 0.9rem;
-  border-radius: var(--border-radius);
-  margin-bottom: 1rem;
-}
-
-.post-tl {
+.timeline-tree-container {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 2.5rem;
+  gap: 2.75rem;
+
+  /* The vertical spine */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 16px;
+    bottom: 24px;
+    width: 2px;
+    background-color: var(--nb-line, #000);
+    z-index: 1;
+  }
 }
 
-.post-tl-item {
+/* RTL layout (Arabic): Spine on the RIGHT */
+[dir="rtl"] .timeline-tree-container {
+  padding-right: 38px;
+
+  &::before {
+    right: 8px;
+  }
+
+  .timeline-spine-node {
+    position: absolute;
+    right: -38px;
+    top: 9px;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    z-index: 2;
+  }
+
+  .timeline-node-square {
+    width: 14px;
+    height: 14px;
+    background-color: var(--nb-main, #f6c445);
+    border: 2px solid var(--nb-line, #000);
+    border-radius: 2px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+
+  .timeline-node-branch {
+    width: 24px;
+    height: 2px;
+    background-color: var(--nb-line, #000);
+    flex-shrink: 0;
+  }
+}
+
+/* LTR layout (English): Spine on the LEFT */
+[dir="ltr"] .timeline-tree-container {
+  padding-left: 38px;
+
+  &::before {
+    left: 8px;
+  }
+
+  .timeline-spine-node {
+    position: absolute;
+    left: -38px;
+    top: 9px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    z-index: 2;
+  }
+
+  .timeline-node-square {
+    width: 14px;
+    height: 14px;
+    background-color: var(--nb-main, #f6c445);
+    border: 2px solid var(--nb-line, #000);
+    border-radius: 2px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+
+  .timeline-node-branch {
+    width: 24px;
+    height: 2px;
+    background-color: var(--nb-line, #000);
+    flex-shrink: 0;
+  }
+}
+
+.timeline-month-block {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-badge-wrap {
+  margin-bottom: 0.85rem;
+}
+
+.timeline-month-badge {
+  display: inline-block;
+  background-color: var(--nb-main, #f6c445);
+  border: 2px solid var(--nb-line, #000);
+  box-shadow: 3px 3px 0 0 var(--nb-line, #000);
+  border-radius: 4px;
+  padding: 6px 18px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #000000;
+  letter-spacing: -0.01em;
+}
+
+.timeline-month-card {
+  background-color: var(--color-surface-elevated, #ffffff);
+  border: 2px solid var(--nb-line, #000);
+  box-shadow: 4px 4px 0 0 var(--nb-line, #000);
+  border-radius: 4px;
+  padding: 1.35rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  box-sizing: border-box;
+}
+
+.timeline-article-row {
   display: flex;
   align-items: baseline;
-  gap: 1rem;
-  padding: 0.85rem 1.25rem;
-  background: var(--color-surface-elevated);
-  border: 1.5px solid var(--nb-line);
-  box-shadow: 2px 2px 0 0 var(--nb-line);
-  border-radius: var(--border-radius);
-  text-decoration: none;
-  color: var(--color-ink);
-  transition: all 0.15s ease;
+  gap: 14px;
+  width: 100%;
 }
 
-.post-tl-item:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 0 var(--nb-line);
-  background: var(--color-field);
-}
-
-.post-tl-date {
-  font-family: monospace;
-  font-size: 0.85rem;
-  color: var(--color-ink-muted);
-  white-space: nowrap;
-}
-
-.post-tl-link {
-  font-size: 1.15rem;
+.timeline-article-title {
+  font-size: 1.1rem;
   font-weight: 700;
-  flex-grow: 1;
+  color: var(--color-ink, #000000);
+  text-decoration: none !important;
+  transition: color 0.15s ease;
+  flex-shrink: 0;
+  max-width: 75%;
+
+  &:hover {
+    color: #e53e3e;
+    text-decoration: underline !important;
+  }
 }
 
-.post-tl-reading {
-  font-size: 0.85rem;
-  color: var(--color-ink-muted);
+.timeline-article-dots {
+  flex-grow: 1;
+  border-bottom: 2px dotted rgba(0, 0, 0, 0.35);
+  align-self: center;
+  min-width: 20px;
+}
+
+[saved-theme="dark"] .timeline-article-dots {
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+}
+
+.timeline-article-date {
+  font-family: monospace;
+  font-size: 0.95rem;
+  color: var(--color-ink-muted, #666666);
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  [dir="rtl"] .timeline-tree-container {
+    padding-right: 28px;
+    &::before { right: 6px; }
+    .timeline-spine-node { right: -28px; }
+    .timeline-node-branch { width: 16px; }
+  }
+
+  [dir="ltr"] .timeline-tree-container {
+    padding-left: 28px;
+    &::before { left: 6px; }
+    .timeline-spine-node { left: -28px; }
+    .timeline-node-branch { width: 16px; }
+  }
+
+  .timeline-month-card {
+    padding: 1rem 1.15rem;
+  }
+
+  .timeline-article-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .timeline-article-title {
+    max-width: 100%;
+    flex-shrink: 1;
+    width: 100%;
+  }
+
+  .timeline-article-dots {
+    display: none;
+  }
 }
 
 /* ── Single Article View (Post Single Card) ── */
@@ -3127,10 +3279,24 @@ body:has(.alfarhan-home-container) {
   border-color: #e5e5e5;
 }
 
-.alfarhan-banner-right {
+.alfarhan-banner-right,
+.alfarhan-banner-right-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none !important;
+  color: inherit !important;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.85;
+
+    .alfarhan-banner-title {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
 }
 
 .alfarhan-icon-badge {

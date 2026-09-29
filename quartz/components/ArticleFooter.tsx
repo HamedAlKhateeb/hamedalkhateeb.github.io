@@ -9,13 +9,26 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
   const { fileData, allFiles, displayClass, cfg } = props
   const text = fileData.text
 
-  // Only render on actual articles — not on poetry pages
+  const slug = (fileData.slug ?? "").toLowerCase()
+  const isPoetry = slug.startsWith("ar/poetry/") || slug.startsWith("poetry/")
+  const isMicro = slug.startsWith("ar/micro/") || slug.startsWith("micro/")
+  const isHome =
+    slug === "" ||
+    slug === "index" ||
+    slug === "ar" ||
+    slug === "ar/index" ||
+    slug === "en" ||
+    slug === "en/index"
+
+  // Only render on actual articles — not on home, folder index, tags, poetry, or micro
   if (
     !text ||
-    fileData.slug === "index" ||
-    fileData.slug?.endsWith("/index") ||
-    fileData.slug?.startsWith("tags/") ||
-    fileData.slug?.toLowerCase().startsWith("poetry/")
+    isHome ||
+    slug.endsWith("/index") ||
+    slug.startsWith("tags/") ||
+    isPoetry ||
+    isMicro ||
+    slug === "about"
   ) {
     return null
   }
@@ -24,47 +37,161 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
   const time = i18n(cfg.locale).components.contentMeta.readingTime({ minutes: Math.ceil(minutes) })
   const date = getDate(cfg, fileData)
 
-  // Get 2 recommended articles (simple logic: get 2 next/prev or fallback)
-  const currentIdx = allFiles.findIndex((f) => f.slug === fileData.slug)
-  const recommendations = []
-  if (currentIdx !== -1 && allFiles.length > 2) {
-    let nextIdx = (currentIdx + 1) % allFiles.length
-    let prevIdx = (currentIdx - 1 + allFiles.length) % allFiles.length
-    if (allFiles[nextIdx].slug === fileData.slug) nextIdx = (nextIdx + 1) % allFiles.length
-    if (
-      allFiles[prevIdx].slug === fileData.slug ||
-      allFiles[prevIdx].slug === allFiles[nextIdx].slug
-    )
-      prevIdx = (prevIdx - 1 + allFiles.length) % allFiles.length
+  const isRtl = slug.startsWith("ar/") || slug.startsWith("ar-")
 
-    recommendations.push(allFiles[prevIdx])
-    recommendations.push(allFiles[nextIdx])
-  } else {
-    recommendations.push(...allFiles.filter((f) => f.slug !== fileData.slug).slice(0, 2))
-  }
+  // Filter candidate articles in the same language
+  const candidateArticles = allFiles
+    .filter((f) => {
+      if (!f.slug || f.slug.endsWith("/index") || f.slug.startsWith("tags/") || f.slug === "index" || f.slug === "about") {
+        return false
+      }
+      const s = f.slug.toLowerCase()
+      if (s.startsWith("ar/poetry/") || s.startsWith("poetry/") || s.startsWith("ar/micro/") || s.startsWith("micro/")) {
+        return false
+      }
+      if (isRtl) {
+        return s.startsWith("ar/articles/") || s.startsWith("articles/") || s.startsWith("post/")
+      } else {
+        return !s.startsWith("ar/")
+      }
+    })
+    .sort((a, b) => {
+      const aDate = getDate(cfg, a)?.getTime() ?? 0
+      const bDate = getDate(cfg, b)?.getTime() ?? 0
+      return bDate - aDate // Newest first
+    })
+
+  const currentIdx = candidateArticles.findIndex((f) => f.slug === fileData.slug)
+  const newerArticle = currentIdx > 0 ? candidateArticles[currentIdx - 1] : undefined
+  const olderArticle =
+    currentIdx >= 0 && currentIdx < candidateArticles.length - 1
+      ? candidateArticles[currentIdx + 1]
+      : undefined
+  const hasNavigation = Boolean(newerArticle || olderArticle)
 
   return (
     <div class={classNames(displayClass, "article-footer-wrapper")}>
-      {/* 1. Recommendations */}
-      {recommendations.length > 0 && (
-        <div class="recommendations-section">
-          <h3 class="recommendations-title" data-lang-en="Read Also">
-            إقرأ أيضاً
-          </h3>
-          <div class="recommendations-grid">
-            {recommendations.map((page, idx) => (
-              <a
-                href={resolveRelative(fileData.slug!, page.slug!)}
-                class="recommendation-card internal"
-                key={idx}
-              >
-                <span class="rec-category">{page.frontmatter?.tags?.[0] || "مقال"}</span>
-                <h4>{page.frontmatter?.title}</h4>
-                <p>{page.frontmatter?.description || "اضغط لقراءة المزيد..."}</p>
-              </a>
-            ))}
-          </div>
-        </div>
+      {/* 1. Next & Previous Split Box (Image 2 Parity) */}
+      {hasNavigation && (
+        <nav
+          class="post-navigation-container"
+          aria-label={isRtl ? "تنقل بين المقالات" : "Article navigation"}
+          dir={isRtl ? "rtl" : "ltr"}
+        >
+          {isRtl ? (
+            <>
+              {olderArticle ? (
+                <a
+                  href={resolveRelative(fileData.slug!, olderArticle.slug!)}
+                  class="post-nav-box post-nav-prev"
+                  title={olderArticle.frontmatter?.title}
+                >
+                  <span class="post-nav-title">
+                    {olderArticle.frontmatter?.title ?? "المقال السابق"}
+                  </span>
+                  <svg
+                    class="post-nav-arrow"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </a>
+              ) : (
+                <div class="post-nav-box post-nav-empty" aria-hidden="true" />
+              )}
+
+              {newerArticle ? (
+                <a
+                  href={resolveRelative(fileData.slug!, newerArticle.slug!)}
+                  class="post-nav-box post-nav-next"
+                  title={newerArticle.frontmatter?.title}
+                >
+                  <svg
+                    class="post-nav-arrow"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                  <span class="post-nav-title">
+                    {newerArticle.frontmatter?.title ?? "المقال التالي"}
+                  </span>
+                </a>
+              ) : (
+                <div class="post-nav-box post-nav-empty" aria-hidden="true" />
+              )}
+            </>
+          ) : (
+            <>
+              {olderArticle ? (
+                <a
+                  href={resolveRelative(fileData.slug!, olderArticle.slug!)}
+                  class="post-nav-box post-nav-prev"
+                  title={olderArticle.frontmatter?.title}
+                >
+                  <svg
+                    class="post-nav-arrow"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                  <span class="post-nav-title">
+                    {olderArticle.frontmatter?.title ?? "Previous"}
+                  </span>
+                </a>
+              ) : (
+                <div class="post-nav-box post-nav-empty" aria-hidden="true" />
+              )}
+
+              {newerArticle ? (
+                <a
+                  href={resolveRelative(fileData.slug!, newerArticle.slug!)}
+                  class="post-nav-box post-nav-next"
+                  title={newerArticle.frontmatter?.title}
+                >
+                  <span class="post-nav-title">
+                    {newerArticle.frontmatter?.title ?? "Next"}
+                  </span>
+                  <svg
+                    class="post-nav-arrow"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </a>
+              ) : (
+                <div class="post-nav-box post-nav-empty" aria-hidden="true" />
+              )}
+            </>
+          )}
+        </nav>
       )}
 
       {/* 2. Separator */}
@@ -72,12 +199,12 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
         <span class="separator-diamond">✧</span>
       </div>
 
-      {/* 4. Separator */}
+      {/* 3. Separator */}
       <div class="footer-separator bottom-sep">
         <span>◇ ~ (x) ~ ◇</span>
       </div>
 
-      {/* 5. Meta Block */}
+      {/* 4. Meta Block */}
       <div class="article-end-meta">
         <h2 class="footer-article-title">{fileData.frontmatter?.title}</h2>
         <p class="footer-category" data-lang-en="Related articles in the same category">
@@ -121,55 +248,83 @@ ArticleFooter.css = `
   width: 100%;
 }
 
-/* Recommendations */
-.recommendations-title {
-  text-align: center;
-  font-family: var(--headerFont);
-  color: #8a252c;
-  margin-bottom: 1.5rem;
-  font-size: 1.2rem;
-}
-.recommendations-grid {
+/* ── Next & Previous Article Navigation (Image 2 Parity) ── */
+.post-navigation-container {
   display: flex;
-  gap: 1.5rem;
   width: 100%;
-  justify-content: center;
-  flex-wrap: wrap;
+  max-width: var(--reading-width, 950px);
+  margin: 1.5rem auto 2.5rem auto;
+  background: var(--color-surface-elevated, #fff);
+  border: 2px solid var(--nb-line, #000);
+  box-shadow: 4px 4px 0 0 var(--nb-line, #000);
+  border-radius: 4px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
-.recommendation-card {
+
+.post-nav-box {
   flex: 1;
-  min-width: 250px;
-  max-width: 350px;
-  border: 1px solid var(--lightgray);
-  border-radius: 8px;
-  padding: 1.5rem;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 1.25rem 1.75rem;
   text-decoration: none !important;
-  color: inherit;
-  transition: all 0.2s ease;
-  background: transparent;
+  color: var(--color-ink, #000) !important;
+  transition: background-color 0.15s ease;
+  min-width: 0;
+  box-sizing: border-box;
 }
-.recommendation-card:hover {
-  border-color: var(--gray);
-  transform: translateY(-2px);
+
+.post-nav-box:not(.post-nav-empty):hover {
+  background-color: var(--color-field, #fcfbf7);
 }
-.rec-category {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--gray);
-  margin-bottom: 0.5rem;
+
+.post-nav-box:first-child {
+  border-inline-end: 2px solid var(--nb-line, #000);
 }
-.recommendation-card h4 {
-  font-family: var(--headerFont);
-  font-size: 1.3rem;
-  margin: 0 0 0.5rem 0;
-  color: var(--dark);
+
+.post-nav-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
 }
-.recommendation-card p {
-  font-size: 0.9rem;
-  color: var(--darkgray);
-  margin: 0;
-  opacity: 0.8;
+
+.post-nav-prev .post-nav-title {
+  text-align: inherit;
+}
+
+.post-nav-next .post-nav-title {
+  text-align: inherit;
+}
+
+.post-nav-arrow {
+  flex-shrink: 0;
+  color: var(--color-ink, #000);
+}
+
+.post-nav-empty {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .post-navigation-container {
+    flex-direction: column;
+  }
+
+  .post-nav-box:first-child {
+    border-inline-end: none;
+    border-bottom: 2px solid var(--nb-line, #000);
+  }
+
+  .post-nav-title {
+    white-space: normal;
+  }
 }
 
 /* Separators */

@@ -104,10 +104,13 @@ export default (() => {
         {latestMicro.length > 0 && (
           <section class="alfarhan-card-box shatharat-box">
             <div class="alfarhan-card-banner">
-              <div class="alfarhan-banner-right">
+              <a
+                href={resolveRelative(fileData.slug!, "ar/micro" as any)}
+                class="alfarhan-banner-right-link"
+              >
                 <span class="alfarhan-icon-badge">💡</span>
                 <span class="alfarhan-banner-title">شذرات</span>
-              </div>
+              </a>
               <a
                 href={resolveRelative(fileData.slug!, "ar/micro" as any)}
                 class="alfarhan-btn-all"
@@ -166,10 +169,13 @@ export default (() => {
         {latestArticles.length > 0 && (
           <section class="alfarhan-card-box tadwinat-box">
             <div class="alfarhan-card-banner">
-              <div class="alfarhan-banner-right">
+              <a
+                href={resolveRelative(fileData.slug!, "ar/articles" as any)}
+                class="alfarhan-banner-right-link"
+              >
                 <span class="alfarhan-icon-badge">🖊️</span>
                 <span class="alfarhan-banner-title">تدوينات</span>
-              </div>
+              </a>
               <a
                 href={resolveRelative(fileData.slug!, "ar/articles" as any)}
                 class="alfarhan-btn-all"
@@ -208,10 +214,13 @@ export default (() => {
         {latestPoems.length > 0 && (
           <section class="alfarhan-card-box poetry-box">
             <div class="alfarhan-card-banner">
-              <div class="alfarhan-banner-right">
+              <a
+                href={resolveRelative(fileData.slug!, "ar/poetry" as any)}
+                class="alfarhan-banner-right-link"
+              >
                 <span class="alfarhan-icon-badge">📜</span>
                 <span class="alfarhan-banner-title">ديوان الشعر</span>
-              </div>
+              </a>
               <a
                 href={resolveRelative(fileData.slug!, "ar/poetry" as any)}
                 class="alfarhan-btn-all"
@@ -246,10 +255,13 @@ export default (() => {
         {topTags.length > 0 && (
           <section class="alfarhan-card-box tags-box">
             <div class="alfarhan-card-banner">
-              <div class="alfarhan-banner-right">
+              <a
+                href={resolveRelative(fileData.slug!, "tags" as any)}
+                class="alfarhan-banner-right-link"
+              >
                 <span class="alfarhan-icon-badge">🏷️</span>
                 <span class="alfarhan-banner-title">وسوم</span>
-              </div>
+              </a>
               <a
                 href={resolveRelative(fileData.slug!, "tags" as any)}
                 class="alfarhan-btn-all"

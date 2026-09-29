@@ -76,10 +76,13 @@ export default (() => {
         {latestWritings.length > 0 && (
           <section class="alfarhan-card-box tadwinat-box">
             <div class="alfarhan-card-banner">
-              <div class="alfarhan-banner-right">
+              <a
+                href={resolveRelative(fileData.slug!, "Experiences" as any)}
+                class="alfarhan-banner-right-link"
+              >
                 <span class="alfarhan-icon-badge">🖊️</span>
                 <span class="alfarhan-banner-title">Writings</span>
-              </div>
+              </a>
               <a
                 href={resolveRelative(fileData.slug!, "Experiences" as any)}
                 class="alfarhan-btn-all"
@@ -177,10 +180,13 @@ export default (() => {
         {topTags.length > 0 && (
           <section class="alfarhan-card-box tags-box">
             <div class="alfarhan-card-banner">
-              <div class="alfarhan-banner-right">
+              <a
+                href={resolveRelative(fileData.slug!, "tags" as any)}
+                class="alfarhan-banner-right-link"
+              >
                 <span class="alfarhan-icon-badge">🏷️</span>
                 <span class="alfarhan-banner-title">Tags</span>
-              </div>
+              </a>
               <a
                 href={resolveRelative(fileData.slug!, "tags" as any)}
                 class="alfarhan-btn-all"
@@ -233,10 +239,13 @@ export default (() => {
         {/* ═══════════════ Card 4: About the Author ═══════════════ */}
         <section class="alfarhan-card-box about-box">
           <div class="alfarhan-card-banner">
-            <div class="alfarhan-banner-right">
+            <a
+              href={resolveRelative(fileData.slug!, "About" as any)}
+              class="alfarhan-banner-right-link"
+            >
               <span class="alfarhan-icon-badge">👤</span>
               <span class="alfarhan-banner-title">About</span>
-            </div>
+            </a>
             <a
               href={resolveRelative(fileData.slug!, "About" as any)}
               class="alfarhan-btn-all"
