@@ -176,67 +176,7 @@ export default (() => {
           </div>
         </section>
 
-        {/* ═══════════════ Card 3: Tags ═══════════════ */}
-        {topTags.length > 0 && (
-          <section class="alfarhan-card-box tags-box">
-            <div class="alfarhan-card-banner">
-              <a
-                href={resolveRelative(fileData.slug!, "tags" as any)}
-                class="alfarhan-banner-right-link"
-              >
-                <span class="alfarhan-icon-badge">🏷️</span>
-                <span class="alfarhan-banner-title">Tags</span>
-              </a>
-              <a
-                href={resolveRelative(fileData.slug!, "tags" as any)}
-                class="alfarhan-btn-all"
-              >
-                All Tags →
-              </a>
-            </div>
-
-            <div class="alfarhan-card-content" style={{ padding: "16px 20px" }}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                {topTags.map(([tag, count]) => (
-                  <a
-                    href={resolveRelative(fileData.slug!, `tags/${tag}` as any)}
-                    key={tag}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      padding: "4px 10px",
-                      background: "var(--color-field, #fdfbf7)",
-                      border: "1.5px solid var(--nb-line, #000)",
-                      boxShadow: "1.5px 1.5px 0 0 var(--nb-line, #000)",
-                      borderRadius: "4px",
-                      fontSize: "0.86rem",
-                      fontWeight: 600,
-                      textDecoration: "none",
-                      color: "inherit",
-                    }}
-                  >
-                    <span>#{tag.replace(/_/g, " ")}</span>
-                    <span
-                      style={{
-                        background: "var(--nb-main, #f6c445)",
-                        color: "#000",
-                        padding: "1px 6px",
-                        borderRadius: "10px",
-                        fontSize: "0.75rem",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {count}
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* ═══════════════ Card 4: About the Author ═══════════════ */}
+        {/* ═══════════════ Card 3: About the Author ═══════════════ */}
         <section class="alfarhan-card-box about-box">
           <div class="alfarhan-card-banner">
             <a
@@ -338,6 +278,66 @@ export default (() => {
             </div>
           </div>
         </section>
+
+        {/* ═══════════════ Card 4: Tags ═══════════════ */}
+        {topTags.length > 0 && (
+          <section class="alfarhan-card-box tags-box">
+            <div class="alfarhan-card-banner">
+              <a
+                href={resolveRelative(fileData.slug!, "tags" as any)}
+                class="alfarhan-banner-right-link"
+              >
+                <span class="alfarhan-icon-badge">🏷️</span>
+                <span class="alfarhan-banner-title">Tags</span>
+              </a>
+              <a
+                href={resolveRelative(fileData.slug!, "tags" as any)}
+                class="alfarhan-btn-all"
+              >
+                All Tags →
+              </a>
+            </div>
+
+            <div class="alfarhan-card-content" style={{ padding: "16px 20px" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {topTags.map(([tag, count]) => (
+                  <a
+                    href={resolveRelative(fileData.slug!, `tags/${tag}` as any)}
+                    key={tag}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "4px 10px",
+                      background: "var(--color-field, #fdfbf7)",
+                      border: "1.5px solid var(--nb-line, #000)",
+                      boxShadow: "1.5px 1.5px 0 0 var(--nb-line, #000)",
+                      borderRadius: "4px",
+                      fontSize: "0.86rem",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
+                    <span>#{tag.replace(/_/g, " ")}</span>
+                    <span
+                      style={{
+                        background: "var(--nb-main, #f6c445)",
+                        color: "#000",
+                        padding: "1px 6px",
+                        borderRadius: "10px",
+                        fontSize: "0.75rem",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {count}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </div>
     )
   }

@@ -328,18 +328,18 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
                 <span>Snippets</span>
               </a>
               <a
-                href={resolveRelative(fileData.slug!, "tags" as FullSlug)}
-                class={`site-nav-link alfarhan-nav-link ${isTags ? "is-active" : ""}`}
-              >
-                <span class="nav-ico">🏷️</span>
-                <span>Tags</span>
-              </a>
-              <a
                 href={resolveRelative(fileData.slug!, "About" as FullSlug)}
                 class="site-nav-link alfarhan-nav-link"
               >
                 <span class="nav-ico">👤</span>
                 <span>About</span>
+              </a>
+              <a
+                href={resolveRelative(fileData.slug!, "tags" as FullSlug)}
+                class={`site-nav-link alfarhan-nav-link ${isTags ? "is-active" : ""}`}
+              >
+                <span class="nav-ico">🏷️</span>
+                <span>Tags</span>
               </a>
               <a
                 href={resolveRelative(fileData.slug!, "" as FullSlug)}

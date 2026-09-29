@@ -14,6 +14,7 @@ document.addEventListener("nav", async () => {
     (container.dataset.lang !== "ar" && document.documentElement.lang === "en")
       ? "en"
       : "ar"
+  container.setAttribute("dir", lang === "ar" ? "rtl" : "ltr")
 
   const STRINGS = {
     ar: {
@@ -25,6 +26,9 @@ document.addEventListener("nav", async () => {
       link: "رابط (Link)",
       linkText: "النص هنا",
       linkUrl: "الرابط_هنا",
+      livePreview: "معاينة مباشرة",
+      writeMode: "تحرير",
+      previewEmpty: "لا يوجد نص للمعاينة بعد.",
       shareTitle: "شارك المقال",
       commentsTitle: "التعليقات",
       tabGuest: "✍️ كزائر",
@@ -95,6 +99,9 @@ document.addEventListener("nav", async () => {
       link: "Link",
       linkText: "text here",
       linkUrl: "url_here",
+      livePreview: "Live Preview",
+      writeMode: "Edit",
+      previewEmpty: "No text to preview yet.",
       shareTitle: "Share this article",
       commentsTitle: "Comments",
       tabGuest: "✍️ As guest",
@@ -205,12 +212,18 @@ document.addEventListener("nav", async () => {
 
   const toolbarHTML = `
     <div class="fc-toolbar">
-      <button type="button" data-md="**" title="${T.bold}"><b>B</b></button>
-      <button type="button" data-md="*" title="${T.italic}"><i>I</i></button>
-      <button type="button" data-md="~~" title="${T.strike}"><strike>S</strike></button>
-      <button type="button" data-md="## " title="${T.heading}"><b>H</b></button>
-      <button type="button" data-md="\`" title="${T.code}"><code>&lt;/&gt;</code></button>
-      <button type="button" data-md="[]()" title="${T.link}">🔗</button>
+      <div class="fc-toolbar-tools">
+        <button type="button" data-md="**" title="${T.bold}"><b>B</b></button>
+        <button type="button" data-md="*" title="${T.italic}"><i>I</i></button>
+        <button type="button" data-md="~~" title="${T.strike}"><strike>S</strike></button>
+        <button type="button" data-md="## " title="${T.heading}"><b>H</b></button>
+        <button type="button" data-md="\`" title="${T.code}"><code>&lt;/&gt;</code></button>
+        <button type="button" data-md="[]()" title="${T.link}">🔗</button>
+      </div>
+      <div class="fc-toolbar-modes">
+        <button type="button" class="fc-mode-btn fc-btn-write active" title="${T.writeMode}">✍️ ${T.writeMode}</button>
+        <button type="button" class="fc-mode-btn fc-btn-preview" title="${T.livePreview}">👁️ ${T.livePreview}</button>
+      </div>
     </div>
   `
 
@@ -265,9 +278,11 @@ document.addEventListener("nav", async () => {
     <div id="fc-compose-section" class="fc-compose" style="display:none;">
       <div class="fc-editor-wrap">
         ${toolbarHTML}
-        <textarea id="fc-textarea" class="fc-textarea" placeholder="${T.commentPh}"></textarea>
+        <div class="fc-editor-body">
+          <textarea id="fc-textarea" class="fc-textarea" placeholder="${T.commentPh}"></textarea>
+          <div class="fc-live-preview fc-comment-text" style="display:none;"></div>
+        </div>
       </div>
-      <div id="fc-preview" class="fc-comment-text" style="display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"></div>
       <button type="button" id="fc-submit-btn" class="fc-submit-btn">${T.submitComment}</button>
     </div>
 
@@ -286,9 +301,11 @@ document.addEventListener("nav", async () => {
       </div>
       <div class="fc-editor-wrap">
         ${toolbarHTML}
-        <textarea id="fc-guest-textarea" class="fc-textarea" placeholder="${T.commentPh}"></textarea>
+        <div class="fc-editor-body">
+          <textarea id="fc-guest-textarea" class="fc-textarea" placeholder="${T.commentPh}"></textarea>
+          <div class="fc-live-preview fc-comment-text" style="display:none;"></div>
+        </div>
       </div>
-      <div id="fc-guest-preview" class="fc-comment-text" style="display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"></div>
       <button type="button" id="fc-guest-submit-btn" class="fc-submit-btn">${T.submitComment}</button>
     </div>
 
@@ -311,8 +328,6 @@ document.addEventListener("nav", async () => {
   const saveCheckbox = document.getElementById("fc-save-info") as HTMLInputElement
   const listEl = document.getElementById("fc-list")!
   const reactionsEl = document.getElementById("fc-article-reactions")!
-  const previewEl = document.getElementById("fc-preview")!
-  const guestPreviewEl = document.getElementById("fc-guest-preview")!
   const notifyBar = document.getElementById("fc-notify-bar")!
   const notifyBtn = document.getElementById("fc-notify-btn")
 
@@ -360,8 +375,36 @@ document.addEventListener("nav", async () => {
 
   // ── Helpers ────────────────────────────────────────────────────────────
   const bindToolbar = (wrap: HTMLElement, ta: HTMLTextAreaElement) => {
-    wrap.querySelectorAll(".fc-toolbar button").forEach((btn) => {
+    const livePrev = wrap.querySelector(".fc-live-preview") as HTMLElement | null
+    const btnWrite = wrap.querySelector(".fc-btn-write") as HTMLButtonElement | null
+    const btnPreview = wrap.querySelector(".fc-btn-preview") as HTMLButtonElement | null
+
+    const switchToWrite = () => {
+      if (!livePrev) return
+      livePrev.style.display = "none"
+      ta.style.display = "block"
+      btnWrite?.classList.add("active")
+      btnPreview?.classList.remove("active")
+      ta.focus()
+    }
+
+    const switchToPreview = () => {
+      if (!livePrev) return
+      const text = ta.value.trim()
+      livePrev.innerHTML = text ? parseMarkdown(text) : `<p style="opacity:0.5;font-style:italic;">${T.previewEmpty}</p>`
+      ta.style.display = "none"
+      livePrev.style.display = "block"
+      btnPreview?.classList.add("active")
+      btnWrite?.classList.remove("active")
+    }
+
+    btnWrite?.addEventListener("click", switchToWrite)
+    btnPreview?.addEventListener("click", switchToPreview)
+    livePrev?.addEventListener("click", switchToWrite)
+
+    wrap.querySelectorAll(".fc-toolbar-tools button").forEach((btn) => {
       btn.addEventListener("click", () => {
+        switchToWrite()
         const md = (btn as HTMLElement).dataset.md!
         const start = ta.selectionStart
         const end = ta.selectionEnd
@@ -370,7 +413,7 @@ document.addEventListener("nav", async () => {
         if (md === "[]()") {
           ta.value = text.substring(0, start) + `[${T.linkText}](${T.linkUrl})` + text.substring(end)
           ta.focus()
-          ta.setSelectionRange(start + 1, start + 9)
+          ta.setSelectionRange(start + 1, start + 1 + T.linkText.length)
         } else if (md === "## ") {
           const before = text.substring(0, start)
           const prefix = before.length > 0 && !before.endsWith("\n") ? "\n## " : "## "
@@ -390,6 +433,22 @@ document.addEventListener("nav", async () => {
         }
         ta.dispatchEvent(new Event("input"))
       })
+    })
+
+    // Obsidian keyboard shortcuts
+    ta.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key.toLowerCase() === "b") {
+          e.preventDefault()
+          wrap.querySelector<HTMLButtonElement>('button[data-md="**"]')?.click()
+        } else if (e.key.toLowerCase() === "i") {
+          e.preventDefault()
+          wrap.querySelector<HTMLButtonElement>('button[data-md="*"]')?.click()
+        } else if (e.key.toLowerCase() === "k") {
+          e.preventDefault()
+          wrap.querySelector<HTMLButtonElement>('button[data-md="[]()"]')?.click()
+        }
+      }
     })
   }
 
@@ -424,21 +483,6 @@ document.addEventListener("nav", async () => {
     return html
   }
 
-  const updatePreview = (ta: HTMLTextAreaElement, preview: HTMLElement) => {
-    const text = ta.value.trim()
-    if (text) {
-      preview.style.display = "block"
-      preview.innerHTML =
-        `<div style="font-size:0.85em;opacity:0.7;margin-bottom:0.4rem;border-bottom:1px solid var(--lightgray);padding-bottom:0.2rem;">${T.preview}</div>` +
-        parseMarkdown(text)
-    } else {
-      preview.style.display = "none"
-      preview.innerHTML = ""
-    }
-  }
-
-  textarea.addEventListener("input", () => updatePreview(textarea, previewEl))
-  guestTextarea.addEventListener("input", () => updatePreview(guestTextarea, guestPreviewEl))
   bindToolbar(composeSection, textarea)
   bindToolbar(guestCompose, guestTextarea)
 
@@ -656,16 +700,19 @@ document.addEventListener("nav", async () => {
       wrap.className = "fc-edit-wrap fc-editor-wrap"
       wrap.innerHTML = toolbarHTML
 
+      const editorBody = document.createElement("div")
+      editorBody.className = "fc-editor-body"
+
       const editTA = document.createElement("textarea")
       editTA.className = "fc-edit-textarea"
       editTA.value = originalText
 
-      const editPreview = document.createElement("div")
-      editPreview.className = "fc-comment-text"
-      editPreview.style.cssText =
-        "display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"
+      const livePrev = document.createElement("div")
+      livePrev.className = "fc-live-preview fc-comment-text"
+      livePrev.style.display = "none"
 
-      editTA.addEventListener("input", () => updatePreview(editTA, editPreview))
+      editorBody.append(editTA, livePrev)
+      wrap.append(editorBody)
 
       const editActions = document.createElement("div")
       editActions.className = "fc-edit-actions"
@@ -681,16 +728,14 @@ document.addEventListener("nav", async () => {
       cancelBtn.textContent = T.cancel
 
       editActions.append(saveBtn, cancelBtn)
-      wrap.append(editTA)
 
       const fullWrap = document.createElement("div")
       fullWrap.style.cssText = "display:flex;flex-direction:column;gap:0.5rem;"
-      fullWrap.append(wrap, editPreview, editActions)
+      fullWrap.append(wrap, editActions)
 
       textDiv.innerHTML = ""
       textDiv.appendChild(fullWrap)
       editTA.focus()
-      updatePreview(editTA, editPreview)
       bindToolbar(wrap, editTA)
 
       cancelBtn.addEventListener("click", () => {
@@ -744,9 +789,11 @@ document.addEventListener("nav", async () => {
         ${guestFieldsHTML}
         <div class="fc-editor-wrap">
           ${toolbarHTML}
-          <textarea class="fc-reply-textarea" placeholder="${T.replyPh}"></textarea>
+          <div class="fc-editor-body">
+            <textarea class="fc-reply-textarea" placeholder="${T.replyPh}"></textarea>
+            <div class="fc-live-preview fc-comment-text" style="display:none;"></div>
+          </div>
         </div>
-        <div class="fc-reply-preview fc-comment-text" style="display:none; padding:0.8rem; margin:0.5rem 0; border:1px solid var(--lightgray); border-radius:5px; background:var(--light);"></div>
         <div class="fc-reply-actions">
           <button type="button" class="fc-submit-btn fc-reply-submit-btn">${T.replySubmit}</button>
           <button type="button" class="fc-logout-btn fc-reply-cancel-btn">${T.cancel}</button>
@@ -754,8 +801,6 @@ document.addEventListener("nav", async () => {
       replyArea.appendChild(form)
 
       const ta = form.querySelector(".fc-reply-textarea") as HTMLTextAreaElement
-      const rpPreview = form.querySelector(".fc-reply-preview") as HTMLElement
-      ta.addEventListener("input", () => updatePreview(ta, rpPreview))
       ta.focus()
       bindToolbar(form.querySelector(".fc-editor-wrap") as HTMLElement, ta)
 

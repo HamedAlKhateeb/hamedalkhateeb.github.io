@@ -51,231 +51,153 @@ export default ((opts: Options) => {
         data-firebase-config={JSON.stringify(opts.options)}
         data-slug={slug}
         data-lang={lang}
+        dir={lang === "ar" ? "rtl" : "ltr"}
       ></div>
     )
   }
 
   Comments.afterDOMLoaded = script
   Comments.css = `
-    /* ── Wrapper ── */
+    /* ════════════════════════════════════════════════════════════
+       Neo-brutalist Retro Comments System
+       Matches Blog Theme (Amiri / IBM Plex, Borders, Yellow Accent)
+       ════════════════════════════════════════════════════════════ */
+
     .firebase-comments {
-      margin-top: 2rem;
+      margin: 3.5rem auto 2rem auto;
       padding-top: 2rem;
-      border-top: 1px solid var(--lightgray);
+      border-top: 2px dashed var(--nb-line, #000);
+      width: 100%;
+      max-width: var(--reading-width, 950px);
+      box-sizing: border-box;
+      color: var(--color-ink, #000);
     }
 
-    /* ── Article Reactions ── */
+    /* ── LTR & RTL Enforcements ── */
+    .firebase-comments[dir="ltr"],
+    .firebase-comments[data-lang="en"] {
+      direction: ltr !important;
+      text-align: left !important;
+      font-family: var(--font-english);
+
+      .fc-header, .fc-title, .fc-share-title, .fc-reactions-title,
+      .fc-textarea, .fc-guest-input, .fc-edit-textarea, .fc-reply-textarea,
+      .fc-comment-content, .fc-comment-text, .fc-author-row, .fc-comment-meta,
+      .fc-live-preview {
+        direction: ltr !important;
+        text-align: left !important;
+      }
+
+      .fc-reply {
+        border-inline-start: 2.5px solid var(--nb-line, #000);
+        margin-inline-start: 1.5rem;
+        padding-inline-start: 0.85rem;
+        border-inline-end: none;
+        padding-inline-end: 0;
+      }
+
+      .fc-save-label, .fc-save-label span {
+        direction: ltr;
+        justify-content: flex-start;
+      }
+    }
+
+    .firebase-comments[dir="rtl"],
+    .firebase-comments[data-lang="ar"] {
+      direction: rtl !important;
+      text-align: right !important;
+      font-family: var(--font-arabic);
+
+      .fc-header, .fc-title, .fc-share-title, .fc-reactions-title {
+        font-family: var(--font-arabic-display) !important;
+      }
+
+      .fc-header, .fc-title, .fc-share-title, .fc-reactions-title,
+      .fc-textarea, .fc-guest-input, .fc-edit-textarea, .fc-reply-textarea,
+      .fc-comment-content, .fc-comment-text, .fc-author-row, .fc-comment-meta,
+      .fc-live-preview {
+        direction: rtl !important;
+        text-align: right !important;
+      }
+
+      .fc-reply {
+        border-inline-start: 2.5px solid var(--nb-line, #000);
+        margin-inline-start: 1.5rem;
+        padding-inline-start: 0.85rem;
+        border-inline-end: none;
+        padding-inline-end: 0;
+      }
+
+      .fc-save-label, .fc-save-label span {
+        direction: rtl;
+        justify-content: flex-start;
+      }
+    }
+
+    /* ── Article Reactions Card ── */
     .fc-article-reactions {
       margin-bottom: 2rem;
-      padding: 1rem;
-      background: var(--lightgray);
-      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      background: var(--color-surface-elevated, #fff);
+      border: 2px solid var(--nb-line, #000);
+      box-shadow: 3.5px 3.5px 0 0 var(--nb-line, #000);
+      border-radius: 6px;
       text-align: center;
     }
     .fc-reactions-title {
-      font-family: var(--headerFont);
-      font-size: 1rem;
-      font-weight: bold;
-      color: var(--dark);
-      margin-bottom: 0.8rem;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--color-ink, #000);
+      margin-bottom: 0.9rem;
     }
-
-    /* ── Header ── */
-    .fc-header {
+    .fc-reactions {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
     }
-    .fc-title { 
-      font-size: 1.4rem; 
-      font-weight: bold; 
-      color: var(--dark); 
-    }
-    @media (max-width: 600px) {
-      .fc-title { font-size: 1.1rem; }
-    }
-
-    /* ── Auth ── */
-    .fc-login-btn {
-      background-color: var(--tertiary);
-      color: var(--light);
-      border: none;
-      padding: 0.45rem 0.9rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.88rem;
+    .fc-reaction-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      transition: opacity 0.2s;
-    }
-    .fc-login-btn:hover { opacity: 0.82; }
-    .fc-user-info { display: flex; align-items: center; gap: 0.5rem; }
-    .fc-user-avatar { width: 30px; height: 30px; border-radius: 50%; }
-    .fc-logout-btn {
-      background: none; border: none;
-      color: var(--gray); cursor: pointer;
-      font-size: 0.78rem; text-decoration: underline;
-    }
-
-    /* ── Compose & Editor ── */
-    .fc-compose { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; }
-    .fc-editor-wrap {
-      display: flex;
-      flex-direction: column;
-      border: 1px solid var(--lightgray);
-      border-radius: 6px;
-      background: var(--light);
-      overflow: hidden;
-    }
-    .fc-editor-wrap:focus-within { border-color: var(--tertiary); }
-    .fc-toolbar {
-      display: flex;
-      gap: 0.25rem;
-      padding: 0.4rem 0.6rem;
-      background: var(--lightgray);
-      border-bottom: 1px solid var(--lightgray);
-    }
-    .fc-toolbar button {
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 4px;
+      gap: 5px;
+      padding: 5px 12px;
+      border: 1.5px solid var(--nb-line, #000);
+      box-shadow: 2px 2px 0 0 var(--nb-line, #000);
+      border-radius: 20px;
+      background: var(--color-field, #fdfbf7);
       cursor: pointer;
-      padding: 0.2rem 0.5rem;
-      color: var(--darkgray);
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .fc-toolbar button:hover {
-      background: var(--highlight);
-      color: var(--dark);
-    }
-    .fc-textarea {
-      width: 100%; min-height: 80px; padding: 0.75rem;
-      border: none;
-      background: transparent; color: var(--dark);
-      font-family: inherit; resize: vertical; box-sizing: border-box;
-    }
-    .fc-textarea:focus { outline: none; }
-    .fc-submit-btn {
-      align-self: flex-end;
-      background: var(--secondary); color: var(--light);
-      border: none; padding: 0.45rem 1.4rem;
-      border-radius: 6px; cursor: pointer; transition: opacity 0.2s;
-      font-size: 0.88rem;
-    }
-    .fc-submit-btn:hover { opacity: 0.82; }
-    .fc-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* ── Comment list ── */
-    .fc-list { display: flex; flex-direction: column; gap: 1.4rem; }
-    .fc-loading { text-align: center; color: var(--gray); padding: 2rem 0; }
-
-    /* ── Single comment ── */
-    .fc-comment {
-      display: flex;
-      gap: 0.75rem;
-    }
-    .fc-reply {
-      margin-top: 1rem;
-      border-right: 2px solid var(--lightgray);
-      padding-right: 0.75rem;
-    }
-    .fc-reply-max-depth {
-      margin-right: 0rem;
-    }
-    .fc-reply-avatar {
-      width: 28px; height: 28px;
-    }
-    .fc-comment-avatar {
-      width: 38px; height: 38px;
-      border-radius: 50%; flex-shrink: 0;
-    }
-    .fc-comment-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      min-width: 0;
-    }
-    .fc-comment-content {
-      background: var(--lightgray);
-      padding: 0.85rem 1rem;
-      border-radius: 10px;
-    }
-    .fc-comment-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.4rem;
-      font-size: 0.88rem;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-    .fc-author-row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
-    .fc-comment-author { font-weight: 700; color: var(--dark); }
-    .fc-author-link {
-      font-weight: 700;
-      color: var(--secondary) !important;
-      text-decoration: none;
-    }
-    .fc-author-link:hover { text-decoration: underline; }
-    .fc-comment-meta { display: flex; align-items: center; gap: 0.35rem; }
-    .fc-comment-date { color: var(--gray); font-size: 0.8rem; }
-    .fc-edited-badge { font-size: 0.7rem; color: var(--gray); font-style: italic; }
-    
-    /* Markdown Styles inside comments */
-    .fc-comment-text {
-      color: var(--darkgray); line-height: 1.6;
-      word-break: break-word;
-    }
-    .fc-comment-text p { margin: 0 0 0.5rem 0; }
-    .fc-comment-text h3 { margin: 0.5rem 0 0.3rem; font-size: 1.1rem; color: var(--dark); }
-    .fc-comment-text code {
-      background: rgba(0,0,0,0.05);
-      padding: 0.1rem 0.3rem;
-      border-radius: 3px;
-      font-size: 0.85em;
-    }
-    :root[saved-theme="dark"] .fc-comment-text code { background: rgba(255,255,255,0.1); }
-    .fc-comment-text a { color: var(--tertiary); text-decoration: none; }
-    .fc-comment-text a:hover { text-decoration: underline; }
-
-    /* ── Reactions ── */
-    .fc-reactions { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
-    .fc-reaction-btn {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 4px 12px;
-      border: 1px solid var(--lightgray); border-radius: 20px;
-      background: var(--light); cursor: pointer; font-size: 1rem;
-      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      font-size: 1rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
       user-select: none;
     }
     .fc-reaction-btn:hover {
-      border-color: var(--tertiary);
-      background: var(--highlight);
-      transform: scale(1.08);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 0 var(--nb-line, #000);
+      background: var(--nb-main, #f6c445);
     }
-    .fc-reaction-btn.reacted { border-color: #8a252c; background: rgba(138,37,44,0.08); }
-    :root[saved-theme="dark"] .fc-reaction-btn.reacted { border-color: #d1565e; background: rgba(209,86,94,0.1); }
-    .fc-reaction-count { font-size: 0.8rem; color: var(--darkgray); font-weight: 600; }
+    .fc-reaction-btn.reacted {
+      background: var(--nb-main, #f6c445);
+      border-color: var(--nb-line, #000);
+    }
+    .fc-reaction-count {
+      font-size: 0.82rem;
+      color: var(--color-ink, #000);
+      font-weight: 700;
+    }
 
-    /* ── Share Buttons ── */
+    /* ── Social Share Card ── */
     .fc-share-wrapper {
       text-align: center;
-      margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid var(--lightgray);
+      margin-top: 1.5rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1.5px dashed var(--nb-line, #000);
     }
     .fc-share-title {
-      font-family: var(--headerFont);
-      font-size: 0.95rem;
-      font-weight: bold;
-      color: var(--dark);
-      margin-bottom: 0.8rem;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--color-ink, #000);
+      margin-bottom: 1rem;
     }
     .fc-share-buttons {
       display: flex;
@@ -287,126 +209,48 @@ export default ((opts: Options) => {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
-      background: var(--lightgray);
-      color: var(--darkgray);
-      transition: transform 0.2s, background-color 0.2s, color 0.2s;
+      background: var(--color-surface-elevated, #fff);
+      border: 1.5px solid var(--nb-line, #000);
+      box-shadow: 2px 2px 0 0 var(--nb-line, #000);
+      color: var(--color-ink, #000);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+      text-decoration: none;
     }
     .fc-share-btn svg {
-      width: 20px;
-      height: 20px;
+      width: 19px;
+      height: 19px;
     }
-    .fc-share-btn.fb:hover { background-color: #1877F2; color: #fff; transform: translateY(-3px); }
-    .fc-share-btn.li:hover { background-color: #0A66C2; color: #fff; transform: translateY(-3px); }
-    .fc-share-btn.tg:hover { background-color: #26A5E4; color: #fff; transform: translateY(-3px); }
-    .fc-share-btn.wa:hover { background-color: #25D366; color: #fff; transform: translateY(-3px); }
-    .fc-share-btn.x:hover { background-color: #000; color: #fff; transform: translateY(-3px); }
-    :root[saved-theme="dark"] .fc-share-btn.x:hover { background-color: #fff; color: #000; }
-
-    /* ── Action bar ── */
-    .fc-comment-actions {
-      display: flex; align-items: center;
-      gap: 0.5rem; flex-wrap: wrap;
-      margin-top: 0.4rem;
+    .fc-share-btn:hover {
+      transform: translate(-1.5px, -1.5px);
+      box-shadow: 3.5px 3.5px 0 0 var(--nb-line, #000);
     }
+    .fc-share-btn.fb:hover { background-color: #1877F2; color: #fff; }
+    .fc-share-btn.li:hover { background-color: #0A66C2; color: #fff; }
+    .fc-share-btn.tg:hover { background-color: #26A5E4; color: #fff; }
+    .fc-share-btn.wa:hover { background-color: #25D366; color: #fff; }
+    .fc-share-btn.x:hover { background-color: #000; color: #fff; }
 
-    /* Like button */
-    .fc-like-btn {
-      display: inline-flex; align-items: center; gap: 3px;
-      background: none; border: 1px solid var(--lightgray);
-      border-radius: 20px; padding: 2px 10px;
-      cursor: pointer; font-size: 0.88rem;
-      transition: border-color 0.15s, background 0.15s, transform 0.1s;
-      color: var(--darkgray);
-    }
-    .fc-like-btn:hover { border-color: var(--secondary); background: rgba(138,37,44,0.06); transform: scale(1.06); }
-    .fc-like-btn.liked { border-color: var(--secondary); background: rgba(138,37,44,0.08); }
-    :root[saved-theme="dark"] .fc-like-btn:hover, :root[saved-theme="dark"] .fc-like-btn.liked { border-color: var(--secondary); background: rgba(209,86,94,0.1); }
-    .fc-like-count { font-size: 0.78rem; font-weight: 600; }
-
-    /* Reply button */
-    .fc-reply-btn {
-      display: inline-flex; align-items: center; gap: 3px;
-      background: none; border: 1px solid var(--lightgray);
-      border-radius: 20px; padding: 2px 10px;
-      cursor: pointer; font-size: 0.82rem; color: var(--gray);
-      transition: border-color 0.15s, color 0.15s;
-    }
-    .fc-reply-btn:hover { border-color: var(--secondary); color: var(--secondary); }
-
-    /* Edit / Delete */
-    .fc-edit-btn, .fc-delete-btn {
-      background: none; border: none;
-      cursor: pointer; font-size: 0.78rem; padding: 0;
-    }
-    .fc-edit-btn { color: var(--gray); }
-    .fc-edit-btn:hover { color: var(--secondary); text-decoration: underline; }
-    .fc-delete-btn { color: #e53935; }
-    .fc-delete-btn:hover { text-decoration: underline; }
-
-    /* Ban / Unban */
-    .fc-ban-btn {
-      background: none; border: none;
-      cursor: pointer; font-size: 0.78rem; padding: 0;
-      color: #e65100;
-    }
-    .fc-ban-btn:hover { text-decoration: underline; }
-
-    /* ── Inline edit ── */
-    .fc-edit-actions { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
-    .fc-edit-textarea {
-      width: 100%; min-height: 65px; padding: 0.45rem 0.7rem;
-      border: none; background: transparent; color: var(--dark);
-      font-family: inherit; font-size: inherit;
-      resize: vertical; box-sizing: border-box;
-    }
-    .fc-edit-textarea:focus { outline: none; }
-
-    /* ── Reply form (inline) ── */
-    .fc-replies-area {
-      margin-top: 0.6rem;
+    /* ── Comments Header & Tabs ── */
+    .fc-header {
       display: flex;
-      flex-direction: column;
-      gap: 0.7rem;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    .fc-reply-form {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      padding: 0.6rem 0.75rem;
-      background: var(--highlight);
-      border-radius: 8px;
-      border: 1px solid var(--lightgray);
+    .fc-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--color-ink, #000);
+      margin: 0;
     }
-    .fc-reply-textarea {
-      width: 100%; min-height: 60px; padding: 0.45rem 0.7rem;
-      border: none; background: transparent; color: var(--dark);
-      font-family: inherit; font-size: 0.9rem;
-      resize: vertical; box-sizing: border-box;
-    }
-    .fc-reply-textarea:focus { outline: none; }
-    .fc-reply-actions { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.4rem; }
-    .fc-reply-submit-btn { padding: 0.3rem 1rem; font-size: 0.82rem; }
-
-    /* ── Nested replies ── */
-    .fc-reply { padding-right: 0; }
-    .fc-reply-avatar { width: 30px !important; height: 30px !important; }
-    .fc-reply .fc-comment-content {
-      background: var(--light);
-      border: 1px solid var(--lightgray);
-      padding: 0.65rem 0.85rem;
-      border-radius: 8px;
-    }
-    .fc-reply .fc-comment-text { font-size: 0.92rem; }
-    .fc-reply .fc-comment-author { font-size: 0.85rem; }
-    .fc-reply .fc-comment-date { font-size: 0.75rem; }
-
-    /* ══ NEW: Auth tabs (Google | Guest) ══ */
     .fc-auth-tabs {
       display: flex;
-      gap: 0.4rem;
+      gap: 6px;
       align-items: center;
     }
     .fc-tab-btn {
@@ -414,134 +258,551 @@ export default ((opts: Options) => {
       align-items: center;
       gap: 5px;
       padding: 0.35rem 0.85rem;
-      border: 1px solid var(--lightgray);
-      border-radius: 20px;
-      background: var(--light);
-      color: var(--gray);
-      cursor: pointer;
+      border: 1.5px solid var(--nb-line, #000);
+      box-shadow: 1.5px 1.5px 0 0 var(--nb-line, #000);
+      border-radius: 4px;
+      background: var(--color-surface-elevated, #fff);
+      color: var(--color-ink, #000);
       font-size: 0.82rem;
       font-family: inherit;
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
       white-space: nowrap;
     }
-    .fc-tab-btn:hover { border-color: var(--secondary); color: var(--secondary); }
-    .fc-tab-active {
-      border-color: var(--secondary) !important;
-      background: var(--highlight) !important;
-      color: var(--secondary) !important;
-      font-weight: 600;
+    .fc-tab-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 2.5px 2.5px 0 0 var(--nb-line, #000);
     }
-    .fc-google-login-area { margin-bottom: 1rem; }
+    .fc-tab-active {
+      background: var(--nb-main, #f6c445) !important;
+      color: #000 !important;
+      transform: translate(-1px, -1px);
+      box-shadow: 2.5px 2.5px 0 0 var(--nb-line, #000);
+    }
 
-    /* ══ NEW: Guest comment form ══ */
+    /* ── Auth Area ── */
+    .fc-google-login-area {
+      margin-bottom: 1.25rem;
+    }
+    .fc-login-btn {
+      background: var(--color-surface-elevated, #fff);
+      color: var(--color-ink, #000);
+      border: 1.5px solid var(--nb-line, #000);
+      box-shadow: 2.5px 2.5px 0 0 var(--nb-line, #000);
+      padding: 0.45rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .fc-login-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3.5px 3.5px 0 0 var(--nb-line, #000);
+      background: var(--color-field, #fdfbf7);
+    }
+    .fc-user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--color-field, #fdfbf7);
+      border: 1.5px solid var(--nb-line, #000);
+      border-radius: 4px;
+      box-shadow: 1.5px 1.5px 0 0 var(--nb-line, #000);
+      width: fit-content;
+      margin-bottom: 0.75rem;
+    }
+    .fc-user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--nb-line, #000);
+    }
+    .fc-logout-btn {
+      background: none;
+      border: none;
+      color: var(--color-ink-muted, #666);
+      cursor: pointer;
+      font-size: 0.8rem;
+      text-decoration: underline;
+      font-family: inherit;
+    }
+    .fc-logout-btn:hover {
+      color: #e53935;
+    }
+
+    /* ── Compose & Obsidian-style Editor Wrap ── */
+    .fc-compose {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+    }
+    .fc-editor-wrap {
+      display: flex;
+      flex-direction: column;
+      border: 2px solid var(--nb-line, #000);
+      box-shadow: 3.5px 3.5px 0 0 var(--nb-line, #000);
+      border-radius: 6px;
+      background: var(--color-surface-elevated, #fff);
+      overflow: hidden;
+      transition: box-shadow 0.15s ease;
+    }
+    .fc-editor-wrap:focus-within {
+      box-shadow: 4.5px 4.5px 0 0 var(--nb-line, #000);
+    }
+
+    /* Obsidian Toolbar */
+    .fc-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.4rem 0.6rem;
+      background: var(--color-field, #fdfbf7);
+      border-bottom: 1.5px solid var(--nb-line, #000);
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .fc-toolbar-tools {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+    }
+    .fc-toolbar-tools button {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      color: var(--color-ink, #000);
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.1s, border 0.1s;
+    }
+    .fc-toolbar-tools button:hover {
+      background: var(--color-surface-elevated, #fff);
+      border: 1px solid var(--nb-line, #000);
+    }
+    .fc-toolbar-modes {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .fc-mode-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0.2rem 0.6rem;
+      border: 1.5px solid var(--nb-line, #000) !important;
+      border-radius: 4px;
+      background: var(--color-surface-elevated, #fff);
+      color: var(--color-ink, #000);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .fc-mode-btn.active {
+      background: var(--nb-main, #f6c445) !important;
+      color: #000 !important;
+    }
+
+    /* Editor Body (Textarea + In-place Live Preview) */
+    .fc-editor-body {
+      position: relative;
+      width: 100%;
+      min-height: 95px;
+    }
+    .fc-textarea {
+      width: 100%;
+      min-height: 95px;
+      padding: 0.85rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--color-ink, #000);
+      font-family: inherit;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      resize: vertical;
+      box-sizing: border-box;
+      display: block;
+    }
+    .fc-textarea:focus {
+      outline: none;
+    }
+    .fc-live-preview {
+      min-height: 95px;
+      padding: 0.85rem 1rem;
+      background: var(--color-surface-elevated, #fff);
+      color: var(--color-ink, #000);
+      line-height: 1.6;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+      cursor: text;
+    }
+
+    /* Submit Button */
+    .fc-submit-btn {
+      align-self: flex-end;
+      background: var(--nb-main, #f6c445);
+      color: #000;
+      border: 1.5px solid var(--nb-line, #000);
+      box-shadow: 2.5px 2.5px 0 0 var(--nb-line, #000);
+      padding: 0.45rem 1.4rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .fc-submit-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3.5px 3.5px 0 0 var(--nb-line, #000);
+      background: var(--nb-main-hover, #e5a822);
+    }
+    .fc-submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 1.5px 1.5px 0 0 var(--nb-line, #000);
+    }
+
+    /* ── Guest Form ── */
     .fc-guest-form {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
-      padding: 0.75rem;
-      background: var(--lightgray);
-      border-radius: 8px;
+      gap: 0.6rem;
+      padding: 0.85rem 1rem;
+      background: var(--color-field, #fdfbf7);
+      border: 1.5px solid var(--nb-line, #000);
+      box-shadow: 2px 2px 0 0 var(--nb-line, #000);
+      border-radius: 6px;
     }
     .fc-guest-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
-    @media (max-width: 520px) { .fc-guest-row { grid-template-columns: 1fr; } }
+    @media (max-width: 520px) {
+      .fc-guest-row { grid-template-columns: 1fr; }
+    }
     .fc-guest-input {
       width: 100%;
       padding: 0.5rem 0.75rem;
-      border: 1px solid var(--lightgray);
-      border-radius: 6px;
-      background: var(--light);
-      color: var(--dark);
+      border: 1.5px solid var(--nb-line, #000);
+      border-radius: 4px;
+      background: var(--color-surface-elevated, #fff);
+      color: var(--color-ink, #000);
       font-family: inherit;
       font-size: 0.88rem;
       box-sizing: border-box;
-      transition: border-color 0.2s;
+      transition: box-shadow 0.15s;
     }
-    .fc-guest-input:focus { outline: none; border-color: var(--secondary); }
-    .fc-guest-input::placeholder { color: var(--gray); }
-    .fc-guest-input-full { width: 100%; }
+    .fc-guest-input:focus {
+      outline: none;
+      box-shadow: 2px 2px 0 0 var(--nb-line, #000);
+    }
+    .fc-guest-input::placeholder {
+      color: var(--color-ink-muted, #78716c);
+    }
+    .fc-guest-input-full {
+      width: 100%;
+    }
     .fc-save-label {
       display: flex;
-      justify-content: center;
       align-items: center;
-      gap: 0.45rem;
+      gap: 0.5rem;
       font-size: 0.82rem;
-      color: var(--gray);
+      color: var(--color-ink-muted, #78716c);
       cursor: pointer;
       user-select: none;
-      width: 100%;
-      margin: 0.5rem 0;
-      direction: rtl;
+      margin: 0.2rem 0;
     }
-    .fc-save-label span { direction: rtl; }
-    .fc-save-checkbox { 
-      width: 14px; height: 14px; flex-shrink: 0; accent-color: var(--secondary); cursor: pointer;
+    .fc-save-checkbox {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--nb-main, #f6c445);
+      cursor: pointer;
       margin: 0;
-      appearance: auto;
-      transform: none;
     }
 
-    /* Mini guest form in replies */
-    .fc-reply-guest-form { padding: 0.5rem; background: var(--highlight); border-radius: 6px; }
-    .fc-reply-guest-form .fc-guest-row { grid-template-columns: 1fr 1fr; }
-    @media (max-width: 480px) { .fc-reply-guest-form .fc-guest-row { grid-template-columns: 1fr; } }
+    /* ── Comment List ── */
+    .fc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .fc-loading {
+      text-align: center;
+      color: var(--color-ink-muted, #6b665f);
+      padding: 2rem 0;
+      font-style: italic;
+    }
 
-    /* ══ NEW: Guest badge ══ */
+    /* ── Single Comment ── */
+    .fc-comment {
+      display: flex;
+      gap: 0.85rem;
+    }
+    .fc-comment-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1.5px solid var(--nb-line, #000);
+      flex-shrink: 0;
+      background: var(--color-field, #fdfbf7);
+    }
+    .fc-comment-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .fc-comment-content {
+      background: var(--color-field, #fdfbf7);
+      border: 1.5px solid var(--nb-line, #000);
+      box-shadow: 2.5px 2.5px 0 0 var(--nb-line, #000);
+      padding: 0.85rem 1.15rem;
+      border-radius: 6px;
+    }
+    .fc-comment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.88rem;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .fc-author-row {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .fc-comment-author {
+      font-weight: 800;
+      color: var(--color-ink, #000);
+    }
+    .fc-author-link {
+      font-weight: 800;
+      color: var(--color-ink, #000) !important;
+      text-decoration: underline;
+    }
     .fc-guest-badge {
       display: inline-block;
       font-size: 0.65rem;
       padding: 1px 6px;
       border-radius: 10px;
-      background: var(--lightgray);
-      border: 1px solid var(--gray);
-      color: var(--gray);
-      font-weight: 500;
+      background: var(--color-surface-elevated, #fff);
+      border: 1px solid var(--nb-line, #000);
+      color: var(--color-ink, #000);
+      font-weight: 700;
       vertical-align: middle;
     }
+    .fc-comment-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .fc-comment-date {
+      color: var(--color-ink-muted, #78716c);
+      font-size: 0.8rem;
+    }
+    .fc-edited-badge {
+      font-size: 0.72rem;
+      color: var(--color-ink-muted, #78716c);
+      font-style: italic;
+    }
 
-    /* ══ NEW: Notification bar ══ */
+    /* Markdown Text Inside Comments */
+    .fc-comment-text {
+      color: var(--color-ink, #000);
+      line-height: 1.65;
+      word-break: break-word;
+    }
+    .fc-comment-text p {
+      margin: 0 0 0.5rem 0;
+    }
+    .fc-comment-text p:last-child {
+      margin-bottom: 0;
+    }
+    .fc-comment-text h3 {
+      margin: 0.5rem 0 0.3rem;
+      font-size: 1.1rem;
+      color: var(--color-ink, #000);
+    }
+    .fc-comment-text code {
+      background: rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      font-size: 0.85em;
+      font-family: var(--font-code, monospace);
+    }
+    [saved-theme="dark"] .fc-comment-text code {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .fc-comment-text a {
+      color: var(--color-ink, #000);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    /* Action Bar (Like, Reply, Edit, Delete) */
+    .fc-comment-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    .fc-like-btn, .fc-reply-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--color-surface-elevated, #fff);
+      border: 1.2px solid var(--nb-line, #000);
+      box-shadow: 1px 1px 0 0 var(--nb-line, #000);
+      border-radius: 14px;
+      padding: 2px 10px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--color-ink, #000);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .fc-like-btn:hover, .fc-reply-btn:hover {
+      transform: translate(-0.5px, -0.5px);
+      box-shadow: 1.5px 1.5px 0 0 var(--nb-line, #000);
+      background: var(--color-field, #fdfbf7);
+    }
+    .fc-like-btn.liked {
+      background: var(--nb-main, #f6c445);
+    }
+    .fc-like-count {
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .fc-edit-btn, .fc-delete-btn, .fc-ban-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.78rem;
+      padding: 0;
+      font-family: inherit;
+    }
+    .fc-edit-btn { color: var(--color-ink-muted, #78716c); }
+    .fc-edit-btn:hover { color: var(--color-ink, #000); text-decoration: underline; }
+    .fc-delete-btn { color: #e53935; }
+    .fc-delete-btn:hover { text-decoration: underline; }
+    .fc-ban-btn { color: #e65100; }
+    .fc-ban-btn:hover { text-decoration: underline; }
+
+    /* Nested Replies */
+    .fc-replies-area {
+      margin-top: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .fc-reply-avatar {
+      width: 28px !important;
+      height: 28px !important;
+    }
+    .fc-reply-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: var(--color-field, #fdfbf7);
+      border: 1.5px solid var(--nb-line, #000);
+      box-shadow: 2px 2px 0 0 var(--nb-line, #000);
+      border-radius: 6px;
+    }
+    .fc-reply-textarea {
+      width: 100%;
+      min-height: 70px;
+      padding: 0.6rem 0.8rem;
+      border: none;
+      background: transparent;
+      color: var(--color-ink, #000);
+      font-family: inherit;
+      font-size: 0.9rem;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    .fc-reply-textarea:focus { outline: none; }
+    .fc-reply-actions {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 0.4rem;
+    }
+    .fc-reply-submit-btn {
+      padding: 0.35rem 1rem;
+      font-size: 0.82rem;
+    }
+
+    /* Inline Edit */
+    .fc-edit-textarea {
+      width: 100%;
+      min-height: 75px;
+      padding: 0.6rem 0.8rem;
+      border: none;
+      background: transparent;
+      color: var(--color-ink, #000);
+      font-family: inherit;
+      font-size: inherit;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    .fc-edit-textarea:focus { outline: none; }
+    .fc-edit-actions {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    /* Notification Bar */
     .fc-notify-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.75rem;
       padding: 0.6rem 1rem;
-      margin-bottom: 1rem;
-      background: var(--highlight);
-      border: 1px solid var(--lightgray);
-      border-radius: 8px;
+      margin-bottom: 1.25rem;
+      background: var(--color-field, #fdfbf7);
+      border: 1.5px solid var(--nb-line, #000);
+      box-shadow: 2px 2px 0 0 var(--nb-line, #000);
+      border-radius: 6px;
       font-size: 0.85rem;
-      color: var(--darkgray);
+      color: var(--color-ink, #000);
     }
     .fc-notify-text { flex: 1; }
     .fc-notify-btn {
-      padding: 0.3rem 0.9rem;
-      border: 1px solid var(--secondary);
-      border-radius: 20px;
-      background: transparent;
-      color: var(--secondary);
+      padding: 0.3rem 0.85rem;
+      border: 1.5px solid var(--nb-line, #000);
+      border-radius: 4px;
+      background: var(--nb-main, #f6c445);
+      color: #000;
       font-size: 0.8rem;
+      font-weight: 700;
       cursor: pointer;
       font-family: inherit;
-      transition: background 0.2s, color 0.2s;
-      white-space: nowrap;
-    }
-    /* ── LTR (English pages): mirror reply indent + guest save row ── */
-    .firebase-comments[data-lang="en"] .fc-reply {
-      border-right: none;
-      border-left: 2px solid var(--lightgray);
-      padding-right: 0;
-      padding-left: 0.75rem;
-    }
-    .firebase-comments[data-lang="en"] .fc-save-label,
-    .firebase-comments[data-lang="en"] .fc-save-label span {
-      direction: ltr;
-    }
-    .firebase-comments[data-lang="en"] .fc-reply .fc-comment-content {
-      text-align: left;
+      box-shadow: 1px 1px 0 0 var(--nb-line, #000);
     }
   `
 

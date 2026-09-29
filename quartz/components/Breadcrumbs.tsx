@@ -50,11 +50,24 @@ export default ((opts?: Partial<BreadcrumbOptions>) => {
     displayClass,
     ctx,
   }: QuartzComponentProps) => {
+    const slug = (fileData.slug ?? "").toLowerCase()
+    const isHome =
+      slug === "" ||
+      slug === "index" ||
+      slug === "ar" ||
+      slug === "ar/index" ||
+      slug === "en" ||
+      slug === "en/index"
+
+    if (isHome) {
+      return null
+    }
+
     const trie = (ctx.trie ??= trieFromAllFiles(allFiles))
     const slugParts = fileData.slug!.split("/")
     const pathNodes = trie.ancestryChain(slugParts)
 
-    if (!pathNodes) {
+    if (!pathNodes || pathNodes.length <= 1) {
       return null
     }
 

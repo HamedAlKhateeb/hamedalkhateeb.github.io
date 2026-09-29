@@ -33,11 +33,12 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
     return null
   }
 
-  const { minutes } = readingTime(text)
-  const time = i18n(cfg.locale).components.contentMeta.readingTime({ minutes: Math.ceil(minutes) })
-  const date = getDate(cfg, fileData)
-
   const isRtl = slug.startsWith("ar/") || slug.startsWith("ar-")
+  const { minutes } = readingTime(text)
+  const time = isRtl
+    ? i18n("ar-SA").components.contentMeta.readingTime({ minutes: Math.ceil(minutes) })
+    : i18n("en-US").components.contentMeta.readingTime({ minutes: Math.ceil(minutes) })
+  const date = getDate(cfg, fileData)
 
   // Filter candidate articles in the same language
   const candidateArticles = allFiles
@@ -205,32 +206,46 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
       </div>
 
       {/* 4. Meta Block */}
-      <div class="article-end-meta">
+      <div class="article-end-meta" dir={isRtl ? "rtl" : "ltr"}>
         <h2 class="footer-article-title">{fileData.frontmatter?.title}</h2>
-        <p class="footer-category" data-lang-en="Related articles in the same category">
-          من المقالات في نفس التصنيف
+        <p class="footer-category">
+          {isRtl ? "من المقالات في نفس التصنيف" : "Related articles in the same category"}
         </p>
 
         <div class="footer-info">
-          <a href="/" class="internal author-link" data-lang-en="Hamed Al-Khateeb's Blog">
-            مدونة حامد الخطيب
+          <a
+            href={isRtl ? "/" : resolveRelative(fileData.slug!, "en" as FullSlug)}
+            class="internal author-link"
+          >
+            {isRtl ? "مدونة حامد الخطيب" : "Hamed Alkhateeb's Blog"}
           </a>
           <span class="dot">|</span>
           <span>
             {date
-              ? date.toLocaleDateString("ar-SA", { day: "numeric", month: "long", year: "numeric" })
+              ? date.toLocaleDateString(isRtl ? "ar-SA" : "en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
               : ""}
           </span>
           <span class="dot">|</span>
           <span>{time}</span>
         </div>
 
-        <button class="back-to-start" id="btn-footer-top" data-lang-en="↑ Back to Top">
-          ↑ العودة للبداية
+        <button class="back-to-start" id="btn-footer-top">
+          {isRtl ? "↑ العودة للبداية" : "↑ Back to top"}
         </button>
 
-        <a href="/" class="all-articles-link" data-lang-en="-- All Articles --">
-          -- جميع المقالات --
+        <a
+          href={
+            isRtl
+              ? resolveRelative(fileData.slug!, "ar/articles" as FullSlug)
+              : resolveRelative(fileData.slug!, "Experiences" as FullSlug)
+          }
+          class="all-articles-link"
+        >
+          {isRtl ? "-- جميع المقالات --" : "-- All Articles --"}
         </a>
       </div>
     </div>
