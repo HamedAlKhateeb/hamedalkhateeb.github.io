@@ -249,6 +249,13 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           {!isEnglish ? (
             <>
               <a
+                href={resolveRelative(fileData.slug!, "ar/articles" as FullSlug)}
+                class={`site-nav-link alfarhan-nav-link ${isArticles ? "is-active" : ""}`}
+              >
+                <span class="nav-ico">🖊️</span>
+                <span>تدوينات</span>
+              </a>
+              <a
                 href={resolveRelative(fileData.slug!, "ar/micro" as FullSlug)}
                 class={`site-nav-link alfarhan-nav-link ${isMicro ? "is-active" : ""}`}
               >
@@ -256,11 +263,11 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
                 <span>شذرات</span>
               </a>
               <a
-                href={resolveRelative(fileData.slug!, "ar/articles" as FullSlug)}
-                class={`site-nav-link alfarhan-nav-link ${isArticles ? "is-active" : ""}`}
+                href={resolveRelative(fileData.slug!, "tags" as FullSlug)}
+                class={`site-nav-link alfarhan-nav-link ${isTags ? "is-active" : ""}`}
               >
-                <span class="nav-ico">🖊️</span>
-                <span>تدوينات</span>
+                <span class="nav-ico">🏷️</span>
+                <span>وسوم</span>
               </a>
               <a
                 href={resolveRelative(fileData.slug!, "ar/newsletter" as FullSlug)}
@@ -275,13 +282,6 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
               >
                 <span class="nav-ico">📜</span>
                 <span>ديوان الشعر</span>
-              </a>
-              <a
-                href={resolveRelative(fileData.slug!, "tags" as FullSlug)}
-                class={`site-nav-link alfarhan-nav-link ${isTags ? "is-active" : ""}`}
-              >
-                <span class="nav-ico">🏷️</span>
-                <span>وسوم</span>
               </a>
               <a
                 href={resolveRelative(fileData.slug!, "en" as FullSlug)}

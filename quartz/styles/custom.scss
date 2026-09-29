@@ -36,7 +36,7 @@
 
   /* Original User Fonts */
   --font-arabic: "Amiri", serif;
-  --font-arabic-display: "Cairo", "IBM Plex Sans Arabic", sans-serif;
+  --font-arabic-display: "Noto Sans Arabic", "IBM Plex Sans Arabic", sans-serif;
   --font-poetry: "Aref Ruqaa", "Amiri", serif;
   --font-code: "JetBrains Mono", "IBM Plex Mono", monospace;
   --font-english: "IBM Plex Sans Arabic", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -93,7 +93,7 @@ body[dir="rtl"] {
   text-align: right;
 
   h1, h2, h3, h4, h5, h6, .site-brand-title {
-    font-family: var(--font-arabic-display);
+    font-family: var(--font-arabic-display) !important;
   }
 }
 
@@ -103,8 +103,9 @@ h3,
 h4,
 h5,
 h6,
-.title {
-  font-family: var(--font-arabic-display);
+.title,
+.article-title {
+  font-family: var(--font-arabic-display) !important;
 }
 
 label,
