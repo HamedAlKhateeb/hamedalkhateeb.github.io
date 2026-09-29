@@ -13,26 +13,6 @@ const ControlPanel: QuartzComponent = ({ fileData, displayClass }: QuartzCompone
   // Localization variables
   const scrollTopTitle = isArabic ? "أعلى الصفحة" : "Top of Page"
   const goBackTitle = isArabic ? "رجوع للصفحة السابقة" : "Go Back"
-  const readingSettingsTitle = isArabic ? "إعدادات القراءة" : "Reading Settings"
-  const fontSizeLabel = isArabic ? "حجم الخط" : "Font Size"
-  const largeLabel = isArabic ? "كبير" : "Large"
-  const mediumLabel = isArabic ? "متوسط" : "Medium"
-  const smallLabel = isArabic ? "صغير" : "Small"
-  const lineHeightLabel = isArabic ? "ارتفاع السطر" : "Line Height"
-  const wideLabel = isArabic ? "واسع" : "Wide"
-  const narrowLabel = isArabic ? "ضيق" : "Narrow"
-  const themeLabel = isArabic ? "وضع الألوان" : "Color Theme"
-  const darkLabel = isArabic ? "داكن" : "Dark"
-  const sepiaLabel = isArabic ? "رملي" : "Sepia"
-  const lightLabel = isArabic ? "فاتح" : "Light"
-  const readingWidthLabel = isArabic ? "عرض القراءة" : "Reading Width"
-  const audioLabel = isArabic ? "الصوت" : "Audio"
-  const tocLabel = isArabic ? "الفهرس" : "TOC"
-  const audioToggleTitle = isArabic ? "تفعيل / إيقاف الصوت" : "Toggle Audio"
-  const tocToggleTitle = isArabic ? "تفعيل / إيقاف الفهرس" : "Toggle TOC"
-  const audioActiveText = isArabic ? "مفعل" : "On"
-  const audioInactiveText = isArabic ? "إيقاف" : "Off"
-  const toggleOpenText = isArabic ? "تفعيل" : "Open"
 
   return (
     <div class={classNames(displayClass, "control-panel-root")}>

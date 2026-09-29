@@ -9,8 +9,8 @@
   direction: ltr;
   --main-font-size: 19px;
   --main-line-height: 1.8;
-  --reading-width: 820px;
-  --content-width: 820px;
+  --reading-width: 1100px;
+  --content-width: 1100px;
 
   /* Theme Backgrounds */
   --site-bg: #f4f0ea;
@@ -148,7 +148,7 @@ figure,
 
 .page > #quartz-body > .center {
   width: 100% !important;
-  max-width: var(--reading-width, 840px) !important;
+  max-width: var(--reading-width, 1100px) !important;
   margin: 0 auto !important;
   padding: 0 16px !important;
   box-sizing: border-box !important;
@@ -661,67 +661,79 @@ html[reader-mode="on"] .center > article {
 }
 
 .poem-container {
-  max-width: 700px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 1.5rem auto;
   direction: rtl;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .poem-line {
   display: flex;
   flex-direction: row;
-  gap: 2rem;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2.5rem;
   direction: rtl;
   margin-bottom: 0;
-  padding: 1.2rem 0.5rem;
+  padding: 0.85rem 1.25rem;
   position: relative;
   transition: background 0.2s ease;
   border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .poem-line:hover {
-  background: rgba(201, 160, 108, 0.04);
+  background: rgba(201, 160, 108, 0.05);
 }
 
 .poem-line .hemistich {
   flex: 1 1 50%;
   min-width: 0;
-  font-family: "Amiri", serif;
-  font-size: calc(var(--main-font-size, 18px) * 1.2);
-  line-height: calc(var(--main-line-height, 1.7) * 1.2);
-  color: var(--dark);
+  font-family: var(--font-arabic, "Amiri", serif) !important;
+  font-size: calc(var(--main-font-size, 19px) * 1.15) !important;
+  line-height: var(--main-line-height, 1.8) !important;
+  color: var(--dark, #1c1917);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
   transition:
-    font-size 0.3s ease,
-    line-height 0.3s ease;
-  text-align: justify;
-  text-align-last: justify;
-  -moz-text-align-last: justify;
+    font-size 0.2s ease,
+    line-height 0.2s ease;
 }
+
 :root[saved-theme="dark"] .poem-line .hemistich {
-  color: var(--darkgray);
+  color: var(--darkgray, #e7e5e4);
 }
 
 .poem-line .hemistich.first {
   padding-left: 1rem;
+  text-align: right;
 }
 
 .poem-line .hemistich.second {
   padding-right: 1rem;
+  text-align: left;
 }
 
 .poem-text {
   text-align: center;
-  font-family: "Amiri", serif;
-  font-size: calc(var(--main-font-size, 18px) * 1.1);
-  line-height: calc(var(--main-line-height, 1.7) * 1.1);
+  font-family: var(--font-arabic, "Amiri", serif) !important;
+  font-size: calc(var(--main-font-size, 19px) * 1.15) !important;
+  line-height: var(--main-line-height, 1.8) !important;
   color: var(--darkgray);
   padding: 0.8rem 0;
   direction: rtl;
+  white-space: nowrap;
   transition:
-    font-size 0.3s ease,
-    line-height 0.3s ease;
+    font-size 0.2s ease,
+    line-height 0.2s ease;
 }
 :root[saved-theme="dark"] .poem-text {
-  color: var(--darkgray);
+  color: var(--darkgray, #e7e5e4);
 }
 
 /* Poem End Ornament */
@@ -1739,7 +1751,7 @@ html[lang="ar"] {
   .card-poem-preview .card-hemistich {
     flex: 1 1 50%;
     min-width: 0;
-    font-family: "Amiri", serif;
+    font-family: var(--font-arabic, "Amiri", serif) !important;
     font-size: 1rem;
     line-height: 1.6 !important;
     color: var(--dark) !important;
@@ -2381,7 +2393,7 @@ pre code {
 /* ── Shatharat Timeline Page (شذرات) ── */
 .micro-timeline-page {
   width: 100%;
-  max-width: 860px;
+  max-width: var(--reading-width, 1100px);
   margin: 0 auto;
 }
 
@@ -2584,7 +2596,7 @@ pre code {
 
 /* ── Articles Timeline (/ar/articles) ── */
 .post-tl-page {
-  max-width: 860px;
+  max-width: var(--reading-width, 1100px);
   margin: 0 auto;
 }
 
@@ -2659,7 +2671,7 @@ pre code {
 
 /* ── Single Article View (Post Single Card) ── */
 .post-single-card {
-  max-width: var(--reading-width, 860px) !important;
+  max-width: var(--reading-width, 1100px) !important;
   margin: 0 auto;
   background: var(--container-bg, var(--color-surface-elevated)) !important;
   border: var(--container-border, var(--nb-border)) !important;
@@ -2787,7 +2799,7 @@ pre code {
 }
 
 .poetry-verses-container {
-  max-width: 680px;
+  max-width: var(--reading-width, 1100px);
   margin: 2.5rem auto;
   display: flex;
   flex-direction: column;
@@ -2805,7 +2817,7 @@ pre code {
   box-shadow: 1.5px 1.5px 0 0 var(--nb-line);
   border-radius: var(--border-radius);
   font-size: 1.3rem;
-  font-family: var(--font-arabic);
+  font-family: var(--font-arabic, "Amiri", serif) !important;
 }
 
 .card-hemistich {
@@ -2908,6 +2920,20 @@ pre code {
   .post-single-title {
     font-size: 1.8rem;
   }
+  .poem-line {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.6rem 0.25rem;
+    align-items: center;
+  }
+  .poem-line .hemistich {
+    flex: 1 1 100%;
+    width: 100%;
+    white-space: nowrap;
+    text-align: center !important;
+    padding: 0 !important;
+    font-size: clamp(13px, 4.2vw, 19px) !important;
+  }
   .poetry-verse {
     flex-direction: column;
     gap: 0.4rem;
@@ -2925,28 +2951,22 @@ pre code {
 
 body,
 html {
-  background-color: #faf6ee !important;
-  background-image:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.045) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.045) 1px, transparent 1px) !important;
-  background-size: 26px 26px !important;
+  background-color: var(--site-bg, #faf6ee) !important;
+  background-image: none !important;
   color: #1a1a1a;
 }
 
 [saved-theme="dark"] body,
 [saved-theme="dark"] html {
-  background-color: #141413 !important;
-  background-image:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px) !important;
-  background-size: 26px 26px !important;
+  background-color: var(--site-bg, #141413) !important;
+  background-image: none !important;
   color: #f5f5f4;
 }
 
 /* Top Navigation Card */
 .alfarhan-header {
   width: 100%;
-  max-width: 840px;
+  max-width: var(--reading-width, 1100px);
   margin: 24px auto 26px auto;
   padding: 0 12px;
   box-sizing: border-box;
@@ -3032,7 +3052,7 @@ html {
 /* Home Page Container & Cards */
 .alfarhan-home-container {
   width: 100%;
-  max-width: var(--reading-width, 840px) !important;
+  max-width: var(--reading-width, 1100px) !important;
   margin: 0 auto;
   padding: 0 12px;
   box-sizing: border-box;
@@ -3254,7 +3274,7 @@ html {
 }
 
 .poetry-box .tadwinat-title-link {
-  font-family: var(--font-poetry);
+  font-family: var(--font-arabic, "Aref Ruqaa", "Amiri", serif);
   font-size: 1.22rem;
   font-weight: 700;
 }

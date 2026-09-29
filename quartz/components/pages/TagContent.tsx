@@ -55,52 +55,91 @@ export default ((opts?: Partial<TagContentOptions>) => {
         tagItemMap.set(tag, allPagesWithTag(tag))
       }
       return (
-        <div class="popover-hint">
-          <article class={classes}>
-            <p>{content}</p>
-          </article>
-          <p>{i18n(cfg.locale).pages.tagContent.totalTags({ count: tags.length })}</p>
-          <div>
-            {tags.map((tag) => {
-              const pages = tagItemMap.get(tag)!
+        <div class="list-page post-list-page tags-index-page" dir="rtl">
+          <header class="tag-hero tag-hero--plain">
+            <span class="tag-hero-scrim"></span>
+            <div class="tag-hero-info">
+              <h1 class="tag-hero-title">
+                <svg
+                  class="inline-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                  <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                </svg>
+                وسوم
+              </h1>
+              <p class="tag-hero-desc">استكشف جميع الوسوم والموضوعات في الموقع.</p>
+              <span class="tag-hero-count">{tags.length} وسم</span>
+            </div>
+          </header>
+
+          <div class="post-tl-card" style={{ marginBottom: "2rem" }}>
+            <div
+              class="tags-cloud-wrapper"
+              style={{
+                padding: "1.25rem",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "0.6rem",
+              }}
+            >
+              {tags.map((t) => {
+                const count = tagItemMap.get(t)?.length ?? 0
+                return (
+                  <a
+                    key={t}
+                    href={resolveRelative(fileData.slug!, `tags/${t}` as FullSlug)}
+                    class="tag-item"
+                    style={{
+                      padding: "6px 14px",
+                      background: "var(--color-surface-elevated, #fff)",
+                      border: "1.5px solid var(--nb-line, #000)",
+                      borderRadius: "6px",
+                      boxShadow: "2px 2px 0 0 var(--nb-line, #000)",
+                      textDecoration: "none",
+                      color: "inherit",
+                      fontWeight: 600,
+                      fontSize: "0.95rem",
+                    }}
+                  >
+                    #{t}{" "}
+                    <span style={{ opacity: 0.65, fontSize: "0.85em", marginRight: "4px" }}>
+                      ({count})
+                    </span>
+                  </a>
+                )
+              })}
+            </div>
+          </div>
+
+          <div class="tags-sections-list">
+            {tags.map((t) => {
+              const pages = tagItemMap.get(t)!
               const listProps = {
                 ...props,
                 allFiles: pages,
               }
-
-              const contentPage = allFiles.filter((file) => file.slug === `tags/${tag}`).at(0)
-
-              const root = contentPage?.htmlAst
-              const content =
-                !root || root?.children.length === 0
-                  ? contentPage?.description
-                  : htmlToJsx(contentPage.filePath!, root)
-
-              const tagListingPage = `/tags/${tag}` as FullSlug
+              const tagListingPage = `/tags/${t}` as FullSlug
               const href = resolveRelative(fileData.slug!, tagListingPage)
 
               return (
-                <div>
-                  <h2>
-                    <a class="internal tag-link" href={href}>
-                      {tag}
-                    </a>
-                  </h2>
-                  {content && <p>{content}</p>}
-                  <div class="page-listing">
-                    <p>
-                      {i18n(cfg.locale).pages.tagContent.itemsUnderTag({ count: pages.length })}
-                      {pages.length > options.numPages && (
-                        <>
-                          {" "}
-                          <span>
-                            {i18n(cfg.locale).pages.tagContent.showingFirst({
-                              count: options.numPages,
-                            })}
-                          </span>
-                        </>
-                      )}
-                    </p>
+                <div key={t} class="post-tl-card" style={{ marginBottom: "1.5rem" }}>
+                  <div style={{ padding: "1rem 1.25rem 0.5rem 1.25rem" }}>
+                    <h2 style={{ margin: "0", fontSize: "1.25rem", fontWeight: "700" }}>
+                      <a class="internal tag-link" href={href} style={{ textDecoration: "none" }}>
+                        #{t} <span style={{ fontSize: "0.85rem", opacity: 0.7 }}>({pages.length})</span>
+                      </a>
+                    </h2>
+                  </div>
+                  <div style={{ padding: "0 1.25rem 1rem 1.25rem" }}>
                     <PageList limit={options.numPages} {...listProps} sort={options?.sort} />
                   </div>
                 </div>
@@ -117,17 +156,23 @@ export default ((opts?: Partial<TagContentOptions>) => {
       }
 
       return (
-        <section class="page-container">
-          <header class="main-header">
-            {fileData.description && <p class="subtitle">{fileData.description}</p>}
-
-            <p class="meta-data">{pages.length} مقال</p>
+        <div class="list-page post-list-page tag-single-page" dir="rtl">
+          <header class="tag-hero tag-hero--plain">
+            <span class="tag-hero-scrim"></span>
+            <div class="tag-hero-info">
+              <h1 class="tag-hero-title">
+                <span style={{ opacity: 0.6, marginLeft: "6px" }}>#</span>
+                {tag}
+              </h1>
+              {fileData.description && <p class="tag-hero-desc">{fileData.description}</p>}
+              <span class="tag-hero-count">{pages.length} تدوينة / مقال</span>
+            </div>
           </header>
 
           <div class="cards-grid">
             <PageList {...listProps} sort={options?.sort} />
           </div>
-        </section>
+        </div>
       )
     }
   }

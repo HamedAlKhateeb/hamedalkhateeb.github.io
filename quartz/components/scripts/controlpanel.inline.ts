@@ -1,261 +1,5 @@
 document.addEventListener("nav", () => {
   // =====================
-  // Font Size Control
-  // =====================
-  const fontSizes: Record<string, string> = {
-    small: "16px",
-    medium: "18px",
-    large: "24px",
-  }
-
-  const fontButtons = {
-    small: document.querySelector("#btn-font-small") as HTMLButtonElement | null,
-    medium: document.querySelector("#btn-font-medium") as HTMLButtonElement | null,
-    large: document.querySelector("#btn-font-large") as HTMLButtonElement | null,
-  }
-
-  const setFontSize = (size: string) => {
-    document.documentElement.style.setProperty("--main-font-size", fontSizes[size])
-    localStorage.setItem("reader-font-size", size)
-
-    // Update active state
-    Object.entries(fontButtons).forEach(([key, btn]) => {
-      if (btn) btn.classList.toggle("active", key === size)
-    })
-  }
-
-  // Restore saved font size
-  const savedFontSize = localStorage.getItem("reader-font-size") ?? "medium"
-  setFontSize(savedFontSize)
-
-  Object.entries(fontButtons).forEach(([size, btn]) => {
-    if (!btn) return
-    const handler = () => setFontSize(size)
-    btn.addEventListener("click", handler)
-    window.addCleanup(() => btn.removeEventListener("click", handler))
-  })
-
-  // =====================
-  // Line Height Control
-  // =====================
-  const lineHeights: Record<string, string> = {
-    small: "1.4",
-    medium: "1.7",
-    large: "2.1",
-  }
-
-  const lineHeightButtons = {
-    small: document.querySelector("#btn-line-small") as HTMLButtonElement | null,
-    medium: document.querySelector("#btn-line-medium") as HTMLButtonElement | null,
-    large: document.querySelector("#btn-line-large") as HTMLButtonElement | null,
-  }
-
-  const setLineHeight = (size: string) => {
-    document.documentElement.style.setProperty("--main-line-height", lineHeights[size])
-    localStorage.setItem("reader-line-height", size)
-
-    // Update active state
-    Object.entries(lineHeightButtons).forEach(([key, btn]) => {
-      if (btn) btn.classList.toggle("active", key === size)
-    })
-  }
-
-  // Restore saved line height
-  const savedLineHeight = localStorage.getItem("reader-line-height") ?? "medium"
-  setLineHeight(savedLineHeight)
-
-  Object.entries(lineHeightButtons).forEach(([size, btn]) => {
-    if (!btn) return
-    const handler = () => setLineHeight(size)
-    btn.addEventListener("click", handler)
-    window.addCleanup(() => btn.removeEventListener("click", handler))
-  })
-
-  // =====================
-  // Content Width Control
-  // =====================
-  const widths: Record<string, string> = {
-    narrow: "1000px",
-    medium: "1400px",
-    wide: "1700px",
-  }
-
-  const widthButtons = {
-    narrow: document.querySelector("#btn-width-narrow") as HTMLButtonElement | null,
-    medium: document.querySelector("#btn-width-medium") as HTMLButtonElement | null,
-    wide: document.querySelector("#btn-width-wide") as HTMLButtonElement | null,
-  }
-
-  const setContentWidth = (width: string) => {
-    localStorage.setItem("reader-content-width", width)
-    
-    // Only apply reading width to single article pages and poetry pages (is-article)
-    const isArticle = document.body.classList.contains("is-article")
-    if (isArticle) {
-      document.documentElement.style.setProperty("--reading-width", widths[width])
-      document.documentElement.style.setProperty("--content-width", widths[width])
-    } else {
-      document.documentElement.style.removeProperty("--reading-width")
-      document.documentElement.style.removeProperty("--content-width")
-    }
-
-    Object.entries(widthButtons).forEach(([key, btn]) => {
-      if (btn) btn.classList.toggle("active", key === width)
-    })
-  }
-
-  // Restore saved width
-  const savedWidth = localStorage.getItem("reader-content-width") ?? "medium"
-  setContentWidth(savedWidth)
-
-  Object.entries(widthButtons).forEach(([width, btn]) => {
-    if (!btn) return
-    const handler = () => setContentWidth(width)
-    btn.addEventListener("click", handler)
-    window.addCleanup(() => btn.removeEventListener("click", handler))
-  })
-
-  // =====================
-  // Color Theme Control
-  // =====================
-  const themeButtons = {
-    light: document.querySelector("#btn-theme-light") as HTMLButtonElement | null,
-    dark: document.querySelector("#btn-theme-dark") as HTMLButtonElement | null,
-    sepia: document.querySelector("#btn-theme-sepia") as HTMLButtonElement | null,
-  }
-
-  const setTheme = (theme: string) => {
-    // Instantly switch — suppress transitions for one frame
-    document.documentElement.classList.add("no-transitions")
-    window.requestAnimationFrame(() => document.documentElement.classList.remove("no-transitions"))
-
-    document.documentElement.setAttribute("saved-theme", theme)
-    localStorage.setItem("theme", theme)
-
-    Object.entries(themeButtons).forEach(([key, btn]) => {
-      if (btn) btn.classList.toggle("active", key === theme)
-    })
-
-    // Sync with Quartz's darkmode system
-    const event = new CustomEvent("themechange", {
-      detail: { theme },
-    })
-    document.dispatchEvent(event)
-  }
-
-  // Restore saved theme for buttons active state
-  const savedTheme = localStorage.getItem("theme") ?? "light"
-  Object.entries(themeButtons).forEach(([key, btn]) => {
-    if (btn) btn.classList.toggle("active", key === savedTheme)
-  })
-
-  Object.entries(themeButtons).forEach(([theme, btn]) => {
-    if (!btn) return
-    const handler = () => setTheme(theme)
-    btn.addEventListener("click", handler)
-    window.addCleanup(() => btn.removeEventListener("click", handler))
-  })
-
-  // =====================
-  // TOC Toggle
-  // =====================
-  const tocToggle = document.querySelector("#btn-toggle-toc") as HTMLButtonElement | null
-  if (tocToggle) {
-    const toggleToc = () => {
-      const rightSidebar = document.querySelector(".sidebar.right") as HTMLElement | null
-      if (rightSidebar) {
-        rightSidebar.classList.toggle("sidebar-hidden")
-        const isHidden = rightSidebar.classList.contains("sidebar-hidden")
-        tocToggle.classList.toggle("active", !isHidden)
-        localStorage.setItem("toc-visible", isHidden ? "false" : "true")
-
-        const textSpan = tocToggle.querySelector("span")
-        if (textSpan) {
-          const isArabic = document.documentElement.dir === "rtl" || document.documentElement.lang === "ar"
-          textSpan.innerText = isHidden 
-            ? (isArabic ? "تفعيل" : "Open") 
-            : (isArabic ? "إيقاف" : "Close")
-        }
-      }
-    }
-
-    // Restore saved TOC state
-    // By default, TOC is hidden. If toc-visible is "true", we show it!
-    const tocVisible = localStorage.getItem("toc-visible")
-    if (tocVisible === "true") {
-      const rightSidebar = document.querySelector(".sidebar.right") as HTMLElement | null
-      if (rightSidebar) {
-        rightSidebar.classList.remove("sidebar-hidden")
-        tocToggle.classList.add("active")
-        const textSpan = tocToggle.querySelector("span")
-        if (textSpan) {
-          const isArabic = document.documentElement.dir === "rtl" || document.documentElement.lang === "ar"
-          textSpan.innerText = isArabic ? "إيقاف" : "Close"
-        }
-      }
-    } else {
-      // By default (if not set to "true"), it should be hidden
-      const rightSidebar = document.querySelector(".sidebar.right") as HTMLElement | null
-      if (rightSidebar) {
-        rightSidebar.classList.add("sidebar-hidden")
-        tocToggle.classList.remove("active")
-        const textSpan = tocToggle.querySelector("span")
-        if (textSpan) {
-          const isArabic = document.documentElement.dir === "rtl" || document.documentElement.lang === "ar"
-          textSpan.innerText = isArabic ? "تفعيل" : "Open"
-        }
-      }
-    }
-
-    tocToggle.addEventListener("click", toggleToc)
-    window.addCleanup(() => tocToggle.removeEventListener("click", toggleToc))
-  }
-
-  // =====================
-  // Audio Toggle
-  // =====================
-  const audioToggle = document.querySelector("#btn-toggle-audio") as HTMLButtonElement | null
-  let bgAudio: HTMLAudioElement | null = null
-
-  if (audioToggle) {
-    const audioOnText = audioToggle.querySelector(".audio-on-text") as HTMLElement | null
-    const audioOffText = audioToggle.querySelector(".audio-off-text") as HTMLElement | null
-    let isPlaying = false
-
-    const toggleAudio = () => {
-      if (!bgAudio) {
-        // Initialize audio on first click - update path to your audio file
-        bgAudio = new Audio()
-        bgAudio.loop = true
-        bgAudio.volume = 0.3
-      }
-
-      if (isPlaying) {
-        bgAudio.pause()
-        if (audioOnText) audioOnText.style.display = "none"
-        if (audioOffText) audioOffText.style.display = "inline"
-      } else {
-        bgAudio.play().catch(() => {
-          // Audio play failed - likely no source or autoplay blocked
-        })
-        if (audioOnText) audioOnText.style.display = "inline"
-        if (audioOffText) audioOffText.style.display = "none"
-      }
-      isPlaying = !isPlaying
-      audioToggle.classList.toggle("active", isPlaying)
-    }
-
-    audioToggle.addEventListener("click", toggleAudio)
-    window.addCleanup(() => {
-      audioToggle.removeEventListener("click", toggleAudio)
-      if (bgAudio) {
-        bgAudio.pause()
-        bgAudio = null
-      }
-    })
-  }
-
-  // =====================
   // Floating Actions
   // =====================
   const scrollTopBtn = document.querySelector("#btn-scroll-top") as HTMLButtonElement | null
@@ -263,32 +7,6 @@ document.addEventListener("nav", () => {
     const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" })
     scrollTopBtn.addEventListener("click", scrollToTop)
     window.addCleanup(() => scrollTopBtn.removeEventListener("click", scrollToTop))
-  }
-
-  const settingsToggle = document.querySelector("#btn-settings-toggle") as HTMLButtonElement | null
-  const settingsPanel = document.querySelector("#settings-panel") as HTMLElement | null
-  const settingsBackdrop = document.querySelector("#settings-backdrop") as HTMLElement | null
-  if (settingsToggle && settingsPanel) {
-    const togglePanel = () => {
-      settingsPanel.classList.toggle("panel-collapsed")
-      if (settingsBackdrop) settingsBackdrop.classList.toggle("panel-collapsed")
-    }
-    settingsToggle.addEventListener("click", togglePanel)
-    window.addCleanup(() => settingsToggle.removeEventListener("click", togglePanel))
-
-    // Close panel when clicking outside or on backdrop
-    const closeOnOutsideClick = (e: MouseEvent) => {
-      if (
-        !settingsPanel.contains(e.target as Node) &&
-        !settingsToggle.contains(e.target as Node) &&
-        !settingsPanel.classList.contains("panel-collapsed")
-      ) {
-        settingsPanel.classList.add("panel-collapsed")
-        if (settingsBackdrop) settingsBackdrop.classList.add("panel-collapsed")
-      }
-    }
-    document.addEventListener("click", closeOnOutsideClick)
-    window.addCleanup(() => document.removeEventListener("click", closeOnOutsideClick))
   }
 
   // =====================
@@ -304,11 +22,10 @@ document.addEventListener("nav", () => {
   // =====================
   // Smart Scroll for Floating Actions
   // =====================
-  const gearDock = document.querySelector(".isolated-gear-dock") as HTMLElement | null
   const backDock = document.querySelector(".back-to-prev-dock") as HTMLElement | null
   const scrollTopDock = document.querySelector(".scroll-to-top-dock") as HTMLElement | null
 
-  if (gearDock || backDock || scrollTopDock) {
+  if (backDock || scrollTopDock) {
     let lastScrollY = window.scrollY
     let ticking = false
 
@@ -317,13 +34,8 @@ document.addEventListener("nav", () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           if (currentScrollY > 100) {
-            // we use some threshold to avoid flutter
             if (currentScrollY > lastScrollY && currentScrollY - lastScrollY > 10) {
               // Scrolling down - hide
-              if (gearDock) {
-                gearDock.style.transform = "translateY(150%)"
-                gearDock.style.opacity = "0"
-              }
               if (backDock) {
                 backDock.style.transform = "translateY(-150%)"
                 backDock.style.opacity = "0"
@@ -334,10 +46,6 @@ document.addEventListener("nav", () => {
               }
             } else if (currentScrollY < lastScrollY && lastScrollY - currentScrollY > 10) {
               // Scrolling up - show
-              if (gearDock) {
-                gearDock.style.transform = "translateY(0)"
-                gearDock.style.opacity = "1"
-              }
               if (backDock) {
                 backDock.style.transform = "translateY(0)"
                 backDock.style.opacity = "1"
@@ -349,10 +57,6 @@ document.addEventListener("nav", () => {
             }
           } else {
             // At top - always show
-            if (gearDock) {
-              gearDock.style.transform = "translateY(0)"
-              gearDock.style.opacity = "1"
-            }
             if (backDock) {
               backDock.style.transform = "translateY(0)"
               backDock.style.opacity = "1"
@@ -369,8 +73,6 @@ document.addEventListener("nav", () => {
       }
     }
 
-    // Add CSS transition for smooth hide/show
-    if (gearDock) gearDock.style.transition = "transform 0.4s ease, opacity 0.4s ease"
     if (backDock) backDock.style.transition = "transform 0.4s ease, opacity 0.4s ease"
     if (scrollTopDock) scrollTopDock.style.transition = "transform 0.4s ease, opacity 0.4s ease"
 

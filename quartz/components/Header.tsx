@@ -201,7 +201,7 @@ function initReadingSettings() {
     });
   };
 
-  const savedWidth = localStorage.getItem("user-reading-width") || "840px";
+  const savedWidth = localStorage.getItem("user-reading-width") || "1100px";
   applyReadingWidth(savedWidth);
 
   document.querySelectorAll(".reading-width-btn").forEach((b) => {
@@ -231,6 +231,7 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
   const isPoetry = slug.startsWith("ar/poetry")
   const isAbout = slug.startsWith("about") || slug.startsWith("ar/about")
   const isNewsletter = slug === "ar/newsletter" || slug.startsWith("ar/newsletter")
+  const isTags = slug === "tags" || slug.startsWith("tags/")
 
   return (
     <header class="site-header alfarhan-header" dir={isEnglish ? "ltr" : "rtl"}>
@@ -276,11 +277,11 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
                 <span>ديوان الشعر</span>
               </a>
               <a
-                href={resolveRelative(fileData.slug!, "About" as FullSlug)}
-                class={`site-nav-link alfarhan-nav-link ${isAbout ? "is-active" : ""}`}
+                href={resolveRelative(fileData.slug!, "tags" as FullSlug)}
+                class={`site-nav-link alfarhan-nav-link ${isTags ? "is-active" : ""}`}
               >
-                <span class="nav-ico">👤</span>
-                <span>عنّي</span>
+                <span class="nav-ico">🏷️</span>
+                <span>وسوم</span>
               </a>
               <a
                 href={resolveRelative(fileData.slug!, "en" as FullSlug)}
@@ -306,6 +307,13 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
               >
                 <span class="nav-ico">📍</span>
                 <span>Snippets</span>
+              </a>
+              <a
+                href={resolveRelative(fileData.slug!, "tags" as FullSlug)}
+                class={`site-nav-link alfarhan-nav-link ${isTags ? "is-active" : ""}`}
+              >
+                <span class="nav-ico">🏷️</span>
+                <span>Tags</span>
               </a>
               <a
                 href={resolveRelative(fileData.slug!, "About" as FullSlug)}
@@ -449,9 +457,9 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           <div class="reading-setting-section">
             <div class="reading-setting-title">{isEnglish ? "Reading Width" : "عرض المحتوى"}</div>
             <div class="reading-options-row">
-              <button type="button" class="reading-width-btn" data-width="740px">ضيق</button>
-              <button type="button" class="reading-width-btn" data-width="840px">قياسي</button>
-              <button type="button" class="reading-width-btn" data-width="1000px">واسع</button>
+              <button type="button" class="reading-width-btn" data-width="900px">ضيق</button>
+              <button type="button" class="reading-width-btn" data-width="1100px">قياسي</button>
+              <button type="button" class="reading-width-btn" data-width="1300px">واسع</button>
             </div>
           </div>
         </div>
