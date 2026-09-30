@@ -472,12 +472,9 @@ document.addEventListener("nav", async () => {
     html = html.replace(/\*(.*?)\*/g, "<em>$1</em>")
     html = html.replace(/~~(.*?)~~/g, "<del>$1</del>")
     html = html.replace(/`([^`]+)`/g, "<code>$1</code>")
-    html = html.replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      (match, text, url) => {
-        return `<a href="${ensureAbsoluteUrl(url)}" target="_blank" rel="noopener noreferrer">${text}</a>`
-      },
-    )
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, text, url) => {
+      return `<a href="${ensureAbsoluteUrl(url)}" target="_blank" rel="noopener noreferrer">${text}</a>`
+    })
     html = html.replace(/^## (.*?)$/gm, "<h3>$1</h3>")
     html = html.replace(/\n/g, "<br>")
     return html
@@ -1098,7 +1095,18 @@ document.addEventListener("nav", async () => {
           articleUrl: window.location.href,
         })
         textarea.value = ""
-        updatePreview(textarea, previewEl)
+        // إعادة المحرر لوضع الكتابة بعد الإرسال (بدون الاعتماد على دوال خارجية)
+        try {
+          const wrap = composeSection.querySelector(".fc-editor-wrap") as HTMLElement | null
+          const livePrev = wrap?.querySelector(".fc-live-preview") as HTMLElement | null
+          if (livePrev) {
+            livePrev.style.display = "none"
+            livePrev.innerHTML = ""
+          }
+          textarea.style.display = "block"
+          wrap?.querySelector(".fc-btn-write")?.classList.add("active")
+          wrap?.querySelector(".fc-btn-preview")?.classList.remove("active")
+        } catch {}
       } catch (err: any) {
         alert(T.sendFail + err.message)
       }
@@ -1178,7 +1186,18 @@ document.addEventListener("nav", async () => {
         })
 
         guestTextarea.value = ""
-        updatePreview(guestTextarea, guestPreviewEl)
+        // إعادة محرر الزائر لوضع الكتابة بعد الإرسال
+        try {
+          const wrap = guestCompose.querySelector(".fc-editor-wrap") as HTMLElement | null
+          const livePrev = wrap?.querySelector(".fc-live-preview") as HTMLElement | null
+          if (livePrev) {
+            livePrev.style.display = "none"
+            livePrev.innerHTML = ""
+          }
+          guestTextarea.style.display = "block"
+          wrap?.querySelector(".fc-btn-write")?.classList.add("active")
+          wrap?.querySelector(".fc-btn-preview")?.classList.remove("active")
+        } catch {}
       } catch (err: any) {
         alert(T.sendFail + err.message)
       }

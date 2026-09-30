@@ -8,9 +8,8 @@ import { QuartzPluginData } from "../../plugins/vfile"
 import { ComponentChildren } from "preact"
 import { concatenateResources } from "../../util/resources"
 import { trieFromAllFiles } from "../../util/ctx"
-import { resolveRelative, FullSlug } from "../../util/path"
+import { resolveRelative } from "../../util/path"
 import { getDate } from "../Date"
-import readingTime from "reading-time"
 // @ts-ignore
 import paginationScript from "../scripts/pagination.inline"
 
@@ -464,7 +463,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
 
         <div class="folder-content-body">{content}</div>
 
-        <div class="cards-grid">
+        <div class="tadwinat-list-wrap">
           <PageList {...listProps} />
         </div>
       </section>

@@ -1,15 +1,9 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../types"
 import style from "../styles/listPage.scss"
-import { PageList, SortFn } from "../PageList"
+import { SortFn } from "../PageList"
 import { FullSlug, getAllSegmentPrefixes, resolveRelative, simplifySlug } from "../../util/path"
 import { QuartzPluginData } from "../../plugins/vfile"
-import { Root } from "hast"
-import { htmlToJsx } from "../../util/jsx"
-import { i18n } from "../../i18n"
-import { ComponentChildren } from "preact"
-import { concatenateResources } from "../../util/resources"
-// @ts-ignore
-import paginationScript from "../scripts/pagination.inline"
+import { getDate } from "../Date"
 
 interface TagContentOptions {
   sort?: SortFn
@@ -24,7 +18,7 @@ export default ((opts?: Partial<TagContentOptions>) => {
   const options: TagContentOptions = { ...defaultOptions, ...opts }
 
   const TagContent: QuartzComponent = (props: QuartzComponentProps) => {
-    const { tree, fileData, allFiles, cfg } = props
+    const { fileData, allFiles, cfg } = props
     const slug = fileData.slug
 
     if (!(slug?.startsWith("tags/") || slug === "tags")) {
@@ -36,14 +30,6 @@ export default ((opts?: Partial<TagContentOptions>) => {
       allFiles.filter((file) =>
         (file.frontmatter?.tags ?? []).flatMap(getAllSegmentPrefixes).includes(tag),
       )
-
-    const content = (
-      (tree as Root).children.length === 0
-        ? fileData.description
-        : htmlToJsx(fileData.filePath!, tree)
-    ) as ComponentChildren
-    const cssClasses: string[] = fileData.frontmatter?.cssclasses ?? []
-    const classes = cssClasses.join(" ")
     if (tag === "/") {
       const tags = [
         ...new Set(
@@ -122,35 +108,79 @@ export default ((opts?: Partial<TagContentOptions>) => {
         </div>
       )
     } else {
-      const pages = allPagesWithTag(tag)
-      const listProps = {
-        ...props,
-        allFiles: pages,
+      const pages = allPagesWithTag(tag).sort(
+        options?.sort ??
+          ((a, b) => {
+            const aDate = getDate(cfg, a) ?? new globalThis.Date("1970-01-01")
+            const bDate = getDate(cfg, b) ?? new globalThis.Date("1970-01-01")
+            return bDate.getTime() - aDate.getTime()
+          }),
+      )
+
+      // نفس سلوك صفحة المقالات: تجميع زمني شهر/سنة (تسلسل زمني) — بدون أي كروت قديمة
+      const groups = new Map<string, QuartzPluginData[]>()
+      for (const doc of pages) {
+        const dateObj = getDate(cfg, doc)
+        const key = dateObj
+          ? dateObj.toLocaleDateString("ar-u-nu-latn", { year: "numeric", month: "long" })
+          : "أرشيف عام"
+        if (!groups.has(key)) groups.set(key, [])
+        groups.get(key)!.push(doc)
       }
 
       return (
-        <div class="list-page post-list-page tag-single-page" dir="rtl">
-          <header class="tag-hero tag-hero--plain">
-            <span class="tag-hero-scrim"></span>
-            <div class="tag-hero-info">
-              <h1 class="tag-hero-title">
-                <span style={{ opacity: 0.6, marginLeft: "6px" }}>#</span>
-                {tag}
-              </h1>
-              {fileData.description && <p class="tag-hero-desc">{fileData.description}</p>}
-              <span class="tag-hero-count">{pages.length} تدوينة / مقال</span>
-            </div>
+        <div class="post-timeline-page tag-single-page" dir="rtl">
+          <header class="post-timeline-header">
+            <h1>
+              <span style={{ opacity: 0.6, marginLeft: "6px" }}>#</span>
+              {tag}
+            </h1>
+            <p>
+              {fileData.description
+                ? fileData.description
+                : `كل المقالات والشذرات الموسومة بـ «${tag}» (${pages.length})`}
+            </p>
           </header>
 
-          <div class="cards-grid">
-            <PageList {...listProps} sort={options?.sort} />
+          <div class="timeline-tree-container">
+            {Array.from(groups.entries()).map(([monthName, docs]) => (
+              <div class="timeline-month-block" key={monthName}>
+                <div class="timeline-spine-node">
+                  <span class="timeline-node-square" />
+                  <span class="timeline-node-branch" />
+                </div>
+                <div class="timeline-badge-wrap">
+                  <span class="timeline-month-badge">{monthName}</span>
+                </div>
+                <div class="timeline-month-card">
+                  {docs.map((doc) => {
+                    const dateObj = getDate(cfg, doc)
+                    const dateFormatted = dateObj
+                      ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
+                      : ""
+                    const title = doc.frontmatter?.title ?? "بدون عنوان"
+                    return (
+                      <div class="timeline-article-row" key={doc.slug}>
+                        <a
+                          href={resolveRelative(fileData.slug!, doc.slug!)}
+                          class="timeline-article-title"
+                        >
+                          {title}
+                        </a>
+                        <span class="timeline-article-dots" />
+                        <time class="timeline-article-date">{dateFormatted}</time>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )
     }
   }
 
-  TagContent.css = concatenateResources(style, PageList.css)
-  TagContent.afterDOMLoaded = paginationScript
+  TagContent.css = style
   return TagContent
 }) satisfies QuartzComponentConstructor

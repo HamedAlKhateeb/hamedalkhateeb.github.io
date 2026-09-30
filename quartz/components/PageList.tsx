@@ -1,10 +1,8 @@
 import { isFolderPath, resolveRelative } from "../util/path"
 import { QuartzPluginData } from "../plugins/vfile"
-import { Date, getDate } from "./Date"
+import { getDate } from "./Date"
 import { QuartzComponent, QuartzComponentProps } from "./types"
 import { GlobalConfiguration } from "../cfg"
-import readingTime from "reading-time"
-import { i18n } from "../i18n"
 
 export type SortFn = (f1: QuartzPluginData, f2: QuartzPluginData) => number
 
@@ -50,79 +48,36 @@ type Props = {
 
 export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort }: Props) => {
   const sorter = sort ?? byDateAndAlphabeticalFolderFirst(cfg)
-  let list = allFiles.sort(sorter)
+  let list = [...allFiles].sort(sorter)
   if (limit) {
     list = list.slice(0, limit)
   }
 
-  const slug = fileData.slug ?? ""
-  const isArabic = slug.toLowerCase().startsWith("ar/") || slug.toLowerCase() === "ar"
-  const defaultFallback = isArabic
-    ? "/static/thumbnails/arabic-graffiti.webp"
-    : "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=600&auto=format&fit=crop"
+  const slug = (fileData.slug ?? "").toLowerCase()
+  const isArabic = slug.startsWith("ar/") || slug === "ar" || slug.startsWith("tags/")
 
   return (
-    <>
-      <ul class={`article-magazine-grid ${isArabic ? "rtl" : "ltr"}`} id="article-magazine-grid">
-        {list.map((page) => {
-          const title = page.frontmatter?.title ?? (isArabic ? "بدون عنوان" : "Untitled")
-          const cover = (page.frontmatter?.cover ??
-            page.frontmatter?.image ??
-            defaultFallback) as string
-          const description = page.frontmatter?.description ?? page.description
-
-          let displayedTime = ""
-          if (page.text) {
-            const { minutes } = readingTime(page.text)
-            displayedTime = i18n(cfg.locale).components.contentMeta.readingTime({
-              minutes: Math.ceil(minutes),
-            })
-          }
-
-          return (
-            <li class="magazine-card" key={page.slug}>
-              <a
-                href={resolveRelative(fileData.slug!, page.slug!)}
-                class="card-thumbnail-link internal"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img
-                  src={cover}
-                  alt={title}
-                  class="card-thumbnail"
-                  loading="lazy"
-                  width="400"
-                  height="250"
-                />
-              </a>
-              <div class="card-content-area">
-                <h3 class="card-title">
-                  <a
-                    href={resolveRelative(fileData.slug!, page.slug!)}
-                    class="internal"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {title}
-                  </a>
-                </h3>
-                {description && <p class="card-excerpt">{description}</p>}
-                <div class="card-meta-bottom">
-                  {page.dates && (
-                    <span class="card-date">
-                      <Date date={getDate(cfg, page)!} locale={cfg.locale} />
-                    </span>
-                  )}
-                  {displayedTime && <span class="card-time-span">{displayedTime}</span>}
-                </div>
-              </div>
-            </li>
-          )
-        })}
-      </ul>
-      <div class="article-pagination" id="article-pagination-controls"></div>
-    </>
+    <div class="tadwinat-list" id="article-list">
+      {list.map((page) => {
+        const title = page.frontmatter?.title ?? (isArabic ? "بدون عنوان" : "Untitled")
+        const dateObj = getDate(cfg, page)
+        const dateFormatted = dateObj
+          ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
+          : ""
+        return (
+          <div class="tadwinat-item" key={page.slug}>
+            <a
+              href={resolveRelative(fileData.slug!, page.slug!)}
+              class="tadwinat-title-link"
+            >
+              {title}
+            </a>
+            <span class="tadwinat-dots" />
+            <time class="tadwinat-date">{dateFormatted}</time>
+          </div>
+        )
+      })}
+    </div>
   )
 }
 
