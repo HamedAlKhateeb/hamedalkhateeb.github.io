@@ -81,6 +81,17 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
     }
   }
 
+  // ── Helper for Kind Emojis / Icons ──
+  const getKindEmojiOrIcon = (kind?: string) => {
+    const k = (kind ?? "").trim()
+    if (k === "يوتيوب" || k === "فيديو") return "🎥"
+    if (k === "كتاب" || k === "قراءة") return "📖"
+    if (k === "رابط") return "🔗"
+    if (k === "صور" || k === "صورة") return "🖼️"
+    if (k === "صوت" || k === "بودكاست") return "🎙️"
+    return "💡"
+  }
+
   // ══════════════════════════════════════════════════════════════
   // 1. SHATHARAT TIMELINE PAGE (شذرات)
   // ══════════════════════════════════════════════════════════════
@@ -101,88 +112,102 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
     const kinds = Array.from(new Set(microPosts.map((p) => (p.frontmatter?.kind as string) || "خواطر")))
 
     return (
-      <div class="list-page micro-list-page" dir="rtl">
-        <header class="tag-hero tag-hero--plain">
-          <span class="tag-hero-scrim"></span>
-          <div class="tag-hero-info">
-            <h1 class="tag-hero-title">
-              <svg class="inline-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2A7 7 0 008 14.7V17h8v-2.3A7 7 0 0012 2z"/>
-              </svg>
-              شذرات
-            </h1>
-            <p class="tag-hero-desc">روابط والتقاطات لمحتويات لفتت انتباهي من عالم الانترنت وحياتي اليومية.</p>
-            <span class="tag-hero-count">{microPosts.length} شذرة</span>
-          </div>
+      <div class="post-timeline-page shadhra-timeline-page" dir="rtl">
+        <header class="post-timeline-header">
+          <h1>📍 شذرات</h1>
+          <p>روابط والتقاطات وتأملات لمحتويات لفتت انتباهي من عالم الإنترنت والحياة اليومية ({microPosts.length} شذرة)</p>
         </header>
 
-        <nav class="topic-filter" aria-label="التصفية حسب الموضوع">
-          <button class="topic-chip is-active" data-kind="all">
-            كل الشذرات <span class="topic-chip-count">({microPosts.length})</span>
+        <nav class="topic-filter" aria-label="التصفية حسب الموضوع" style={{ marginBottom: "2.5rem" }}>
+          <button class="topic-chip active" data-kind="all">
+            كل الشذرات ({microPosts.length})
           </button>
           {kinds.map((k) => {
             const count = microPosts.filter((p) => ((p.frontmatter?.kind as string) || "خواطر") === k).length
             return (
               <button class="topic-chip" data-kind={k} key={k}>
-                {getKindIcon(k)}
-                {k}
-                <span class="topic-chip-count">({count})</span>
+                <span>{getKindEmojiOrIcon(k)}</span>
+                <span>{k}</span>
+                <span>({count})</span>
               </button>
             )
           })}
         </nav>
 
-        <div class="posts-list micro-posts-list micro-timeline">
+        <div class="timeline-tree-container shadhra-timeline-tree">
           {microPosts.map((post) => {
             const kind = (post.frontmatter?.kind as string) || "خواطر"
             const dateObj = getDate(cfg, post)
             const dateFormatted = dateObj
               ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
               : ""
-            const thumb = (post.frontmatter?.image ?? post.frontmatter?.cover) as string | undefined
             const link = post.frontmatter?.link as string | undefined
+            const tags = (post.frontmatter?.tags as string[]) ?? []
+            const rawHtml =
+              post.html ||
+              (post.description ? `<p>${post.description}</p>` : `<p>${post.text || ""}</p>`)
 
             return (
-              <section class="micro-tl-item" data-kind={kind} key={post.slug}>
-                <h2 class="micro-tl-date">
-                  <a href={resolveRelative(fileData.slug!, post.slug!)}>
-                    {getKindIcon(kind)}
-                    <span>{dateFormatted}</span>
+              <div class="timeline-shadhra-block" data-kind={kind} key={post.slug}>
+                {/* Spine Node: Square marker + branch line to badge */}
+                <div class="timeline-spine-node">
+                  <span class="timeline-node-square" />
+                  <span class="timeline-node-branch" />
+                </div>
+
+                {/* Date + Kind Badge */}
+                <div class="timeline-badge-wrap">
+                  <a
+                    href={resolveRelative(fileData.slug!, post.slug!)}
+                    class="timeline-month-badge timeline-shadhra-badge"
+                  >
+                    <span class="shadhra-date-text">{dateFormatted}</span>
+                    <span class="shadhra-kind-icon">{getKindEmojiOrIcon(kind)}</span>
                   </a>
-                </h2>
-                <article class="post-card post-card-micro">
-                  <div class="micro-card-header">
-                    <span class="micro-card-topic" title={kind}>
-                      {getKindIcon(kind)}
-                    </span>
-                    <time class="micro-card-date">
-                      <a href={resolveRelative(fileData.slug!, post.slug!)}>{dateFormatted} ←</a>
-                    </time>
-                  </div>
-                  <div class="micro-card-content">
-                    {thumb && (
-                      <p>
-                        <img src={thumb} alt={post.frontmatter?.title ?? ""} loading="lazy" />
-                      </p>
-                    )}
-                    {post.frontmatter?.title && (
-                      <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.15rem;">
-                        <a href={resolveRelative(fileData.slug!, post.slug!)} style="text-decoration: none; color: inherit;">
-                          {post.frontmatter.title}
+                </div>
+
+                {/* Shadhra Full Content Card */}
+                <article class="timeline-shadhra-card">
+                  {post.frontmatter?.title && (
+                    <h2 class="shadhra-title">
+                      <a href={resolveRelative(fileData.slug!, post.slug!)}>
+                        {post.frontmatter.title}
+                      </a>
+                    </h2>
+                  )}
+
+                  <div
+                    class="shadhra-raw-content"
+                    dangerouslySetInnerHTML={{ __html: rawHtml }}
+                  />
+
+                  {link && (
+                    <div class="shadhra-source-wrap">
+                      <a
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="shadhra-source-link"
+                      >
+                        رابط المصدر ↗
+                      </a>
+                    </div>
+                  )}
+
+                  {tags.length > 0 && (
+                    <div class="shadhra-tags-row">
+                      {tags.map((t) => (
+                        <a
+                          href={resolveRelative(fileData.slug!, `tags/${t}` as FullSlug)}
+                          class="shadhra-tag-chip"
+                        >
+                          #{t}
                         </a>
-                      </h3>
-                    )}
-                    <p>{post.text ?? post.description ?? ""}</p>
-                    {link && (
-                      <p>
-                        <a href={link} target="_blank" rel="noopener noreferrer" class="meta-link">
-                          رابط المصدر ↗
-                        </a>
-                      </p>
-                    )}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </article>
-              </section>
+              </div>
             )
           })}
         </div>
@@ -195,48 +220,84 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
   // ══════════════════════════════════════════════════════════════
   if (isMicroSingle) {
     const contentJsx = htmlToJsx(fileData.filePath!, processedTree) as ComponentChildren
-    const kind = (fileData.frontmatter?.kind as string) || "خاطرة"
+    const kind = (fileData.frontmatter?.kind as string) || "خواطر"
     const dateObj = getDate(cfg, fileData)
     const dateFormatted = dateObj
       ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
       : ""
     const link = fileData.frontmatter?.link as string | undefined
+    const tags = (fileData.frontmatter?.tags as string[]) ?? []
+    const title = fileData.frontmatter?.title
 
     return (
-      <div class="micro-single" dir="rtl">
-        <div class="mp-tabwrap">
-          <div class="mp-tab">
-            <time>{dateFormatted}</time>
-            <span class="meta-separator">•</span>
-            <span class="meta-link">
-              {getKindIcon(kind)}
-              {kind}
-            </span>
+      <div class="post-timeline-page shadhra-single-page" dir="rtl">
+        <div style={{ marginBottom: "1.75rem" }}>
+          <a
+            href={resolveRelative(fileData.slug!, "ar/micro" as FullSlug)}
+            class="shadhra-tag-chip"
+            style={{
+              padding: "6px 14px",
+              fontSize: "0.92rem",
+              fontWeight: 700,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+            }}
+          >
+            <span>←</span>
+            <span>العودة لجميع الشذرات</span>
+          </a>
+        </div>
+
+        <div class="timeline-tree-container shadhra-timeline-tree">
+          <div class="timeline-shadhra-block" data-kind={kind}>
+            <div class="timeline-spine-node">
+              <span class="timeline-node-square" />
+              <span class="timeline-node-branch" />
+            </div>
+
+            <div class="timeline-badge-wrap">
+              <div class="timeline-month-badge timeline-shadhra-badge">
+                <span class="shadhra-date-text">{dateFormatted}</span>
+                <span class="shadhra-kind-icon">{getKindEmojiOrIcon(kind)}</span>
+              </div>
+            </div>
+
+            <article class="timeline-shadhra-card">
+              {title && <h1 class="shadhra-title">{title}</h1>}
+
+              <div class="shadhra-raw-content">
+                {contentJsx}
+              </div>
+
+              {link && (
+                <div class="shadhra-source-wrap">
+                  <a
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="shadhra-source-link"
+                  >
+                    الانتقال للمصدر الأصلي ↗
+                  </a>
+                </div>
+              )}
+
+              {tags.length > 0 && (
+                <div class="shadhra-tags-row">
+                  {tags.map((t) => (
+                    <a
+                      href={resolveRelative(fileData.slug!, `tags/${t}` as FullSlug)}
+                      class="shadhra-tag-chip"
+                    >
+                      #{t}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </article>
           </div>
         </div>
-        <article class="post-card post-card-micro mp-card">
-          <div class="micro-card-content">
-            {fileData.frontmatter?.title && (
-              <h2 class="post-single-title" style="margin-bottom: 1rem;">
-                {fileData.frontmatter.title}
-              </h2>
-            )}
-            {contentJsx}
-            {link && (
-              <p style="margin-top: 1.5rem;">
-                <a href={link} target="_blank" rel="noopener noreferrer" class="more-posts-link">
-                  الانتقال للمصدر الأصلي ↗
-                </a>
-              </p>
-            )}
-          </div>
-          <div class="micro-navigation">
-            <a href={resolveRelative(fileData.slug!, "ar/micro" as FullSlug)} class="nav-link-micro">
-              <span class="nav-arrow">←</span>
-              <span>العودة لجميع الشذرات</span>
-            </a>
-          </div>
-        </article>
       </div>
     )
   }
@@ -246,7 +307,12 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
   // ══════════════════════════════════════════════════════════════
   if (isArticlesIndex) {
     const articles = allFiles
-      .filter((f) => f.slug && f.slug.startsWith("ar/articles/") && !f.slug.endsWith("index"))
+      .filter(
+        (f) =>
+          f.slug &&
+          (f.slug.startsWith("ar/articles/") || f.slug.startsWith("articles/")) &&
+          !f.slug.endsWith("index"),
+      )
       .sort((a, b) => {
         const aDate = a.dates?.published ?? new globalThis.Date("1970-01-01")
         const bDate = b.dates?.published ?? new globalThis.Date("1970-01-01")
@@ -257,58 +323,50 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
     const groups = new Map<string, typeof articles>()
     for (const a of articles) {
       const d = getDate(cfg, a) ?? new globalThis.Date("1970-01-01")
-      const monthYear = d.toLocaleDateString("ar-EG", { month: "long", year: "numeric" })
+      const monthYear = d.toLocaleDateString("ar-u-nu-latn", { year: "numeric", month: "long" })
       if (!groups.has(monthYear)) groups.set(monthYear, [])
       groups.get(monthYear)!.push(a)
     }
 
     return (
-      <div class="list-page post-list-page" dir="rtl">
-        <header class="tag-hero tag-hero--plain">
-          <span class="tag-hero-scrim"></span>
-          <div class="tag-hero-info">
-            <h1 class="tag-hero-title">
-              <svg class="inline-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 3a2.83 2.83.0 114 4L7.5 20.5 2 22l1.5-5.5z"/>
-              </svg>
-              تدوينات
-            </h1>
-            <p class="tag-hero-desc">تأملات وتدوينات عن الحياة والرياضيات والتقنية وأشياء أخرى لفتت انتباهي.</p>
-            <span class="tag-hero-count">{articles.length} تدوينة</span>
-          </div>
+      <div class="post-timeline-page" dir="rtl">
+        <header class="post-timeline-header">
+          <h1>التدوينات</h1>
+          <p>مقالات مطولة وأفكار وتجارب حول المعرفة والهندسة والحياة ({articles.length} تدوينة)</p>
         </header>
 
-        <div class="posts-list post-tl">
-          {Array.from(groups.entries()).map(([monthYear, postList]) => (
-            <section class="post-tl-item" key={monthYear}>
-              <h2 class="post-tl-month">
-                <span>{monthYear}</span>
-              </h2>
-              <div class="post-tl-card">
-                <div class="home-listing-body home-listing-body--plain">
-                  {postList.map((post) => {
-                    const title = post.frontmatter?.title ?? "بدون عنوان"
-                    const d = getDate(cfg, post)
-                    const dateFormatted = d
-                      ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
-                      : ""
-                    return (
-                      <article class="post-item" key={post.slug}>
-                        <div class="post-item-title-wrapper">
-                          <h3 class="post-item-title">
-                            <a href={resolveRelative(fileData.slug!, post.slug!)}>{title}</a>
-                          </h3>
-                          <div class="post-item-divider"></div>
-                        </div>
-                        <time class="post-item-date">
-                          <a href={resolveRelative(fileData.slug!, post.slug!)}>{dateFormatted}</a>
-                        </time>
-                      </article>
-                    )
-                  })}
-                </div>
+        <div class="timeline-tree-container">
+          {Array.from(groups.entries()).map(([monthName, docs]) => (
+            <div class="timeline-month-block" key={monthName}>
+              <div class="timeline-spine-node">
+                <span class="timeline-node-square" />
+                <span class="timeline-node-branch" />
               </div>
-            </section>
+              <div class="timeline-badge-wrap">
+                <span class="timeline-month-badge">{monthName}</span>
+              </div>
+              <div class="timeline-month-card">
+                {docs.map((doc) => {
+                  const dateObj = getDate(cfg, doc)
+                  const dateFormatted = dateObj
+                    ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
+                    : ""
+                  const title = doc.frontmatter?.title ?? "بدون عنوان"
+                  return (
+                    <div class="timeline-article-row" key={doc.slug}>
+                      <a
+                        href={resolveRelative(fileData.slug!, doc.slug!)}
+                        class="timeline-article-title"
+                      >
+                        {title}
+                      </a>
+                      <span class="timeline-article-dots" />
+                      <time class="timeline-article-date">{dateFormatted}</time>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -390,48 +448,19 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
     poems.sort((a, b) => (a.slug! > b.slug! ? 1 : -1))
 
     return (
-      <div class="list-page post-list-page" dir="rtl">
-        <header class="tag-hero tag-hero--plain">
-          <span class="tag-hero-scrim"></span>
-          <div class="tag-hero-info">
-            <h1 class="tag-hero-title">
-              <svg class="inline-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
-                <path d="M6 6h10M6 10h10"/>
-              </svg>
-              ديوان الشعر
-            </h1>
-            <p class="tag-hero-desc">أكتب الشعر العربي العمودي أحيانًا، وأبصر فيه دوحًا من الجمال والأنس.</p>
-            <span class="tag-hero-count">{poems.length} قصيدة</span>
-          </div>
+      <div class="poetry-index-page" dir="rtl">
+        <header class="post-tl-header">
+          <h1>ديوان الشعر</h1>
+          <p style="color: var(--color-ink-muted); margin: 0;">قصائد وتأملات شعرية باللغة العربية الفصحى ({poems.length} قصيدة)</p>
         </header>
 
-        <div class="post-tl-card">
-          <div class="home-listing-body home-listing-body--plain">
-            {poems.map((poem) => {
-              const poemTitle =
-                poem.frontmatter?.title ||
-                poem.slug!.split("/").pop()?.replace(/_/g, " ") ||
-                "بلا عنوان"
-              const d = getDate(cfg, poem)
-              const dateFormatted = d
-                ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
-                : ""
-              return (
-                <article class="post-item" key={poem.slug}>
-                  <div class="post-item-title-wrapper">
-                    <h3 class="post-item-title">
-                      <a href={resolveRelative(fileData.slug!, poem.slug!)}>{poemTitle}</a>
-                    </h3>
-                    <div class="post-item-divider"></div>
-                  </div>
-                  <time class="post-item-date">
-                    <a href={resolveRelative(fileData.slug!, poem.slug!)}>{dateFormatted}</a>
-                  </time>
-                </article>
-              )
-            })}
-          </div>
+        <div class="poetry-grid" style="margin-top: 2rem;">
+          {poems.map((poem) => (
+            <a href={resolveRelative(fileData.slug!, poem.slug!)} class="poetry-card" key={poem.slug}>
+              <h3 class="poetry-card-title">{poem.frontmatter?.title ?? "قصيدة"}</h3>
+              <p class="poetry-card-excerpt">{poem.description || poem.text?.slice(0, 100) || "شعر عربي"}</p>
+            </a>
+          ))}
         </div>
       </div>
     )
@@ -541,5 +570,27 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
 
   return <article class="page-content">{content}</article>
 }
+
+Content.afterDOMLoaded = `
+document.addEventListener("nav", () => {
+  const chips = document.querySelectorAll(".topic-chip");
+  if (!chips.length) return;
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      chips.forEach((c) => c.classList.remove("active", "is-active"));
+      chip.classList.add("active");
+      const kind = chip.getAttribute("data-kind");
+      const items = document.querySelectorAll(".timeline-shadhra-block, .micro-tl-item");
+      items.forEach((item) => {
+        if (kind === "all" || item.getAttribute("data-kind") === kind) {
+          item.style.display = "flex";
+        } else {
+          item.style.display = "none";
+        }
+      });
+    });
+  });
+});
+`
 
 export default (() => Content) satisfies QuartzComponentConstructor

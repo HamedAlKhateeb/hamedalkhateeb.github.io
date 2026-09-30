@@ -1,5 +1,6 @@
 import { Root as HTMLRoot } from "hast"
 import { toString } from "hast-util-to-string"
+import { toHtml } from "hast-util-to-html"
 import { QuartzTransformerPlugin } from "../types"
 import { escapeHTML } from "../../util/escape"
 
@@ -28,6 +29,9 @@ export const Description: QuartzTransformerPlugin<Partial<Options>> = (userOpts)
       return [
         () => {
           return async (tree: HTMLRoot, file) => {
+            // Store full rendered HTML content for rich timeline views (such as micro notes)
+            file.data.html = toHtml(tree, { allowDangerousHtml: true })
+
             let frontMatterDescription = file.data.frontmatter?.description
             let text = escapeHTML(toString(tree))
 
@@ -86,5 +90,6 @@ declare module "vfile" {
   interface DataMap {
     description: string
     text: string
+    html?: string
   }
 }

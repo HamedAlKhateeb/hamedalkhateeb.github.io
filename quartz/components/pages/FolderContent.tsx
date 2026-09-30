@@ -119,8 +119,19 @@ export default ((opts?: Partial<FolderContentOptions>) => {
       }
     }
 
+    // ── Helper for Kind Emojis / Icons ──
+    const getKindEmojiOrIcon = (kind?: string) => {
+      const k = (kind ?? "").trim()
+      if (k === "يوتيوب" || k === "فيديو") return "🎥"
+      if (k === "كتاب" || k === "قراءة") return "📖"
+      if (k === "رابط") return "🔗"
+      if (k === "صور" || k === "صورة") return "🖼️"
+      if (k === "صوت" || k === "بودكاست") return "🎙️"
+      return "💡"
+    }
+
     // ══════════════════════════════════════════════════════════════
-    // 1. SHATHARAT TIMELINE VIEW (alfarhan.ws/micro parity)
+    // 1. SHATHARAT TIMELINE VIEW (Parity with User's Reference Image)
     // ══════════════════════════════════════════════════════════════
     if (isMicroIndex) {
       const microPosts = allFiles
@@ -139,13 +150,13 @@ export default ((opts?: Partial<FolderContentOptions>) => {
       const kinds = Array.from(new Set(microPosts.map((p) => (p.frontmatter?.kind as string) || "خواطر")))
 
       return (
-        <div class="micro-timeline-page" dir="rtl">
-          <header class="micro-hero">
-            <h1 class="micro-hero-title">شذرات</h1>
-            <p class="micro-hero-desc">روابط والتقاطات لمحتويات لفتت انتباهي من عالم الانترنت وحياتي اليومية.</p>
+        <div class="post-timeline-page shadhra-timeline-page" dir="rtl">
+          <header class="post-timeline-header">
+            <h1>📍 شذرات</h1>
+            <p>روابط والتقاطات وتأملات لمحتويات لفتت انتباهي من عالم الإنترنت والحياة اليومية ({microPosts.length} شذرة)</p>
           </header>
 
-          <nav class="topic-filter" aria-label="التصفية حسب الموضوع">
+          <nav class="topic-filter" aria-label="التصفية حسب الموضوع" style={{ marginBottom: "2.5rem" }}>
             <button class="topic-chip active" data-kind="all">
               كل الشذرات ({microPosts.length})
             </button>
@@ -153,7 +164,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
               const count = microPosts.filter((p) => ((p.frontmatter?.kind as string) || "خواطر") === k).length
               return (
                 <button class="topic-chip" data-kind={k} key={k}>
-                  {getKindIcon(k)}
+                  <span>{getKindEmojiOrIcon(k)}</span>
                   <span>{k}</span>
                   <span>({count})</span>
                 </button>
@@ -161,58 +172,80 @@ export default ((opts?: Partial<FolderContentOptions>) => {
             })}
           </nav>
 
-          <div class="micro-timeline">
+          <div class="timeline-tree-container shadhra-timeline-tree">
             {microPosts.map((post) => {
               const kind = (post.frontmatter?.kind as string) || "خواطر"
               const dateObj = getDate(cfg, post)
               const dateFormatted = dateObj
                 ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
                 : ""
-              const thumb = (post.frontmatter?.image ?? post.frontmatter?.cover) as string | undefined
               const link = post.frontmatter?.link as string | undefined
+              const tags = (post.frontmatter?.tags as string[]) ?? []
+              const rawHtml =
+                post.html ||
+                (post.description ? `<p>${post.description}</p>` : `<p>${post.text || ""}</p>`)
 
               return (
-                <div class="micro-tl-item" data-kind={kind} key={post.slug}>
-                  <div class="micro-tl-date">
-                    <a href={resolveRelative(fileData.slug!, post.slug!)} style="text-decoration: none; color: inherit;">
-                      {dateFormatted}
+                <div class="timeline-shadhra-block" data-kind={kind} key={post.slug}>
+                  {/* Spine Node: Square marker + branch line to badge */}
+                  <div class="timeline-spine-node">
+                    <span class="timeline-node-square" />
+                    <span class="timeline-node-branch" />
+                  </div>
+
+                  {/* Date + Kind Badge (e.g. 2026-09-30 🎥) */}
+                  <div class="timeline-badge-wrap">
+                    <a
+                      href={resolveRelative(fileData.slug!, post.slug!)}
+                      class="timeline-month-badge timeline-shadhra-badge"
+                    >
+                      <span class="shadhra-date-text">{dateFormatted}</span>
+                      <span class="shadhra-kind-icon">{getKindEmojiOrIcon(kind)}</span>
                     </a>
                   </div>
-                  <div class="micro-tl-content">
-                    <article class="post-card-micro">
-                      <div class="micro-meta-bar">
-                        <span class="micro-topic-badge">
-                          {getKindIcon(kind)}
-                          <span>{kind}</span>
-                        </span>
-                        <a href={resolveRelative(fileData.slug!, post.slug!)} class="micro-time-link">
-                          {dateFormatted} ←
+
+                  {/* Shadhra Full Content Card */}
+                  <article class="timeline-shadhra-card">
+                    {post.frontmatter?.title && (
+                      <h2 class="shadhra-title">
+                        <a href={resolveRelative(fileData.slug!, post.slug!)}>
+                          {post.frontmatter.title}
+                        </a>
+                      </h2>
+                    )}
+
+                    <div
+                      class="shadhra-raw-content"
+                      dangerouslySetInnerHTML={{ __html: rawHtml }}
+                    />
+
+                    {link && (
+                      <div class="shadhra-source-wrap">
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="shadhra-source-link"
+                        >
+                          رابط المصدر ↗
                         </a>
                       </div>
-                      <div class="micro-body">
-                        {thumb && (
-                          <p>
-                            <img src={thumb} alt={post.frontmatter?.title ?? ""} loading="lazy" />
-                          </p>
-                        )}
-                        {post.frontmatter?.title && (
-                          <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.2rem; font-weight: 800;">
-                            <a href={resolveRelative(fileData.slug!, post.slug!)} style="text-decoration: none; color: inherit;">
-                              {post.frontmatter.title}
-                            </a>
-                          </h3>
-                        )}
-                        <p>{post.description || post.text || ""}</p>
-                        {link && (
-                          <p style="margin-top: 0.75rem;">
-                            <a href={link} target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 700; color: var(--color-ink); text-decoration: underline;">
-                              رابط المصدر ↗
-                            </a>
-                          </p>
-                        )}
+                    )}
+
+                    {tags.length > 0 && (
+                      <div class="shadhra-tags-row">
+                        {tags.map((t) => (
+                          <a
+                            href={resolveRelative(fileData.slug!, `tags/${t}` as FullSlug)}
+                            class="shadhra-tag-chip"
+                            key={t}
+                          >
+                            #{t.replace(/_/g, " ")}
+                          </a>
+                        ))}
                       </div>
-                    </article>
-                  </div>
+                    )}
+                  </article>
                 </div>
               )
             })}
@@ -482,7 +515,7 @@ document.addEventListener("nav", () => {
       chips.forEach((c) => c.classList.remove("active", "is-active"));
       chip.classList.add("active");
       const kind = chip.getAttribute("data-kind");
-      const items = document.querySelectorAll(".micro-tl-item");
+      const items = document.querySelectorAll(".timeline-shadhra-block, .micro-tl-item");
       items.forEach((item) => {
         if (kind === "all" || item.getAttribute("data-kind") === kind) {
           item.style.display = "flex";
