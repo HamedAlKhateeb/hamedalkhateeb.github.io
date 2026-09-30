@@ -202,7 +202,29 @@ export default ((opts?: Partial<FolderContentOptions>) => {
                             </a>
                           </h3>
                         )}
-                        <p>{post.description || post.text || ""}</p>
+                        {(() => {
+                          const rawDesc = (post.description || "").trim()
+                          const hasRealDesc = rawDesc.length > 3 && rawDesc !== ".."
+                          const raw = hasRealDesc
+                            ? rawDesc
+                            : (post.text || "").replace(/^[#>\s-]+/gm, "").trim()
+                          const excerpt = raw.length > 220 ? raw.slice(0, 220).trim() + " ..." : raw
+                          return (
+                            <>
+                              <p>{excerpt}</p>
+                              {raw.length > 220 && (
+                                <p style="margin-top: 0.5rem;">
+                                  <a
+                                    href={resolveRelative(fileData.slug!, post.slug!)}
+                                    style="font-weight: 700; text-decoration: underline;"
+                                  >
+                                    اقرأ المزيد ←
+                                  </a>
+                                </p>
+                              )}
+                            </>
+                          )
+                        })()}
                         {link && (
                           <p style="margin-top: 0.75rem;">
                             <a href={link} target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 700; color: var(--color-ink); text-decoration: underline;">

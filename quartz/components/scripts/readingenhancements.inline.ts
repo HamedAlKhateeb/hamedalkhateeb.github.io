@@ -32,7 +32,11 @@ document.addEventListener("nav", () => {
   }
 
   // Only run on article/content pages
-  const articleContent = document.querySelector(".center article") as HTMLElement | null
+  // ملاحظة: صفحة المقال المفرد لا تحتوي على وسم <article> بل على
+  // .post-single-card .post-content — والشذرة المفردة على .micro-single
+  const articleContent = (document.querySelector(
+    ".center article, .center .post-single-card, .center .micro-single, .center .page-content",
+  ) as HTMLElement | null) ?? (document.querySelector(".center") as HTMLElement | null)
   if (!articleContent) return
 
   // Check if navigating from a resume flag
