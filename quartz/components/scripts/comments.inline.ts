@@ -228,7 +228,15 @@ document.addEventListener("nav", async () => {
   `
 
   const canonicalLink = document.querySelector('link[rel="canonical"]')
-  const currentShareUrl = (canonicalLink ? canonicalLink.getAttribute("href") : null) || (window.location.origin + window.location.pathname)
+  const rawShareUrl =
+    (canonicalLink ? canonicalLink.getAttribute("href") : null) ||
+    window.location.origin + window.location.pathname
+  // روابط المشاركة (تويتر خصوصًا) تنكسر مع الحروف العربية الخام —
+  // وحّد الرابط لصيغة ASCII مشفّرة حتى يظهر الرابط كاملًا وقابلًا للنقر
+  let currentShareUrl = rawShareUrl
+  try {
+    currentShareUrl = new URL(rawShareUrl, window.location.origin).href
+  } catch {}
   const currentShareTitle = document.title || "Hamed Alkhateeb"
 
   // ── Main HTML ──────────────────────────────────────────────────────────

@@ -213,7 +213,13 @@ document.addEventListener("nav", () => {
   if (shareBtn) {
     const shareHandler = () => {
       const text = window.getSelection()?.toString() ?? ""
-      const pageUrl = encodeURIComponent(window.location.href)
+      // تويتر يكسر الروابط التي تحوي حروفًا عربية خام (يظهر نصف الرابط فقط) —
+      // وحّد الرابط لصيغة ASCII مشفّرة قبل المشاركة
+      let asciiUrl = window.location.href
+      try {
+        asciiUrl = new URL(window.location.href).href
+      } catch {}
+      const pageUrl = encodeURIComponent(asciiUrl)
       const quote = encodeURIComponent(`"${text}"`)
       const xUrl = `https://x.com/intent/tweet?text=${quote}&url=${pageUrl}`
       window.open(xUrl, "_blank", "noopener,noreferrer")

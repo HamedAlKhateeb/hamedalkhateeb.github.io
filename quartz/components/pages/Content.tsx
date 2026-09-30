@@ -172,29 +172,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
                         </a>
                       </h3>
                     )}
-                    {(() => {
-                      const rawDesc = (post.description || "").trim()
-                      const hasRealDesc = rawDesc.length > 3 && rawDesc !== ".."
-                      const raw = hasRealDesc
-                        ? rawDesc
-                        : (post.text || "").replace(/^[#>\s-]+/gm, "").trim()
-                      const excerpt = raw.length > 220 ? raw.slice(0, 220).trim() + " ..." : raw
-                      return (
-                        <>
-                          <p>{excerpt}</p>
-                          {raw.length > 220 && (
-                            <p style="margin-top: 0.5rem;">
-                              <a
-                                href={resolveRelative(fileData.slug!, post.slug!)}
-                                style="font-weight: 700; text-decoration: underline;"
-                              >
-                                اقرأ المزيد ←
-                              </a>
-                            </p>
-                          )}
-                        </>
-                      )
-                    })()}
+                    <p>{post.text ?? post.description ?? ""}</p>
                     {link && (
                       <p>
                         <a href={link} target="_blank" rel="noopener noreferrer" class="meta-link">
