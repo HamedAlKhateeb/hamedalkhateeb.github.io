@@ -10,10 +10,29 @@ function initReadingSettings() {
 
   if (!toggleBtn || !modal) return;
 
-  // NOTE: no "already bound" guard here on purpose. On SPA navigation Quartz
-  // runs all window.addCleanup handlers (removing our old listeners) and then
-  // re-fires "nav", so a full re-init is required every time. A dataset guard
-  // would leave the button dead after the first in-app navigation.
+  // IDEMPOTENT re-init (critical). This function runs once directly AND again
+  // on the initial "nav" event (the SPA router fires "nav" on page load, and
+  // our code sits BEFORE the router in the bundle, so no cleanup runs in
+  // between). Without an explicit teardown, the toggle would get TWO click
+  // handlers and one press would open+instantly-close the modal — looking dead.
+  // We keep the disposer on the button element itself, so it works whether
+  // SPA morphing preserves or replaces DOM nodes.
+  if (typeof toggleBtn._rsTeardown === "function") {
+    try { toggleBtn._rsTeardown(); } catch (_) {}
+    toggleBtn._rsTeardown = null;
+  }
+  const _rsDisposers = [];
+  const track = (target, type, handler, opts) => {
+    target.addEventListener(type, handler, opts);
+    const dispose = () => target.removeEventListener(type, handler, opts);
+    _rsDisposers.push(dispose);
+    if (typeof window.addCleanup === "function") {
+      window.addCleanup(dispose);
+    }
+  };
+  toggleBtn._rsTeardown = () => {
+    _rsDisposers.forEach((d) => { try { d(); } catch (_) {} });
+  };
 
   const openModal = () => {
     modal.classList.remove("is-hidden");
@@ -49,20 +68,15 @@ function initReadingSettings() {
   toggleBtn.setAttribute("aria-controls", "reading-modal");
   // Use addEventListener (not .onclick) so SPA re-morphs and other scripts can't clobber it.
   // 'click' covers tap on mobile; touch-action:manipulation in CSS removes 300ms delay.
-  toggleBtn.addEventListener("click", toggleModal);
-  if (typeof window.addCleanup === "function") {
-    window.addCleanup(() => toggleBtn.removeEventListener("click", toggleModal));
-  }
+  // track() registers the disposer so a repeated init never stacks handlers.
+  track(toggleBtn, "click", toggleModal);
 
   const onCloseClick = (e) => {
     if (e) e.stopPropagation();
     closeModal();
   };
   if (closeBtn) {
-    closeBtn.addEventListener("click", onCloseClick);
-    if (typeof window.addCleanup === "function") {
-      window.addCleanup(() => closeBtn.removeEventListener("click", onCloseClick));
-    }
+    track(closeBtn, "click", onCloseClick);
   }
 
   if (backdrop) {
@@ -70,10 +84,7 @@ function initReadingSettings() {
       if (e) e.stopPropagation();
       closeModal();
     };
-    backdrop.addEventListener("click", onBackdropClick);
-    if (typeof window.addCleanup === "function") {
-      window.addCleanup(() => backdrop.removeEventListener("click", onBackdropClick));
-    }
+    track(backdrop, "click", onBackdropClick);
   }
 
   const onDocClick = (e) => {
@@ -86,10 +97,7 @@ function initReadingSettings() {
     }
   };
   // Use capture=false; toggle uses stopPropagation so this won't fire for the opening tap.
-  document.addEventListener("click", onDocClick);
-  if (typeof window.addCleanup === "function") {
-    window.addCleanup(() => document.removeEventListener("click", onDocClick));
-  }
+  track(document, "click", onDocClick);
 
   const onTouchOutside = (e) => {
     const t = e.target;
@@ -100,20 +108,14 @@ function initReadingSettings() {
       closeModal();
     }
   };
-  document.addEventListener("touchend", onTouchOutside, { passive: true });
-  if (typeof window.addCleanup === "function") {
-    window.addCleanup(() => document.removeEventListener("touchend", onTouchOutside));
-  }
+  track(document, "touchend", onTouchOutside, { passive: true });
 
   const onKeyDown = (e) => {
     if (e.key === "Escape" && !modal.classList.contains("is-hidden")) {
       closeModal();
     }
   };
-  document.addEventListener("keydown", onKeyDown);
-  if (typeof window.addCleanup === "function") {
-    window.addCleanup(() => document.removeEventListener("keydown", onKeyDown));
-  }
+  track(document, "keydown", onKeyDown);
 
   function applySavedPrefs() {
     const isHome = (document.body && document.body.classList.contains("is-home-page")) || document.querySelector(".alfarhan-home-container") !== null;
@@ -174,10 +176,7 @@ function initReadingSettings() {
       if (e) e.stopPropagation();
       applySiteBg(b.getAttribute("data-site-bg"));
     };
-    b.addEventListener("click", h);
-    if (typeof window.addCleanup === "function") {
-      window.addCleanup(() => b.removeEventListener("click", h));
-    }
+    track(b, "click", h);
   });
 
   // 2. Container Background
@@ -202,10 +201,7 @@ function initReadingSettings() {
       if (e) e.stopPropagation();
       applyContainerBg(b.getAttribute("data-container-bg"));
     };
-    b.addEventListener("click", h);
-    if (typeof window.addCleanup === "function") {
-      window.addCleanup(() => b.removeEventListener("click", h));
-    }
+    track(b, "click", h);
   });
 
   // 3. Font Family
@@ -231,10 +227,7 @@ function initReadingSettings() {
       if (e) e.stopPropagation();
       applyFontFamily(b.getAttribute("data-font"));
     };
-    b.addEventListener("click", h);
-    if (typeof window.addCleanup === "function") {
-      window.addCleanup(() => b.removeEventListener("click", h));
-    }
+    track(b, "click", h);
   });
 
   // 4. Font Size
@@ -252,10 +245,7 @@ function initReadingSettings() {
       if (e) e.stopPropagation();
       applyFontSize(b.getAttribute("data-size"));
     };
-    b.addEventListener("click", h);
-    if (typeof window.addCleanup === "function") {
-      window.addCleanup(() => b.removeEventListener("click", h));
-    }
+    track(b, "click", h);
   });
 
   // 5. Line Height
@@ -273,10 +263,7 @@ function initReadingSettings() {
       if (e) e.stopPropagation();
       applyLineHeight(b.getAttribute("data-line"));
     };
-    b.addEventListener("click", h);
-    if (typeof window.addCleanup === "function") {
-      window.addCleanup(() => b.removeEventListener("click", h));
-    }
+    track(b, "click", h);
   });
 
   // 6. Reading Width
@@ -294,10 +281,7 @@ function initReadingSettings() {
       if (e) e.stopPropagation();
       applyReadingWidth(b.getAttribute("data-width"));
     };
-    b.addEventListener("click", h);
-    if (typeof window.addCleanup === "function") {
-      window.addCleanup(() => b.removeEventListener("click", h));
-    }
+    track(b, "click", h);
   });
 
   applySavedPrefs();
@@ -341,10 +325,8 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
   return (
     <header class="site-header alfarhan-header" dir={isEnglish ? "ltr" : "rtl"}>
       <div class="site-header-inner alfarhan-header-inner">
-        {/* Top row on mobile: brand + tools. On desktop: flex row with nav. */}
-        <div class="header-top-row">
-          {/* Brand — "Hamed Alkhateeb" goes to the English section, Arabic brand to root */}
-          <div class="site-brand alfarhan-brand">
+        {/* Brand — "Hamed Alkhateeb" goes to the English section, Arabic brand to root */}
+        <div class="site-brand alfarhan-brand">
             <a
               href={resolveRelative(fileData.slug!, (isEnglish ? "en" : "") as FullSlug)}
               class="brand-link"
@@ -369,9 +351,8 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
               </button>
             </div>
           </div>
-        </div>
 
-        {/* Navigation links & Dynamic Reading Settings */}
+        {/* Navigation links (middle column on desktop, full row on mobile) */}
         <nav class="site-nav alfarhan-nav" aria-label={isEnglish ? "Main Navigation" : "التنقل الرئيسي"}>
           {!isEnglish ? (
             <>

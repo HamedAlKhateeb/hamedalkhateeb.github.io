@@ -160,18 +160,19 @@ figure,
 }
 
 @media (max-width: 640px) {
-  /* Full-bleed on phones: 6px gutter only (room for the neo-brutalist shadow) */
+  /* TRUE full-bleed on phones: zero outer gutters */
   .page > #quartz-body > .center {
-    padding: 0 6px !important;
+    padding: 0 !important;
   }
 
-  /* Article card: minimal chrome on phones — text uses almost full width */
+  /* Article card: no border/shadow/radius on phones — text fills the screen */
   .post-single-card {
-    padding: 1.1rem 0.9rem 1.6rem 0.9rem !important;
-    border-width: 1.5px !important;
-    box-shadow: 2px 2px 0 0 var(--nb-line) !important;
-    border-radius: 4px;
-    margin-bottom: 1.5rem;
+    padding: 1.1rem 14px 1.6rem 14px !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0;
+    margin: 0 0 1.25rem 0;
+    background: var(--container-bg, var(--color-surface-elevated)) !important;
   }
 
   .post-single-title {
@@ -201,6 +202,16 @@ figure,
   /* Reading-width setting is meaningless on phones (viewport < all options) */
   .reading-width-section {
     display: none !important;
+  }
+
+  /* Home + list cards keep a 4px gutter so their brutalist shadows never clip */
+  .alfarhan-home-container {
+    padding: 0 4px !important;
+  }
+
+  .timeline-month-card,
+  .timeline-shadhra-card {
+    margin-inline: 4px;
   }
 }
 
@@ -3318,48 +3329,28 @@ html {
 }
 
 .alfarhan-header-inner {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: "brand nav tools";
   align-items: center;
-  justify-content: space-between;
   background: #ffffff;
   border: 2px solid #000000;
   box-shadow: 3.5px 3.5px 0 #000000;
   border-radius: 6px;
   padding: 8px 18px;
   gap: 12px;
-  flex-wrap: wrap;
 }
 
-.header-top-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex: 1 1 auto;
-  min-width: 0;
+.alfarhan-header-inner > .alfarhan-brand {
+  grid-area: brand;
 }
 
-.header-tools {
-  margin-inline-start: auto;
+.alfarhan-header-inner > .alfarhan-nav {
+  grid-area: nav;
 }
 
-/* Desktop: flatten top-row so order is brand → nav → tools in one row */
-@media (min-width: 769px) {
-  .header-top-row {
-    display: contents;
-  }
-
-  .alfarhan-header-inner > .header-top-row > .alfarhan-brand {
-    order: 1;
-  }
-
-  .alfarhan-header-inner > .alfarhan-nav {
-    order: 2;
-  }
-
-  .alfarhan-header-inner > .header-top-row > .header-tools {
-    order: 3;
-  }
+.alfarhan-header-inner > .header-tools {
+  grid-area: tools;
 }
 
 [saved-theme="dark"] .alfarhan-header-inner {
@@ -3396,6 +3387,7 @@ html {
 .alfarhan-nav {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 8px;
   flex-wrap: wrap;
   min-width: 0;
@@ -4041,33 +4033,29 @@ body:has(.alfarhan-home-container) {
 /* ── Mobile Layout Optimization ── */
 @media (max-width: 768px) {
   .alfarhan-header {
-    margin: 8px 0 10px 0;
+    margin: 6px 4px 10px 4px;
     padding: 0;
   }
 
+  @media (min-width: 641px) {
+    /* Tablets keep an 8px gutter from the center column */
+    .alfarhan-header {
+      margin-inline: 0;
+    }
+  }
+
   .alfarhan-header-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "brand tools"
+      "nav nav";
+    gap: 0 8px;
     padding: 10px 10px;
-    gap: 0;
-    flex-direction: column;
-    align-items: stretch;
+    align-items: center;
   }
 
   /* Row 1: brand + always-visible tools (search, darkmode, reading settings) */
-  .header-top-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    width: 100%;
-    padding-bottom: 8px;
-    border-bottom: 1.5px dashed rgba(0, 0, 0, 0.2);
-    margin-bottom: 8px;
-  }
-
-  [saved-theme="dark"] .header-top-row {
-    border-bottom-color: rgba(255, 255, 255, 0.2);
-  }
-
   .alfarhan-brand .brand-link {
     font-size: 1.05rem;
     white-space: nowrap;
@@ -4075,15 +4063,30 @@ body:has(.alfarhan-home-container) {
 
   .header-tools {
     gap: 6px !important;
+    display: inline-flex !important;
   }
 
-  /* Full-bleed content: kill outer side gutters, keep 6px for card shadows */
-  .page > #quartz-body > .center {
-    padding: 0 6px !important;
-  }
+  /* Gutters: phones (≤640px) are handled by their own block below (true
+     zero-chrome full-bleed). These tablet-only rules must not override them. */
+  @media (min-width: 641px) {
+    .page > #quartz-body > .center {
+      padding: 0 8px !important;
+    }
 
-  .alfarhan-home-container {
-    padding: 0 !important;
+    .alfarhan-home-container {
+      padding: 0 !important;
+    }
+
+    .post-single-card {
+      padding: 1.1rem 0.9rem 1.6rem 0.9rem !important;
+      border-width: 1.5px !important;
+      box-shadow: 2px 2px 0 0 var(--nb-line) !important;
+      margin-bottom: 1.5rem;
+    }
+
+    .post-single-title {
+      font-size: 1.55rem !important;
+    }
   }
 
   /* Row 2: ALL nav links visible in max 2 wrapped rows — nothing hidden */
@@ -4094,8 +4097,13 @@ body:has(.alfarhan-home-container) {
     gap: 6px;
     flex-wrap: wrap;
     overflow: visible;
-    margin: 0;
-    padding: 0;
+    margin: 8px 0 0 0;
+    padding: 8px 0 0 0;
+    border-top: 1.5px dashed rgba(0, 0, 0, 0.2);
+  }
+
+  [saved-theme="dark"] .alfarhan-nav {
+    border-top-color: rgba(255, 255, 255, 0.2);
   }
 
   .alfarhan-nav-link {
@@ -4160,17 +4168,6 @@ body:has(.alfarhan-home-container) {
     min-height: 52px;
     min-width: 0;
     padding: 6px 2px;
-  }
-
-  .post-single-card {
-    padding: 1.1rem 0.9rem 1.6rem 0.9rem !important;
-    border-width: 1.5px !important;
-    box-shadow: 2px 2px 0 0 var(--nb-line) !important;
-    margin-bottom: 1.5rem;
-  }
-
-  .post-single-title {
-    font-size: 1.55rem !important;
   }
 }
 
