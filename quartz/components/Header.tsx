@@ -262,9 +262,12 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
   return (
     <header class="site-header alfarhan-header" dir={isEnglish ? "ltr" : "rtl"}>
       <div class="site-header-inner alfarhan-header-inner">
-        {/* Brand */}
+        {/* Brand — "Hamed Alkhateeb" goes to the English section, Arabic brand to root */}
         <div class="site-brand alfarhan-brand">
-          <a href={resolveRelative(fileData.slug!, "" as FullSlug)} class="brand-link">
+          <a
+            href={resolveRelative(fileData.slug!, (isEnglish ? "en" : "") as FullSlug)}
+            class="brand-link"
+          >
             <span class="brand-chevron">&gt;</span>
             <span class="brand-name">{isEnglish ? "Hamed Alkhateeb" : "حامد الخطيب"}</span>
           </a>

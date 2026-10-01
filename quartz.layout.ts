@@ -27,6 +27,8 @@ export const sharedPageComponents: SharedLayout = {
       X: "https://x.com/HamedAlkhateeb5",
       Facebook: "https://www.facebook.com/profile.php?id=61570158555241",
       RSS: "/index.xml",
+      "RSS عربي": "/ar.xml",
+      "RSS EN": "/en.xml",
     },
   }),
 }
