@@ -161,7 +161,45 @@ figure,
 
 @media (max-width: 640px) {
   .page > #quartz-body > .center {
-    padding: 0 12px !important;
+    padding: 0 8px !important;
+  }
+
+  /* Article card: minimal chrome on phones — text uses almost full width */
+  .post-single-card {
+    padding: 1.1rem 0.9rem 1.6rem 0.9rem !important;
+    border-width: 1.5px !important;
+    box-shadow: 2px 2px 0 0 var(--nb-line) !important;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+
+  .post-single-title {
+    font-size: 1.55rem !important;
+    line-height: 1.4;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .post-single-head {
+    margin-bottom: 1.25rem !important;
+  }
+
+  .post-content {
+    font-size: 1.05rem !important;
+    line-height: 1.85 !important;
+  }
+
+  .post-content p {
+    margin: 1rem 0 !important;
+  }
+
+  .post-content h2 {
+    font-size: 1.35rem !important;
+    margin-top: 1.75rem !important;
+  }
+
+  /* Reading-width setting is meaningless on phones (viewport < all options) */
+  .reading-width-section {
+    display: none !important;
   }
 }
 
@@ -3197,13 +3235,12 @@ pre code {
   .site-header-inner {
     flex-direction: column;
     align-items: stretch;
-    text-align: center;
   }
   .site-brand {
-    justify-content: center;
+    justify-content: flex-start;
   }
   .site-nav {
-    justify-content: center;
+    justify-content: flex-start;
   }
   .site-actions {
     justify-content: center;
@@ -3289,6 +3326,39 @@ html {
   border-radius: 6px;
   padding: 8px 18px;
   gap: 12px;
+  flex-wrap: wrap;
+}
+
+.header-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.header-tools {
+  margin-inline-start: auto;
+}
+
+/* Desktop: flatten top-row so order is brand → nav → tools in one row */
+@media (min-width: 769px) {
+  .header-top-row {
+    display: contents;
+  }
+
+  .alfarhan-header-inner > .header-top-row > .alfarhan-brand {
+    order: 1;
+  }
+
+  .alfarhan-header-inner > .alfarhan-nav {
+    order: 2;
+  }
+
+  .alfarhan-header-inner > .header-top-row > .header-tools {
+    order: 3;
+  }
 }
 
 [saved-theme="dark"] .alfarhan-header-inner {
@@ -3325,7 +3395,9 @@ html {
 .alfarhan-nav {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .alfarhan-nav-link {
@@ -3690,6 +3762,9 @@ body:has(.alfarhan-home-container) {
   align-items: center;
   gap: 6px;
   transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 36px;
 
   &:hover,
   &.is-active {
@@ -3730,8 +3805,9 @@ body:has(.alfarhan-home-container) {
 .reading-modal {
   position: fixed;
   top: 75px;
-  right: 50%;
-  transform: translateX(50%);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
   width: 370px;
   max-width: calc(100vw - 24px);
   background: #ffffff;
@@ -3741,17 +3817,20 @@ body:has(.alfarhan-home-container) {
   z-index: 99999;
   padding: 18px 20px;
   box-sizing: border-box;
-  direction: rtl;
-  text-align: right;
+  text-align: start;
   max-height: calc(100vh - 100px);
+  max-height: calc(100dvh - 100px);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
 
   &.is-hidden {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateX(50%) translateY(-10px);
+    transform: translateX(-50%) translateY(-10px);
   }
 }
 
@@ -3788,18 +3867,22 @@ body:has(.alfarhan-home-container) {
   background: none;
   border: 1.5px solid #000000;
   border-radius: 4px;
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 1.1rem;
   transition: transform 0.1s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
     background: #fee2e2;
   }
 }
@@ -3957,41 +4040,154 @@ body:has(.alfarhan-home-container) {
 /* ── Mobile Layout Optimization ── */
 @media (max-width: 768px) {
   .alfarhan-header {
-    margin: 12px auto 16px auto;
-    padding: 0 10px;
+    margin: 10px auto 14px auto;
+    padding: 0 8px;
   }
 
   .alfarhan-header-inner {
-    padding: 8px 12px;
-    gap: 8px;
-    flex-wrap: wrap;
+    padding: 10px 12px;
+    gap: 0;
+    flex-direction: column;
+    align-items: stretch;
   }
 
+  /* Row 1: brand + search/darkmode always visible, compact */
+  .header-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    padding-bottom: 8px;
+    border-bottom: 1.5px dashed rgba(0, 0, 0, 0.2);
+    margin-bottom: 8px;
+  }
+
+  [saved-theme="dark"] .header-top-row {
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .alfarhan-brand .brand-link {
+    font-size: 1.05rem;
+  }
+
+  /* Row 2: nav as horizontal scroll — single row instead of 4 wrapped rows */
   .alfarhan-nav {
     display: flex;
     align-items: center;
     gap: 6px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    margin: 0 -4px;
+    padding-inline: 4px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .alfarhan-nav-link {
-    font-size: 0.86rem;
-    padding: 3px 6px;
+    font-size: 0.85rem;
+    padding: 6px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .reading-settings-anchor {
+    flex-shrink: 0;
+  }
+
+  .reading-settings-btn {
+    white-space: nowrap;
+    min-height: 36px;
+  }
+
+  /* Bottom-sheet modal on phones: impossible to miss, easy to reach with thumb */
+  .reading-backdrop {
+    background: rgba(0, 0, 0, 0.55);
   }
 
   .reading-modal {
-    top: 60px;
-    width: calc(100vw - 20px);
-    max-height: calc(100vh - 80px);
-    padding: 14px 16px;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    max-height: 85vh;
+    max-height: 85dvh;
+    border-radius: 14px 14px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: 0 -4px 0 #000000;
+    padding: 14px 16px calc(18px + env(safe-area-inset-bottom, 0px)) 16px;
+
+    &.is-hidden {
+      transform: translateY(24px);
+    }
+  }
+
+  .reading-options-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .font-family-btn,
+  .font-size-btn,
+  .line-height-btn,
+  .reading-width-btn {
+    min-height: 44px;
+    font-size: 0.9rem;
+  }
+
+  .reading-swatches-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .site-bg-btn,
+  .container-bg-btn {
+    min-height: 52px;
+    min-width: 0;
+    padding: 6px 2px;
   }
 
   .post-single-card {
-    padding: 1.5rem 1.25rem 2rem 1.25rem !important;
+    padding: 1.1rem 0.9rem 1.6rem 0.9rem !important;
+    border-width: 1.5px !important;
+    box-shadow: 2px 2px 0 0 var(--nb-line) !important;
+    margin-bottom: 1.5rem;
   }
 
   .post-single-title {
-    font-size: 1.7rem !important;
+    font-size: 1.55rem !important;
+  }
+}
+
+/* Very small phones: icon-only reading button to save one more slot */
+@media (max-width: 420px) {
+  .reading-btn-label {
+    display: none;
+  }
+
+  .reading-settings-btn {
+    padding: 6px 9px;
+    font-size: 1rem;
+  }
+
+  .alfarhan-brand .brand-link {
+    font-size: 0.98rem;
   }
 }
 

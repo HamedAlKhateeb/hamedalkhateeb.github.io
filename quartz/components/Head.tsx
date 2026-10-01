@@ -61,8 +61,10 @@ export default (() => {
       ? (getFileExtension(String(frontmatterImage))?.replace(/^\./, "").toLowerCase() ?? "")
       : ""
     const useDefaultOg = !frontmatterImage || frontmatterExt === "webp" || frontmatterExt === "avif"
+    // النسخة المربعة 1200×1200: تظهر كاملة في واتساب، وقص المنصات العريضة
+    // (لينكدإن/X) لمنتصفها يعيد إظهار اللوحة الأصلية كاملة
     const ogImageDefaultPath = useDefaultOg
-      ? `${origin}/static/thumbnails/og-image.jpg`
+      ? `${origin}/static/thumbnails/og-image-square.jpg`
       : resolveOgImage(String(frontmatterImage))
     const ogImageExt =
       getFileExtension(ogImageDefaultPath)?.replace(/^\./, "").toLowerCase() ?? "jpeg"
@@ -131,7 +133,7 @@ export default (() => {
             <meta name="twitter:image:alt" content={title} />
             <meta property="og:image:type" content={`image/${ogImageMime}`} />
             <meta property="og:image:width" content="1200" />
-            <meta property="og:image:height" content="630" />
+            <meta property="og:image:height" content={useDefaultOg ? "1200" : "630"} />
           </>
         )}
 

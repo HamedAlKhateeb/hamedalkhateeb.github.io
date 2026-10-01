@@ -10,20 +10,34 @@ function initReadingSettings() {
 
   if (!toggleBtn || !modal) return;
 
+  // NOTE: no "already bound" guard here on purpose. On SPA navigation Quartz
+  // runs all window.addCleanup handlers (removing our old listeners) and then
+  // re-fires "nav", so a full re-init is required every time. A dataset guard
+  // would leave the button dead after the first in-app navigation.
+
   const openModal = () => {
     modal.classList.remove("is-hidden");
     if (backdrop) backdrop.classList.remove("is-hidden");
     toggleBtn.classList.add("is-active");
+    toggleBtn.setAttribute("aria-expanded", "true");
+    // Lock background scroll on mobile while sheet is open
+    document.body.style.overflow = "hidden";
   };
 
   const closeModal = () => {
+    if (modal.classList.contains("is-hidden")) return;
     modal.classList.add("is-hidden");
     if (backdrop) backdrop.classList.add("is-hidden");
     toggleBtn.classList.remove("is-active");
+    toggleBtn.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
   };
 
-  toggleBtn.onclick = (e) => {
-    e.stopPropagation();
+  const toggleModal = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (modal.classList.contains("is-hidden")) {
       openModal();
     } else {
@@ -31,30 +45,64 @@ function initReadingSettings() {
     }
   };
 
+  toggleBtn.setAttribute("aria-expanded", "false");
+  toggleBtn.setAttribute("aria-controls", "reading-modal");
+  // Use addEventListener (not .onclick) so SPA re-morphs and other scripts can't clobber it.
+  // 'click' covers tap on mobile; touch-action:manipulation in CSS removes 300ms delay.
+  toggleBtn.addEventListener("click", toggleModal);
+  if (typeof window.addCleanup === "function") {
+    window.addCleanup(() => toggleBtn.removeEventListener("click", toggleModal));
+  }
+
+  const onCloseClick = (e) => {
+    if (e) e.stopPropagation();
+    closeModal();
+  };
   if (closeBtn) {
-    closeBtn.onclick = (e) => {
-      e.stopPropagation();
-      closeModal();
-    };
+    closeBtn.addEventListener("click", onCloseClick);
+    if (typeof window.addCleanup === "function") {
+      window.addCleanup(() => closeBtn.removeEventListener("click", onCloseClick));
+    }
   }
 
   if (backdrop) {
-    backdrop.onclick = (e) => {
-      e.stopPropagation();
+    const onBackdropClick = (e) => {
+      if (e) e.stopPropagation();
       closeModal();
     };
+    backdrop.addEventListener("click", onBackdropClick);
+    if (typeof window.addCleanup === "function") {
+      window.addCleanup(() => backdrop.removeEventListener("click", onBackdropClick));
+    }
   }
 
   const onDocClick = (e) => {
-    if (!modal.contains(e.target) && !toggleBtn.contains(e.target)) {
-      if (!modal.classList.contains("is-hidden")) {
-        closeModal();
-      }
+    const t = e.target;
+    if (t instanceof Element) {
+      if (modal.contains(t) || toggleBtn.contains(t)) return;
+    }
+    if (!modal.classList.contains("is-hidden")) {
+      closeModal();
     }
   };
+  // Use capture=false; toggle uses stopPropagation so this won't fire for the opening tap.
   document.addEventListener("click", onDocClick);
   if (typeof window.addCleanup === "function") {
     window.addCleanup(() => document.removeEventListener("click", onDocClick));
+  }
+
+  const onTouchOutside = (e) => {
+    const t = e.target;
+    if (t instanceof Element) {
+      if (modal.contains(t) || toggleBtn.contains(t)) return;
+    }
+    if (!modal.classList.contains("is-hidden")) {
+      closeModal();
+    }
+  };
+  document.addEventListener("touchend", onTouchOutside, { passive: true });
+  if (typeof window.addCleanup === "function") {
+    window.addCleanup(() => document.removeEventListener("touchend", onTouchOutside));
   }
 
   const onKeyDown = (e) => {
@@ -67,26 +115,53 @@ function initReadingSettings() {
     window.addCleanup(() => document.removeEventListener("keydown", onKeyDown));
   }
 
-  // Reading settings apply strictly to articles, poems, and snippets — NOT the homepage
-  const isHome = (document.body && document.body.classList.contains("is-home-page")) || document.querySelector(".alfarhan-home-container") !== null;
-  if (isHome) {
-    document.documentElement.style.setProperty("--reading-width", "950px");
-    if (document.body) document.body.style.setProperty("--reading-width", "950px");
-    return;
+  function applySavedPrefs() {
+    const isHome = (document.body && document.body.classList.contains("is-home-page")) || document.querySelector(".alfarhan-home-container") !== null;
+    if (isHome) {
+      document.documentElement.style.setProperty("--reading-width", "950px");
+      if (document.body) document.body.style.setProperty("--reading-width", "950px");
+      return;
+    }
+    try {
+      const savedSiteBg = localStorage.getItem("user-site-bg") || "#f4f0ea";
+      applySiteBg(savedSiteBg);
+    } catch (_) {}
+    try {
+      const savedContainerBg = localStorage.getItem("user-container-bg") || "#ffffff";
+      applyContainerBg(savedContainerBg);
+    } catch (_) {}
+    try {
+      const savedFont = localStorage.getItem("user-font-family") || "amiri";
+      applyFontFamily(savedFont);
+    } catch (_) {}
+    try {
+      const savedSize = localStorage.getItem("user-font-size") || "19px";
+      applyFontSize(savedSize);
+    } catch (_) {}
+    try {
+      const savedLine = localStorage.getItem("user-line-height") || "1.8";
+      applyLineHeight(savedLine);
+    } catch (_) {}
+    try {
+      const validWidths = ["950px", "1150px", "1400px"];
+      let savedWidth = localStorage.getItem("user-reading-width");
+      if (!savedWidth || !validWidths.includes(savedWidth)) savedWidth = "950px";
+      applyReadingWidth(savedWidth);
+    } catch (_) {}
   }
 
   // 1. Site Background
   const applySiteBg = (bg) => {
     document.documentElement.style.setProperty("--site-bg", bg);
     if (document.body) document.body.style.setProperty("--site-bg", bg);
-    localStorage.setItem("user-site-bg", bg);
+    try { localStorage.setItem("user-site-bg", bg); } catch (_) {}
     if (bg === "#181816") {
       document.documentElement.setAttribute("saved-theme", "dark");
-      localStorage.setItem("theme", "dark");
+      try { localStorage.setItem("theme", "dark"); } catch (_) {}
     } else {
       if (document.documentElement.getAttribute("saved-theme") === "dark") {
         document.documentElement.setAttribute("saved-theme", "light");
-        localStorage.setItem("theme", "light");
+        try { localStorage.setItem("theme", "light"); } catch (_) {}
       }
     }
     document.querySelectorAll(".site-bg-btn").forEach((b) => {
@@ -94,21 +169,22 @@ function initReadingSettings() {
     });
   };
 
-  const savedSiteBg = localStorage.getItem("user-site-bg") || "#f4f0ea";
-  applySiteBg(savedSiteBg);
-
   document.querySelectorAll(".site-bg-btn").forEach((b) => {
-    b.onclick = (e) => {
-      e.stopPropagation();
+    const h = (e) => {
+      if (e) e.stopPropagation();
       applySiteBg(b.getAttribute("data-site-bg"));
     };
+    b.addEventListener("click", h);
+    if (typeof window.addCleanup === "function") {
+      window.addCleanup(() => b.removeEventListener("click", h));
+    }
   });
 
   // 2. Container Background
   const applyContainerBg = (bg) => {
     document.documentElement.style.setProperty("--container-bg", bg);
     if (document.body) document.body.style.setProperty("--container-bg", bg);
-    localStorage.setItem("user-container-bg", bg);
+    try { localStorage.setItem("user-container-bg", bg); } catch (_) {}
     if (bg === "transparent") {
       document.documentElement.style.setProperty("--container-border", "none");
       document.documentElement.style.setProperty("--container-shadow", "none");
@@ -121,14 +197,15 @@ function initReadingSettings() {
     });
   };
 
-  const savedContainerBg = localStorage.getItem("user-container-bg") || "#ffffff";
-  applyContainerBg(savedContainerBg);
-
   document.querySelectorAll(".container-bg-btn").forEach((b) => {
-    b.onclick = (e) => {
-      e.stopPropagation();
+    const h = (e) => {
+      if (e) e.stopPropagation();
       applyContainerBg(b.getAttribute("data-container-bg"));
     };
+    b.addEventListener("click", h);
+    if (typeof window.addCleanup === "function") {
+      window.addCleanup(() => b.removeEventListener("click", h));
+    }
   });
 
   // 3. Font Family
@@ -143,85 +220,87 @@ function initReadingSettings() {
     const val = fontMap[key] || fontMap.amiri;
     document.documentElement.style.setProperty("--font-arabic", val);
     if (document.body) document.body.style.setProperty("--font-arabic", val);
-    localStorage.setItem("user-font-family", key);
+    try { localStorage.setItem("user-font-family", key); } catch (_) {}
     document.querySelectorAll(".font-family-btn").forEach((b) => {
       b.classList.toggle("active", b.getAttribute("data-font") === key);
     });
   };
 
-  const savedFont = localStorage.getItem("user-font-family") || "amiri";
-  applyFontFamily(savedFont);
-
   document.querySelectorAll(".font-family-btn").forEach((b) => {
-    b.onclick = (e) => {
-      e.stopPropagation();
+    const h = (e) => {
+      if (e) e.stopPropagation();
       applyFontFamily(b.getAttribute("data-font"));
     };
+    b.addEventListener("click", h);
+    if (typeof window.addCleanup === "function") {
+      window.addCleanup(() => b.removeEventListener("click", h));
+    }
   });
 
   // 4. Font Size
   const applyFontSize = (size) => {
     document.documentElement.style.setProperty("--main-font-size", size);
     if (document.body) document.body.style.setProperty("--main-font-size", size);
-    localStorage.setItem("user-font-size", size);
+    try { localStorage.setItem("user-font-size", size); } catch (_) {}
     document.querySelectorAll(".font-size-btn").forEach((b) => {
       b.classList.toggle("active", b.getAttribute("data-size") === size);
     });
   };
 
-  const savedSize = localStorage.getItem("user-font-size") || "19px";
-  applyFontSize(savedSize);
-
   document.querySelectorAll(".font-size-btn").forEach((b) => {
-    b.onclick = (e) => {
-      e.stopPropagation();
+    const h = (e) => {
+      if (e) e.stopPropagation();
       applyFontSize(b.getAttribute("data-size"));
     };
+    b.addEventListener("click", h);
+    if (typeof window.addCleanup === "function") {
+      window.addCleanup(() => b.removeEventListener("click", h));
+    }
   });
 
   // 5. Line Height
   const applyLineHeight = (lh) => {
     document.documentElement.style.setProperty("--main-line-height", lh);
     if (document.body) document.body.style.setProperty("--main-line-height", lh);
-    localStorage.setItem("user-line-height", lh);
+    try { localStorage.setItem("user-line-height", lh); } catch (_) {}
     document.querySelectorAll(".line-height-btn").forEach((b) => {
       b.classList.toggle("active", b.getAttribute("data-line") === lh);
     });
   };
 
-  const savedLine = localStorage.getItem("user-line-height") || "1.8";
-  applyLineHeight(savedLine);
-
   document.querySelectorAll(".line-height-btn").forEach((b) => {
-    b.onclick = (e) => {
-      e.stopPropagation();
+    const h = (e) => {
+      if (e) e.stopPropagation();
       applyLineHeight(b.getAttribute("data-line"));
     };
+    b.addEventListener("click", h);
+    if (typeof window.addCleanup === "function") {
+      window.addCleanup(() => b.removeEventListener("click", h));
+    }
   });
 
   // 6. Reading Width
   const applyReadingWidth = (w) => {
     document.documentElement.style.setProperty("--reading-width", w);
     if (document.body) document.body.style.setProperty("--reading-width", w);
-    localStorage.setItem("user-reading-width", w);
+    try { localStorage.setItem("user-reading-width", w); } catch (_) {}
     document.querySelectorAll(".reading-width-btn").forEach((b) => {
       b.classList.toggle("active", b.getAttribute("data-width") === w);
     });
   };
 
-  const validWidths = ["950px", "1150px", "1400px"];
-  let savedWidth = localStorage.getItem("user-reading-width");
-  if (!savedWidth || !validWidths.includes(savedWidth)) {
-    savedWidth = "950px";
-  }
-  applyReadingWidth(savedWidth);
-
   document.querySelectorAll(".reading-width-btn").forEach((b) => {
-    b.onclick = (e) => {
-      e.stopPropagation();
+    const h = (e) => {
+      if (e) e.stopPropagation();
       applyReadingWidth(b.getAttribute("data-width"));
     };
+    b.addEventListener("click", h);
+    if (typeof window.addCleanup === "function") {
+      window.addCleanup(() => b.removeEventListener("click", h));
+    }
   });
+
+  applySavedPrefs();
 }
 
 if (document.readyState === "loading") {
@@ -262,15 +341,21 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
   return (
     <header class="site-header alfarhan-header" dir={isEnglish ? "ltr" : "rtl"}>
       <div class="site-header-inner alfarhan-header-inner">
-        {/* Brand — "Hamed Alkhateeb" goes to the English section, Arabic brand to root */}
-        <div class="site-brand alfarhan-brand">
-          <a
-            href={resolveRelative(fileData.slug!, (isEnglish ? "en" : "") as FullSlug)}
-            class="brand-link"
-          >
-            <span class="brand-chevron">&gt;</span>
-            <span class="brand-name">{isEnglish ? "Hamed Alkhateeb" : "حامد الخطيب"}</span>
-          </a>
+        {/* Top row on mobile: brand + tools. On desktop: flex row with nav. */}
+        <div class="header-top-row">
+          {/* Brand — "Hamed Alkhateeb" goes to the English section, Arabic brand to root */}
+          <div class="site-brand alfarhan-brand">
+            <a
+              href={resolveRelative(fileData.slug!, (isEnglish ? "en" : "") as FullSlug)}
+              class="brand-link"
+            >
+              <span class="brand-chevron">&gt;</span>
+              <span class="brand-name">{isEnglish ? "Hamed Alkhateeb" : "حامد الخطيب"}</span>
+            </a>
+          </div>
+          <div class="site-nav-tools header-tools">
+            {children}
+          </div>
         </div>
 
         {/* Navigation links & Dynamic Reading Settings */}
@@ -369,9 +454,6 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
             </button>
           </div>
 
-          <div class="site-nav-tools">
-            {children}
-          </div>
         </nav>
       </div>
 
@@ -475,8 +557,8 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
             </div>
           </div>
 
-          {/* Reading Width */}
-          <div class="reading-setting-section">
+          {/* Reading Width — hidden on phones (meaningless there), see CSS */}
+          <div class="reading-setting-section reading-width-section">
             <div class="reading-setting-title">{isEnglish ? "Content Width" : "عرض المحتوى"}</div>
             <div class="reading-options-row">
               <button type="button" class="reading-width-btn" data-width="950px">{isEnglish ? "Narrow" : "ضيق"}</button>
