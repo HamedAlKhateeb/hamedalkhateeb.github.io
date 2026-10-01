@@ -175,6 +175,15 @@ figure,
     background: var(--container-bg, var(--color-surface-elevated)) !important;
   }
 
+  /* Micro single reading card: same full-bleed treatment */
+  .shadhra-single-page .timeline-shadhra-card {
+    padding: 1.15rem 14px !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0;
+    margin: 0.65rem 0 1.25rem 0;
+  }
+
   .post-single-title {
     font-size: 1.55rem !important;
     line-height: 1.4;
@@ -183,11 +192,6 @@ figure,
 
   .post-single-head {
     margin-bottom: 1.25rem !important;
-  }
-
-  .post-content {
-    font-size: 1.05rem !important;
-    line-height: 1.85 !important;
   }
 
   .post-content p {
@@ -215,20 +219,20 @@ figure,
   }
 }
 
-// Content article respects reading settings
-body.is-article .center > article,
-body.is-article .center > article p,
-body.is-article .center > article li,
-body.is-article .center > article blockquote,
-body.is-article .center > article table,
-body.is-article .center > article th,
-body.is-article .center > article td,
-body.is-article .center > article figcaption,
-body.is-article .center > article dd,
+// Reading preferences — applied to the REAL single-page containers
+// (article singles render div.post-single-card, micro singles render
+// article.timeline-shadhra-card nested inside .center, so the old
+// ".center > article" selector matched nothing)
 .post-content,
 .post-content p,
 .post-content li,
-.post-content blockquote {
+.post-content blockquote,
+.shadhra-raw-content,
+.shadhra-raw-content p,
+.shadhra-raw-content li,
+.shadhra-raw-content blockquote,
+.micro-body,
+.micro-body p {
   font-size: var(--main-font-size, 19px) !important;
   line-height: var(--main-line-height, 1.8) !important;
   font-family: var(--font-arabic) !important;
@@ -2210,7 +2214,7 @@ pre code {
 .site-nav-tools {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: 6px !important;
   flex-shrink: 0 !important;
 }
 
@@ -2223,8 +2227,9 @@ pre code {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 32px !important;
-    height: 32px !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
     padding: 0 !important;
     margin: 0 !important;
     background: #ffffff !important;
@@ -2253,9 +2258,9 @@ pre code {
 }
 
 .darkmode {
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -3337,8 +3342,8 @@ html {
   border: 2px solid #000000;
   box-shadow: 3.5px 3.5px 0 #000000;
   border-radius: 6px;
-  padding: 8px 18px;
-  gap: 12px;
+  padding: 8px 14px;
+  gap: 10px;
 }
 
 .alfarhan-header-inner > .alfarhan-brand {
@@ -3388,7 +3393,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
   min-width: 0;
 }
@@ -3401,10 +3406,11 @@ html {
   color: #222222;
   font-family: var(--font-arabic-display);
   font-weight: 600;
-  font-size: 0.95rem;
-  padding: 4px 6px;
+  font-size: 0.9rem;
+  padding: 4px 5px;
   border-radius: 4px;
   transition: background 0.15s ease;
+  white-space: nowrap;
 }
 
 .alfarhan-nav-link:hover,
@@ -3747,10 +3753,10 @@ body:has(.alfarhan-home-container) {
   border: 1.5px solid #000000;
   box-shadow: 2px 2px 0 #000000;
   border-radius: 4px;
-  padding: 4px 10px;
+  padding: 4px 8px;
   font-family: var(--font-arabic-display);
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.85rem;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -3758,6 +3764,7 @@ body:has(.alfarhan-home-container) {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   min-height: 36px;
+  white-space: nowrap;
 
   &:hover,
   &.is-active {
@@ -4185,6 +4192,27 @@ body:has(.alfarhan-home-container) {
   .alfarhan-brand .brand-link {
     font-size: 0.98rem;
   }
+}
+
+/* ============================================================
+   shadcn-style reading enforcement (LAST in cascade = always wins).
+   Single source of truth: CSS vars set by the reading-settings JS.
+   These utility classes force user prefs over every component default
+   (fixed rem sizes in cards/timelines) with !important.
+   ============================================================ */
+.rq-font,
+.post-content, .post-content p, .post-content li, .post-content blockquote,
+.shadhra-raw-content, .shadhra-raw-content p, .shadhra-raw-content li, .shadhra-raw-content blockquote,
+.micro-body, .micro-body p {
+  font-family: var(--font-arabic, "Amiri", serif) !important;
+  font-size: var(--main-font-size, 19px) !important;
+  line-height: var(--main-line-height, 1.8) !important;
+}
+
+.rq-container,
+.post-single-card,
+.shadhra-single-page .timeline-shadhra-card {
+  background: var(--container-bg, var(--color-surface-elevated)) !important;
 }
 
 
