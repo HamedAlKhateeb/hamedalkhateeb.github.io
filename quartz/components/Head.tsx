@@ -55,21 +55,28 @@ export default (() => {
       const clean = img.startsWith("/") ? img : `/${img}`
       return `${origin}${clean}`
     }
-    // Default: JPG 1200x630 — لينكدإن لا يدعم WebP بشكل موثوق، فاستخدم JPG
-    const ogImageDefaultPath = frontmatterImage
-      ? resolveOgImage(String(frontmatterImage))
-      : `${origin}/static/thumbnails/og-image.jpg`
+    // Default: JPG 1200x630 — لينكدإن لا يدعم WebP/AVIF بشكل موثوق، فاستخدم JPG دائمًا
+    // أي صورة غلاف بصيغة غير مدعومة (webp/avif) تُستبدل بالصورة الافتراضية حتى لا تنكسر المعاينة
+    const frontmatterExt = frontmatterImage
+      ? (getFileExtension(String(frontmatterImage))?.replace(/^\./, "").toLowerCase() ?? "")
+      : ""
+    const useDefaultOg = !frontmatterImage || frontmatterExt === "webp" || frontmatterExt === "avif"
+    const ogImageDefaultPath = useDefaultOg
+      ? `${origin}/static/thumbnails/og-image.jpg`
+      : resolveOgImage(String(frontmatterImage))
     const ogImageExt =
       getFileExtension(ogImageDefaultPath)?.replace(/^\./, "").toLowerCase() ?? "jpeg"
     const ogImageMime = ogImageExt === "jpg" ? "jpeg" : ogImageExt
 
+    // article vs website: المقالات تكون article عشان لينكدإن يعرضها صح
     // article vs website: المقالات تكون article عشان لينكدإن يعرضها صح
     const isFolderOrIndex =
       slug === "index" || slug.endsWith("/index") || slug === "tags" || slug.startsWith("tags/")
     const ogType = isFolderOrIndex ? "website" : "article"
     const isArabicPage = slug.toLowerCase().startsWith("ar")
     const ogLocale = isArabicPage ? "ar_AR" : "en_US"
-    const ogLocaleAlt = isArabicPage ? "en_US" : "ar_AR"
+    // صفحات الوسوم و404 لا تُفهرس — لا تظهر في بحث جوجل
+    const isNoIndex = slug === "404" || slug === "tags" || slug.startsWith("tags/")
 
     return (
       <head>
@@ -107,7 +114,7 @@ export default (() => {
         <meta property="og:title" content={title} />
         <meta property="og:type" content={ogType} />
         <meta property="og:locale" content={ogLocale} />
-        <meta property="og:locale:alternate" content={ogLocaleAlt} />
+        {isNoIndex && <meta name="robots" content="noindex" />}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
@@ -130,10 +137,10 @@ export default (() => {
 
         {ogType === "article" && (
           <>
-            {fileData.dates?.published && (
+            {(fileData.dates?.published ?? fileData.dates?.modified) && (
               <meta
                 property="article:published_time"
-                content={fileData.dates.published.toISOString()}
+                content={(fileData.dates.published ?? fileData.dates.modified)!.toISOString()}
               />
             )}
             {fileData.dates?.modified && (

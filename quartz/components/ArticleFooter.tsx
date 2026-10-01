@@ -3,7 +3,7 @@ import { classNames } from "../util/lang"
 import { i18n } from "../i18n"
 import readingTime from "reading-time"
 import { getDate } from "./Date"
-import { resolveRelative } from "../util/path"
+import { resolveRelative, type FullSlug } from "../util/path"
 
 const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
   const { fileData, allFiles, displayClass, cfg } = props

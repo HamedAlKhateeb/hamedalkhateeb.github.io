@@ -426,6 +426,27 @@ html[reader-mode="on"] .center > article {
   color: var(--light) !important;
 }
 
+/* ── Folder index pages (About & co.): deterministic directional alignment ──
+   No mixed center/left/right: everything follows the page direction
+   (left in LTR English pages, right in RTL Arabic pages). */
+.folder-content-body {
+  text-align: start;
+}
+.folder-content-body > p,
+.folder-content-body > h1,
+.folder-content-body > h2,
+.folder-content-body > h3,
+.folder-content-body > h4,
+.folder-content-body > ul,
+.folder-content-body > ol,
+.folder-content-body > blockquote {
+  text-align: start;
+}
+.folder-content-body .contact-section,
+.folder-content-body .contact-section p {
+  text-align: start;
+}
+
 /* Home Page Enhancements */
 /* Language Portal Capsule in Header */
   .language-portal-capsule {

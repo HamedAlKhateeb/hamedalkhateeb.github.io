@@ -8,7 +8,7 @@ import { QuartzPluginData } from "../../plugins/vfile"
 import { ComponentChildren } from "preact"
 import { concatenateResources } from "../../util/resources"
 import { trieFromAllFiles } from "../../util/ctx"
-import { resolveRelative } from "../../util/path"
+import { resolveRelative, type FullSlug } from "../../util/path"
 import { getDate } from "../Date"
 // @ts-ignore
 import paginationScript from "../scripts/pagination.inline"
