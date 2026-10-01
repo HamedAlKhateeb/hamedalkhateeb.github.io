@@ -87,6 +87,21 @@ const config: QuartzConfig = {
         enableRSS: true,
         rssLimit: 25,
       }),
+      // فيد عربي مستقل (ar.xml) وفيد إنجليزي مستقل (en.xml) — sitemap يبقى كاملًا
+      Plugin.ContentIndex({
+        enableSiteMap: false,
+        enableRSS: true,
+        rssLimit: 25,
+        rssSlug: "ar",
+        rssFilter: (slug) => slug === "ar" || slug.startsWith("ar/"),
+      }),
+      Plugin.ContentIndex({
+        enableSiteMap: false,
+        enableRSS: true,
+        rssLimit: 25,
+        rssSlug: "en",
+        rssFilter: (slug) => !(slug === "ar" || slug.startsWith("ar/")),
+      }),
       Plugin.Assets(),
       Plugin.Static(),
       Plugin.Favicon(),

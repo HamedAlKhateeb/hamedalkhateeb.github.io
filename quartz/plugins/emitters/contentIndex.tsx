@@ -28,6 +28,9 @@ interface Options {
   rssFullHtml: boolean
   rssSlug: string
   includeEmptyFiles: boolean
+  /** Optional partition for the RSS feed only (sitemap always stays complete).
+   *  Used to split feeds per language, e.g. (slug) => slug.startsWith("ar/") */
+  rssFilter?: (slug: FullSlug, details: ContentDetails) => boolean
 }
 
 const defaultOptions: Options = {
@@ -55,7 +58,12 @@ ${urls}
 </urlset>`
 }
 
-function generateRSSFeed(cfg: GlobalConfiguration, idx: ContentIndexMap, limit?: number): string {
+function generateRSSFeed(
+  cfg: GlobalConfiguration,
+  idx: ContentIndexMap,
+  limit?: number,
+  filter?: (slug: FullSlug, details: ContentDetails) => boolean,
+): string {
   const base = cfg.baseUrl ?? ""
 
   const createURLEntry = (slug: SimpleSlug, content: ContentDetails): string => `<item>
@@ -68,6 +76,7 @@ function generateRSSFeed(cfg: GlobalConfiguration, idx: ContentIndexMap, limit?:
 
   const items = Array.from(idx)
     .filter(([slug]) => !slug.endsWith(".en"))
+    .filter(([slug, details]) => (filter ? filter(slug, details) : true))
     .sort(([_, f1], [__, f2]) => {
       if (f1.date && f2.date) {
         return f2.date.getTime() - f1.date.getTime()
@@ -136,7 +145,7 @@ export const ContentIndex: QuartzEmitterPlugin<Partial<Options>> = (opts) => {
       if (opts?.enableRSS) {
         yield write({
           ctx,
-          content: generateRSSFeed(cfg, linkIndex, opts.rssLimit),
+          content: generateRSSFeed(cfg, linkIndex, opts.rssLimit, opts.rssFilter),
           slug: (opts?.rssSlug ?? "index") as FullSlug,
           ext: ".xml",
         })
@@ -163,13 +172,15 @@ export const ContentIndex: QuartzEmitterPlugin<Partial<Options>> = (opts) => {
     },
     externalResources: (ctx) => {
       if (opts?.enableRSS) {
+        const feedSlug = opts?.rssSlug ?? "index"
+        const isDefault = feedSlug === "index"
         return {
           additionalHead: [
             <link
               rel="alternate"
               type="application/rss+xml"
-              title="RSS Feed"
-              href={`https://${ctx.cfg.configuration.baseUrl}/index.xml`}
+              title={isDefault ? "RSS Feed" : `RSS Feed (${feedSlug})`}
+              href={`https://${ctx.cfg.configuration.baseUrl}/${feedSlug}.xml`}
             />,
           ],
         }
