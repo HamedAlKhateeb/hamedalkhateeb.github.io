@@ -11,7 +11,8 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
 
   const slug = (fileData.slug ?? "").toLowerCase()
   const isPoetry = slug.startsWith("ar/poetry/") || slug.startsWith("poetry/")
-  const isMicro = slug.startsWith("ar/micro/") || slug.startsWith("micro/")
+  const isMicro =
+    slug.startsWith("ar/micro/") || slug.startsWith("micro/") || slug.startsWith("en/micro/")
   const isHome =
     slug === "" ||
     slug === "index" ||
@@ -47,7 +48,13 @@ const ArticleFooter: QuartzComponent = (props: QuartzComponentProps) => {
         return false
       }
       const s = f.slug.toLowerCase()
-      if (s.startsWith("ar/poetry/") || s.startsWith("poetry/") || s.startsWith("ar/micro/") || s.startsWith("micro/")) {
+      if (
+        s.startsWith("ar/poetry/") ||
+        s.startsWith("poetry/") ||
+        s.startsWith("ar/micro/") ||
+        s.startsWith("micro/") ||
+        s.startsWith("en/micro/")
+      ) {
         return false
       }
       if (isRtl) {

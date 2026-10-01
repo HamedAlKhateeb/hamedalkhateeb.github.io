@@ -35,9 +35,17 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
     slug === "ar/micro/index" ||
     slug === "ar/micro" ||
     slug === "micro/index" ||
-    slug === "micro"
+    slug === "micro" ||
+    slug === "en/micro/index" ||
+    slug === "en/micro"
   const isMicroSingle =
-    (slug.startsWith("ar/micro/") || slug.startsWith("micro/")) && !slug.endsWith("index")
+    (slug.startsWith("ar/micro/") || slug.startsWith("micro/") || slug.startsWith("en/micro/")) &&
+    !slug.endsWith("index")
+  // Complete AR/EN separation: English snippets live under en/micro with LTR English UI
+  const isEnMicro = slug.startsWith("en/micro")
+  const microIsRtl = !isEnMicro
+  const microHomeSlug = (isEnMicro ? "en/micro" : "ar/micro") as FullSlug
+  const microDefaultKind = isEnMicro ? "Snippet" : "خواطر"
 
   const isArticlesIndex =
     slug === "ar/articles/index" ||
@@ -100,8 +108,10 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
       .filter(
         (f) =>
           f.slug &&
-          (f.slug.startsWith("ar/micro/") || f.slug.startsWith("micro/")) &&
-          !f.slug.endsWith("index"),
+          !f.slug.endsWith("index") &&
+          (isEnMicro
+            ? f.slug.startsWith("en/micro/")
+            : f.slug.startsWith("ar/micro/") || f.slug.startsWith("micro/")),
       )
       .sort((a, b) => {
         const aDate = a.dates?.published ?? new globalThis.Date("1970-01-01")
@@ -109,21 +119,36 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
         return bDate.getTime() - aDate.getTime()
       })
 
-    const kinds = Array.from(new Set(microPosts.map((p) => (p.frontmatter?.kind as string) || "خواطر")))
+    const kinds = Array.from(
+      new Set(microPosts.map((p) => (p.frontmatter?.kind as string) || microDefaultKind)),
+    )
+    const microCountLabel = isEnMicro
+      ? `(${microPosts.length} snippet${microPosts.length === 1 ? "" : "s"})`
+      : `(${microPosts.length} شذرة)`
 
     return (
-      <div class="post-timeline-page shadhra-timeline-page" dir="rtl">
+      <div class="post-timeline-page shadhra-timeline-page" dir={microIsRtl ? "rtl" : "ltr"}>
         <header class="post-timeline-header">
-          <h1>📍 شذرات</h1>
-          <p>روابط والتقاطات وتأملات لمحتويات لفتت انتباهي من عالم الإنترنت والحياة اليومية ({microPosts.length} شذرة)</p>
+          <h1>{isEnMicro ? "📍 Snippets" : "📍 شذرات"}</h1>
+          <p>
+            {isEnMicro
+              ? `Links, captures and reflections that caught my attention ${microCountLabel}`
+              : `روابط والتقاطات وتأملات لمحتويات لفتت انتباهي من عالم الإنترنت والحياة اليومية ${microCountLabel}`}
+          </p>
         </header>
 
-        <nav class="topic-filter" aria-label="التصفية حسب الموضوع" style={{ marginBottom: "2.5rem" }}>
+        <nav
+          class="topic-filter"
+          aria-label={isEnMicro ? "Filter by topic" : "التصفية حسب الموضوع"}
+          style={{ marginBottom: "2.5rem" }}
+        >
           <button class="topic-chip active" data-kind="all">
-            كل الشذرات ({microPosts.length})
+            {isEnMicro ? `All snippets (${microPosts.length})` : `كل الشذرات (${microPosts.length})`}
           </button>
           {kinds.map((k) => {
-            const count = microPosts.filter((p) => ((p.frontmatter?.kind as string) || "خواطر") === k).length
+            const count = microPosts.filter(
+              (p) => ((p.frontmatter?.kind as string) || microDefaultKind) === k,
+            ).length
             return (
               <button class="topic-chip" data-kind={k} key={k}>
                 <span>{getKindEmojiOrIcon(k)}</span>
@@ -136,7 +161,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
 
         <div class="timeline-tree-container shadhra-timeline-tree">
           {microPosts.map((post) => {
-            const kind = (post.frontmatter?.kind as string) || "خواطر"
+            const kind = (post.frontmatter?.kind as string) || microDefaultKind
             const dateObj = getDate(cfg, post)
             const dateFormatted = dateObj
               ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
@@ -189,7 +214,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
                         rel="noopener noreferrer"
                         class="shadhra-source-link"
                       >
-                        رابط المصدر ↗
+                        {isEnMicro ? "Source link ↗" : "رابط المصدر ↗"}
                       </a>
                     </div>
                   )}
@@ -220,7 +245,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
   // ══════════════════════════════════════════════════════════════
   if (isMicroSingle) {
     const contentJsx = htmlToJsx(fileData.filePath!, processedTree) as ComponentChildren
-    const kind = (fileData.frontmatter?.kind as string) || "خواطر"
+    const kind = (fileData.frontmatter?.kind as string) || microDefaultKind
     const dateObj = getDate(cfg, fileData)
     const dateFormatted = dateObj
       ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
@@ -230,10 +255,10 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
     const title = fileData.frontmatter?.title
 
     return (
-      <div class="post-timeline-page shadhra-single-page" dir="rtl">
+      <div class="post-timeline-page shadhra-single-page" dir={microIsRtl ? "rtl" : "ltr"}>
         <div style={{ marginBottom: "1.75rem" }}>
           <a
-            href={resolveRelative(fileData.slug!, "ar/micro" as FullSlug)}
+            href={resolveRelative(fileData.slug!, microHomeSlug)}
             class="shadhra-tag-chip"
             style={{
               padding: "6px 14px",
@@ -245,7 +270,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
             }}
           >
             <span>←</span>
-            <span>العودة لجميع الشذرات</span>
+            <span>{isEnMicro ? "Back to all snippets" : "العودة لجميع الشذرات"}</span>
           </a>
         </div>
 
@@ -278,7 +303,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
                     rel="noopener noreferrer"
                     class="shadhra-source-link"
                   >
-                    الانتقال للمصدر الأصلي ↗
+                    {isEnMicro ? "Open original source ↗" : "الانتقال للمصدر الأصلي ↗"}
                   </a>
                 </div>
               )}

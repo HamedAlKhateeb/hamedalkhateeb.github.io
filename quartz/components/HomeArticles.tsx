@@ -27,6 +27,18 @@ export default (() => {
 
     const latestWritings = englishPages.slice(0, 10)
 
+    // English snippets (en/micro) — fully separate from Arabic micro
+    const englishMicro = allFiles
+      .filter(
+        (page) => page.slug && page.slug.startsWith("en/micro/") && !page.slug.endsWith("/index"),
+      )
+      .sort((a, b) => {
+        const aDate = a.dates?.published ?? new globalThis.Date("1970-01-01")
+        const bDate = b.dates?.published ?? new globalThis.Date("1970-01-01")
+        return bDate.getTime() - aDate.getTime()
+      })
+    const latestMicro = englishMicro.slice(0, 8)
+
     // English tags
     const tagCounts = new Map<string, number>()
     for (const page of englishPages) {
@@ -117,7 +129,49 @@ export default (() => {
           </section>
         )}
 
-        {/* ═══════════════ Card 2: Taxonomy & Areas ═══════════════ */}
+        {/* ═══════════════ Card 2: Snippets (English micro-posts) ═══════════════ */}
+        {latestMicro.length > 0 && (
+          <section class="alfarhan-card-box shatharat-box">
+            <div class="alfarhan-card-banner">
+              <a
+                href={resolveRelative(fileData.slug!, "en/micro" as any)}
+                class="alfarhan-banner-right-link"
+              >
+                <span class="alfarhan-icon-badge">📍</span>
+                <span class="alfarhan-banner-title">Snippets</span>
+              </a>
+              <a href={resolveRelative(fileData.slug!, "en/micro" as any)} class="alfarhan-btn-all">
+                All →
+              </a>
+            </div>
+
+            <div class="alfarhan-card-content tadwinat-content">
+              <div class="tadwinat-list">
+                {latestMicro.map((article) => {
+                  const title = article.frontmatter?.title ?? "Untitled"
+                  const dateObj = getDate(cfg, article)
+                  const dateFormatted = dateObj
+                    ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
+                    : ""
+                  return (
+                    <div class="tadwinat-item" key={article.slug}>
+                      <a
+                        href={resolveRelative(fileData.slug!, article.slug!)}
+                        class="tadwinat-title-link"
+                      >
+                        {title}
+                      </a>
+                      <span class="tadwinat-dots" />
+                      <time class="tadwinat-date">{dateFormatted}</time>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ═══════════════ Card 3: Taxonomy & Areas ═══════════════ */}
         <section class="alfarhan-card-box taxonomy-box">
           <div class="alfarhan-card-banner">
             <div class="alfarhan-banner-right">
@@ -176,7 +230,7 @@ export default (() => {
           </div>
         </section>
 
-        {/* ═══════════════ Card 3: About the Author ═══════════════ */}
+        {/* ═══════════════ Card 4: About the Author ═══════════════ */}
         <section class="alfarhan-card-box about-box">
           <div class="alfarhan-card-banner">
             <a
@@ -279,7 +333,7 @@ export default (() => {
           </div>
         </section>
 
-        {/* ═══════════════ Card 4: Tags ═══════════════ */}
+        {/* ═══════════════ Card 5: Tags ═══════════════ */}
         {topTags.length > 0 && (
           <section class="alfarhan-card-box tags-box">
             <div class="alfarhan-card-banner">

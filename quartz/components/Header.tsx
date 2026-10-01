@@ -252,7 +252,7 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
   const baseDir = pathToRoot(fileData.slug!)
 
   // Path matches
-  const isMicro = slug.startsWith("ar/micro") || slug === "micro"
+  const isMicro = slug.startsWith("ar/micro") || slug === "micro" || slug.startsWith("en/micro")
   const isArticles = slug.startsWith("ar/articles") || slug === "post" || slug.startsWith("post/")
   const isPoetry = slug.startsWith("ar/poetry")
   const isAbout = slug.startsWith("about") || slug.startsWith("ar/about")
@@ -324,8 +324,8 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
                 <span>Writings</span>
               </a>
               <a
-                href={resolveRelative(fileData.slug!, "ar/micro" as FullSlug)}
-                class="site-nav-link alfarhan-nav-link"
+                href={resolveRelative(fileData.slug!, "en/micro" as FullSlug)}
+                class={`site-nav-link alfarhan-nav-link ${isMicro ? "is-active" : ""}`}
               >
                 <span class="nav-ico">📍</span>
                 <span>Snippets</span>

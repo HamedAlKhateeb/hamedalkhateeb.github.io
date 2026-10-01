@@ -49,7 +49,13 @@ export default ((opts?: Partial<FolderContentOptions>) => {
       slug === "ar/micro" ||
       slug === "ar/micro/index" ||
       slug === "micro" ||
-      slug === "micro/index"
+      slug === "micro/index" ||
+      slug === "en/micro" ||
+      slug === "en/micro/index"
+    // Complete AR/EN separation: English snippets live under en/micro with LTR English UI
+    const isEnMicro = slug.startsWith("en/micro")
+    const microIsRtl = !isEnMicro
+    const microDefaultKind = isEnMicro ? "Snippet" : "خواطر"
 
     const isArabicArticles =
       slug === "ar/articles" ||
@@ -138,8 +144,10 @@ export default ((opts?: Partial<FolderContentOptions>) => {
         .filter(
           (f) =>
             f.slug &&
-            (f.slug.startsWith("ar/micro/") || f.slug.startsWith("micro/")) &&
-            !f.slug.endsWith("index"),
+            !f.slug.endsWith("index") &&
+            (isEnMicro
+              ? f.slug.startsWith("en/micro/")
+              : f.slug.startsWith("ar/micro/") || f.slug.startsWith("micro/")),
         )
         .sort((a, b) => {
           const aDate = a.dates?.published ?? new globalThis.Date("1970-01-01")
@@ -147,21 +155,36 @@ export default ((opts?: Partial<FolderContentOptions>) => {
           return bDate.getTime() - aDate.getTime()
         })
 
-      const kinds = Array.from(new Set(microPosts.map((p) => (p.frontmatter?.kind as string) || "خواطر")))
+      const kinds = Array.from(
+        new Set(microPosts.map((p) => (p.frontmatter?.kind as string) || microDefaultKind)),
+      )
+      const microCountLabel = isEnMicro
+        ? `(${microPosts.length} snippet${microPosts.length === 1 ? "" : "s"})`
+        : `(${microPosts.length} شذرة)`
 
       return (
-        <div class="post-timeline-page shadhra-timeline-page" dir="rtl">
+        <div class="post-timeline-page shadhra-timeline-page" dir={microIsRtl ? "rtl" : "ltr"}>
           <header class="post-timeline-header">
-            <h1>📍 شذرات</h1>
-            <p>روابط والتقاطات وتأملات لمحتويات لفتت انتباهي من عالم الإنترنت والحياة اليومية ({microPosts.length} شذرة)</p>
+            <h1>{isEnMicro ? "📍 Snippets" : "📍 شذرات"}</h1>
+            <p>
+              {isEnMicro
+                ? `Links, captures and reflections that caught my attention ${microCountLabel}`
+                : `روابط والتقاطات وتأملات لمحتويات لفتت انتباهي من عالم الإنترنت والحياة اليومية ${microCountLabel}`}
+            </p>
           </header>
 
-          <nav class="topic-filter" aria-label="التصفية حسب الموضوع" style={{ marginBottom: "2.5rem" }}>
+          <nav
+            class="topic-filter"
+            aria-label={isEnMicro ? "Filter by topic" : "التصفية حسب الموضوع"}
+            style={{ marginBottom: "2.5rem" }}
+          >
             <button class="topic-chip active" data-kind="all">
-              كل الشذرات ({microPosts.length})
+              {isEnMicro ? `All snippets (${microPosts.length})` : `كل الشذرات (${microPosts.length})`}
             </button>
             {kinds.map((k) => {
-              const count = microPosts.filter((p) => ((p.frontmatter?.kind as string) || "خواطر") === k).length
+              const count = microPosts.filter(
+                (p) => ((p.frontmatter?.kind as string) || microDefaultKind) === k,
+              ).length
               return (
                 <button class="topic-chip" data-kind={k} key={k}>
                   <span>{getKindEmojiOrIcon(k)}</span>
@@ -174,7 +197,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
 
           <div class="timeline-tree-container shadhra-timeline-tree">
             {microPosts.map((post) => {
-              const kind = (post.frontmatter?.kind as string) || "خواطر"
+              const kind = (post.frontmatter?.kind as string) || microDefaultKind
               const dateObj = getDate(cfg, post)
               const dateFormatted = dateObj
                 ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`
@@ -221,14 +244,14 @@ export default ((opts?: Partial<FolderContentOptions>) => {
 
                     {link && (
                       <div class="shadhra-source-wrap">
-                        <a
-                          href={link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          class="shadhra-source-link"
-                        >
-                          رابط المصدر ↗
-                        </a>
+                      <a
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="shadhra-source-link"
+                      >
+                        {isEnMicro ? "Source link ↗" : "رابط المصدر ↗"}
+                      </a>
                       </div>
                     )}
 

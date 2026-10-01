@@ -84,7 +84,9 @@ export default ((opts?: Partial<TagContentOptions>) => {
       const isMicro = (doc: QuartzPluginData) =>
         Boolean(
           doc.slug &&
-            (doc.slug.startsWith("ar/micro/") || doc.slug.startsWith("micro/")) &&
+            (doc.slug.startsWith("ar/micro/") ||
+              doc.slug.startsWith("micro/") ||
+              doc.slug.startsWith("en/micro/")) &&
             !doc.slug.endsWith("index"),
         )
 

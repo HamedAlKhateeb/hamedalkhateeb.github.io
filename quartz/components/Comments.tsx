@@ -26,7 +26,8 @@ export default ((opts: Options) => {
 
     // التعليقات مسموحة فقط في: التدوينات العربية، التدوينات الإنجليزية، الشذرات، والقصائد
     const isArabicArticle = slug.startsWith("ar/articles/") && !slug.endsWith("/index")
-    const isMicro = slug.startsWith("ar/micro/") && !slug.endsWith("/index")
+    const isMicro =
+      (slug.startsWith("ar/micro/") || slug.startsWith("en/micro/")) && !slug.endsWith("/index")
     const isPoetry = slug.startsWith("ar/poetry/") && !slug.endsWith("/index")
     const isEnglishArticle =
       !slug.startsWith("ar/") &&
