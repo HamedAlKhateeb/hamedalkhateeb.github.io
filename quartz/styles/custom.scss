@@ -160,8 +160,9 @@ figure,
 }
 
 @media (max-width: 640px) {
+  /* Full-bleed on phones: 6px gutter only (room for the neo-brutalist shadow) */
   .page > #quartz-body > .center {
-    padding: 0 8px !important;
+    padding: 0 6px !important;
   }
 
   /* Article card: minimal chrome on phones — text uses almost full width */
@@ -4040,18 +4041,18 @@ body:has(.alfarhan-home-container) {
 /* ── Mobile Layout Optimization ── */
 @media (max-width: 768px) {
   .alfarhan-header {
-    margin: 10px auto 14px auto;
-    padding: 0 8px;
+    margin: 8px 0 10px 0;
+    padding: 0;
   }
 
   .alfarhan-header-inner {
-    padding: 10px 12px;
+    padding: 10px 10px;
     gap: 0;
     flex-direction: column;
     align-items: stretch;
   }
 
-  /* Row 1: brand + search/darkmode always visible, compact */
+  /* Row 1: brand + always-visible tools (search, darkmode, reading settings) */
   .header-top-row {
     display: flex;
     align-items: center;
@@ -4069,25 +4070,32 @@ body:has(.alfarhan-home-container) {
 
   .alfarhan-brand .brand-link {
     font-size: 1.05rem;
+    white-space: nowrap;
   }
 
-  /* Row 2: nav as horizontal scroll — single row instead of 4 wrapped rows */
+  .header-tools {
+    gap: 6px !important;
+  }
+
+  /* Full-bleed content: kill outer side gutters, keep 6px for card shadows */
+  .page > #quartz-body > .center {
+    padding: 0 6px !important;
+  }
+
+  .alfarhan-home-container {
+    padding: 0 !important;
+  }
+
+  /* Row 2: ALL nav links visible in max 2 wrapped rows — nothing hidden */
   .alfarhan-nav {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 2px;
-    margin: 0 -4px;
-    padding-inline: 4px;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    flex-wrap: wrap;
+    overflow: visible;
+    margin: 0;
+    padding: 0;
   }
 
   .alfarhan-nav-link {
@@ -4098,15 +4106,6 @@ body:has(.alfarhan-home-container) {
     min-height: 36px;
     display: inline-flex;
     align-items: center;
-  }
-
-  .reading-settings-anchor {
-    flex-shrink: 0;
-  }
-
-  .reading-settings-btn {
-    white-space: nowrap;
-    min-height: 36px;
   }
 
   /* Bottom-sheet modal on phones: impossible to miss, easy to reach with thumb */

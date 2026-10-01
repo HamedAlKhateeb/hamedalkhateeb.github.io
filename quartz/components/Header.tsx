@@ -355,6 +355,19 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           </div>
           <div class="site-nav-tools header-tools">
             {children}
+            {/* Reading settings trigger lives here so it is ALWAYS visible (never scrolled away) */}
+            <div class="reading-settings-anchor">
+              <button
+                id="btn-reading-settings"
+                class="alfarhan-nav-link reading-settings-btn"
+                type="button"
+                aria-label={isEnglish ? "Reading Settings" : "إعدادات القراءة"}
+                title={isEnglish ? "Reading & Appearance Settings" : "إعدادات القراءة والمظهر"}
+              >
+                <span class="nav-ico">⚙️</span>
+                <span class="reading-btn-label">{isEnglish ? "Reading" : "إعدادات القراءة"}</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -439,20 +452,6 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
               </a>
             </>
           )}
-
-          {/* ── Dynamic Reading Settings Trigger ── */}
-          <div class="reading-settings-anchor">
-            <button
-              id="btn-reading-settings"
-              class="alfarhan-nav-link reading-settings-btn"
-              type="button"
-              aria-label={isEnglish ? "Reading Settings" : "إعدادات القراءة"}
-              title={isEnglish ? "Reading & Appearance Settings" : "إعدادات القراءة والمظهر"}
-            >
-              <span class="nav-ico">⚙️</span>
-              <span class="reading-btn-label">{isEnglish ? "Reading" : "إعدادات القراءة"}</span>
-            </button>
-          </div>
 
         </nav>
       </div>
