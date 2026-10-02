@@ -165,10 +165,16 @@ figure,
     padding: 0 !important;
   }
 
-  .page > #quartz-body > .center > *:not(.post-single-card) {
+  .page > #quartz-body > .center > *:not(.post-single-card):not(.shadhra-timeline-page) {
     padding-left: 14px;
     padding-right: 14px;
     box-sizing: border-box;
+  }
+
+  .page > #quartz-body > .center > .shadhra-timeline-page {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    box-sizing: border-box !important;
   }
 
   /* Article card: no border/shadow/radius on phones — text fills the screen */
@@ -3034,6 +3040,65 @@ pre code {
 
   .timeline-article-dots {
     display: none;
+  }
+}
+
+/* ── توسيع بطاقات الشذرات على شاشات الجوال لتشمل المساحات الجانبية كاملة (عربي وإنجليزي) ── */
+@media (max-width: 800px) {
+  .shadhra-timeline-page {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    box-sizing: border-box !important;
+  }
+
+  .shadhra-timeline-tree {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    gap: 1.5rem !important;
+
+    /* إخفاء المحور الرأسي والوصلات الجانبية لتمكين البطاقة من التمدد العرضي الكامل */
+    &::before {
+      display: none !important;
+    }
+
+    .timeline-spine-node {
+      display: none !important;
+    }
+
+    .timeline-shadhra-block {
+      width: 100% !important;
+      margin-bottom: 2rem !important;
+    }
+
+    .timeline-badge-wrap {
+      margin-bottom: 0.5rem !important;
+      display: flex;
+    }
+
+    .timeline-shadhra-card {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 1.25rem 1.15rem !important;
+      margin-top: 0.35rem !important;
+    }
+  }
+
+  [dir="rtl"] .shadhra-timeline-tree {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+
+    .timeline-badge-wrap {
+      justify-content: flex-start;
+    }
+  }
+
+  [dir="ltr"] .shadhra-timeline-tree {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    .timeline-badge-wrap {
+      justify-content: flex-start;
+    }
   }
 }
 
