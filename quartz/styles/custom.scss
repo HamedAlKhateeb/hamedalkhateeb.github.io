@@ -1628,6 +1628,14 @@ html[lang="ar"] {
     text-align: right !important; /* Right-align titles for Arabic pages */
     margin-bottom: 1.5rem !important;
     line-height: 1.4 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+
+    @media (max-width: 800px) {
+      font-size: 1.65rem !important;
+      line-height: 1.35 !important;
+      margin-bottom: 1rem !important;
+    }
   }
 
   .article-title-container {
@@ -2982,6 +2990,8 @@ pre code {
   transition: color 0.15s ease;
   flex-shrink: 0;
   max-width: 75%;
+  word-break: break-word;
+  overflow-wrap: break-word;
 
   &:hover {
     color: #e53e3e;
@@ -3008,7 +3018,7 @@ pre code {
   flex-shrink: 0;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 800px) {
   [dir="rtl"] .timeline-tree-container {
     padding-right: 28px;
     &::before { right: 6px; }
@@ -3036,6 +3046,9 @@ pre code {
     max-width: 100%;
     flex-shrink: 1;
     width: 100%;
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .timeline-article-dots {
@@ -3883,6 +3896,65 @@ body:has(.alfarhan-home-container) {
   border: 1px solid #fcd34d;
   padding: 1px 8px;
   border-radius: 4px;
+}
+
+@media (max-width: 800px) {
+  .tadwinat-content {
+    padding: 16px 14px !important;
+  }
+
+  .tadwinat-list {
+    gap: 12px !important;
+  }
+
+  .tadwinat-item {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+    gap: 4px 10px !important;
+    padding-bottom: 10px !important;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.08) !important;
+
+    &:last-child {
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+  }
+
+  [saved-theme="dark"] .tadwinat-item {
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .tadwinat-title-link {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    font-size: 1.05rem !important;
+    line-height: 1.5 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .poetry-box .tadwinat-title-link {
+    font-size: 1.18rem !important;
+  }
+
+  .tadwinat-dots {
+    display: none !important;
+  }
+
+  .tadwinat-date {
+    font-size: 0.82rem !important;
+    color: #6b665f !important;
+    margin-top: 2px !important;
+  }
+
+  [saved-theme="dark"] .tadwinat-date {
+    color: #a8a29e !important;
+  }
 }
 
 /* ============================================================
