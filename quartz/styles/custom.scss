@@ -3044,33 +3044,62 @@ pre code {
 }
 
 /* ── ضبط موضع خط وبطاقات الشذرات لملء الشاشة مع إبقاء المحور والبادج (عربي وإنجليزي) ── */
-@media (max-width: 800px) {
-  .page > #quartz-body > .center > .shadhra-timeline-page {
-    padding-left: 4px !important;
-    padding-right: 4px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
+/* وضع سطح المكتب: تقريب الكارت من المحور وتوسيع العرض */
+[dir="rtl"] .shadhra-timeline-tree {
+  padding-right: 20px;
+
+  &::before {
+    right: 5px;
   }
 
+  .timeline-spine-node {
+    right: -20px;
+  }
+
+  .timeline-node-branch {
+    width: 12px;
+  }
+}
+
+[dir="ltr"] .shadhra-timeline-tree {
+  padding-left: 20px;
+
+  &::before {
+    left: 5px;
+  }
+
+  .timeline-spine-node {
+    left: -20px;
+  }
+
+  .timeline-node-branch {
+    width: 12px;
+  }
+}
+
+/* وضع الموبايل: تقليل الهامش خالص وتوسيع الكارت لليمين واليسار لملء الشاشة */
+@media (max-width: 800px) {
+  .page > #quartz-body > .center > .shadhra-timeline-page,
   .shadhra-timeline-page {
-    padding-left: 4px !important;
-    padding-right: 4px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    width: 100% !important;
     box-sizing: border-box !important;
   }
 
   .shadhra-timeline-tree {
-    gap: 2rem !important;
+    gap: 1.75rem !important;
     width: 100% !important;
     box-sizing: border-box !important;
 
-    /* إبقاء المحور الرأسي موجوداً وإزاحته لأقصى حافة الشاشة */
+    /* المحور الرأسي يلتصق بأقصى حافة الشاشة */
     &::before {
       display: block !important;
       width: 2px !important;
       top: 10px !important;
     }
 
-    /* إبقاء عقدة المحور والفرع الواصل للبادج مع محاذاتها بدقة */
+    /* العقدة والفرع الواصل للبادج مع تقصير المسافة ليقترب الكارت من الخط */
     .timeline-spine-node {
       display: flex !important;
       top: 8px !important;
@@ -3078,63 +3107,72 @@ pre code {
     }
 
     .timeline-node-square {
-      width: 12px !important;
-      height: 12px !important;
+      width: 10px !important;
+      height: 10px !important;
       flex-shrink: 0 !important;
     }
 
     .timeline-node-branch {
-      width: 10px !important;
+      width: 6px !important;
       flex-shrink: 0 !important;
     }
 
     .timeline-shadhra-block {
       width: 100% !important;
-      margin-bottom: 2.25rem !important;
+      margin-bottom: 2rem !important;
     }
 
     .timeline-badge-wrap {
-      margin-bottom: 0.65rem !important;
+      margin-bottom: 0.5rem !important;
     }
 
     .timeline-month-badge {
-      padding: 5px 14px !important;
-      font-size: 0.92rem !important;
+      padding: 4px 12px !important;
+      font-size: 0.88rem !important;
     }
 
     .timeline-shadhra-card {
       width: 100% !important;
       box-sizing: border-box !important;
-      padding: 1.25rem 1.15rem !important;
-      margin-top: 0.45rem !important;
+      padding: 1.25rem 1rem !important;
+      margin-top: 0.35rem !important;
+      margin-inline: 0 !important;
     }
   }
 
-  /* في العربي (RTL): المحور والعقدة يذهبان لأقصى يمين الشاشة، والبطاقة تتمدد لأقصى يسار الشاشة */
+  /* في العربي (RTL): 
+     - المحور والخط يذهبان لأقصى اليمين (right: 3px)
+     - الكارت يمتد لليمين مقترباً جداً من الخط (padding-right: 10px فقط)
+     - الكارت يمتد لليسار حتى أقصى يسار الشاشة (padding-left: 2px)
+  */
   [dir="rtl"] .shadhra-timeline-tree {
-    padding-right: 18px !important;
+    padding-right: 10px !important;
     padding-left: 2px !important;
 
     &::before {
-      right: 2px !important;
+      right: 3px !important;
     }
 
     .timeline-spine-node {
-      right: -18px !important;
+      right: -10px !important;
     }
   }
 
-  /* في الإنجليزي (LTR): المحور والعقدة يذهبان لأقصى يسار الشاشة، والبطاقة تتمدد لأقصى يمين الشاشة */
+  /* في الإنجليزي (LTR): 
+     - المحور والخط يذهبان لأقصى اليسار (left: 3px)
+     - الكارت يمتد لليسار مقترباً جداً من الخط (padding-left: 10px فقط)
+     - الكارت يمتد لليمين حتى أقصى يمين الشاشة (padding-right: 2px)
+  */
   [dir="ltr"] .shadhra-timeline-tree {
-    padding-left: 18px !important;
+    padding-left: 10px !important;
     padding-right: 2px !important;
 
     &::before {
-      left: 2px !important;
+      left: 3px !important;
     }
 
     .timeline-spine-node {
-      left: -18px !important;
+      left: -10px !important;
     }
   }
 }
