@@ -111,6 +111,8 @@ export default (() => {
         )}
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#fafaf8" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#161618" />
 
         <meta property="og:site_name" content={cfg.pageTitle}></meta>
         <meta property="og:title" content={title} />
