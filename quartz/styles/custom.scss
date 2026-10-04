@@ -1345,16 +1345,27 @@ article.rtl-math {
 }
 
 details.exercise {
-  margin: 1rem 0;
-  padding: 0.7rem;
-  border: 1px solid var(--gray, #444);
-  border-radius: 10px;
-  background: var(--lightgray, #1e1e1e);
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border: 1.5px solid var(--nb-line);
+  box-shadow: 2.5px 2.5px 0 0 var(--nb-line);
+  border-radius: var(--border-radius);
+  background: var(--color-field);
+  color: var(--color-ink);
 }
+
 details.exercise summary {
   cursor: pointer;
-  font-weight: bold;
-  color: var(--secondary, #7aa2f7);
+  font-weight: 700;
+  font-family: var(--font-arabic-display);
+  color: var(--color-ink);
+  user-select: none;
+}
+
+details.exercise[open] summary {
+  border-bottom: 1.5px dashed var(--nb-line);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 /* ==========================================================================
@@ -3262,7 +3273,7 @@ pre code {
   margin-bottom: 0.75rem;
 }
 
-.post-content blockquote {
+.post-content blockquote:not(.callout) {
   border-inline-start: 6px solid var(--nb-main);
   border: 1.5px solid var(--nb-line);
   border-inline-start-width: 6px;
@@ -3273,14 +3284,201 @@ pre code {
   font-style: normal;
 }
 
+/* ── Code Blocks (Theme-aware with high contrast) ── */
+.post-content figure[data-rehype-pretty-code-figure] {
+  margin: 1.75rem 0;
+  direction: ltr;
+}
+
 .post-content pre {
   border: 1.5px solid var(--nb-line);
   box-shadow: 3px 3px 0 0 var(--nb-line);
   border-radius: var(--border-radius);
-  background: #1e1e1e !important;
+  background: var(--color-field, #fdfbf7);
+  color: var(--color-ink, #1a1a1a);
   padding: 1.25rem;
+  margin: 1.75rem 0;
   direction: ltr;
   text-align: left;
+  overflow-x: auto;
+  position: relative;
+}
+
+.post-content pre code {
+  color: inherit;
+  font-family: var(--font-code);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+/* Ensure code syntax tokens are crisp in light theme */
+.post-content code[data-theme*=" "] {
+  color: var(--shiki-light, #24292e);
+}
+.post-content code[data-theme*=" "] span {
+  color: var(--shiki-light, #24292e);
+}
+
+/* Dark mode code styling */
+[saved-theme="dark"] .post-content pre {
+  background: #18181b;
+  border-color: var(--nb-line, #e5e5e5);
+  box-shadow: 3px 3px 0 0 var(--nb-line, #e5e5e5);
+  color: var(--color-ink, #f5f5f4);
+}
+[saved-theme="dark"] .post-content code[data-theme*=" "] {
+  color: var(--shiki-dark, #e1e4e8);
+}
+[saved-theme="dark"] .post-content code[data-theme*=" "] span {
+  color: var(--shiki-dark, #e1e4e8);
+}
+
+/* Sepia mode code styling */
+[saved-theme="sepia"] .post-content pre {
+  background: #ede5d4;
+  border-color: var(--secondary, #8b6f47);
+  box-shadow: 3px 3px 0 0 var(--secondary, #8b6f47);
+  color: var(--dark, #3d2e1f);
+}
+[saved-theme="sepia"] .post-content code[data-theme*=" "] {
+  color: var(--shiki-light, #3d2e1f);
+}
+[saved-theme="sepia"] .post-content code[data-theme*=" "] span {
+  color: var(--shiki-light, #3d2e1f);
+}
+
+/* Inline code styling */
+.post-content code:not(pre code) {
+  font-family: var(--font-code, monospace);
+  font-size: 0.88em;
+  padding: 0.15em 0.45em;
+  border-radius: 4px;
+  background: var(--color-field, #fdfbf7);
+  border: 1px solid var(--nb-line, #000);
+  color: var(--color-ink, #1a1a1a);
+  unicode-bidi: isolate;
+}
+
+[saved-theme="dark"] .post-content code:not(pre code) {
+  background: #242220;
+  border-color: var(--nb-line, #e5e5e5);
+  color: var(--color-ink, #f5f5f4);
+}
+
+[saved-theme="sepia"] .post-content code:not(pre code) {
+  background: #ede5d4;
+  border-color: var(--secondary, #8b6f47);
+  color: var(--dark, #3d2e1f);
+}
+
+/* Clipboard copy button on code block */
+.post-content pre .clipboard-button {
+  top: 0.6rem;
+  right: 0.6rem;
+  background: var(--color-surface-elevated, #ffffff);
+  border: 1.5px solid var(--nb-line);
+  box-shadow: 1.5px 1.5px 0 0 var(--nb-line);
+  border-radius: 4px;
+  color: var(--color-ink);
+}
+
+/* ── Callouts in Articles (Neo-Brutalist Frame with Semantic Colors) ── */
+.post-content .callout {
+  border: 1.5px solid var(--nb-line);
+  box-shadow: 2.5px 2.5px 0 0 var(--nb-line);
+  border-radius: var(--border-radius);
+  margin: 1.75rem 0;
+  padding: 0.75rem 1.25rem 1rem 1.25rem;
+  border-inline-start: 6px solid var(--color);
+  background-color: var(--bg);
+  box-sizing: border-box;
+}
+
+[saved-theme="dark"] .post-content .callout {
+  border-color: var(--nb-line);
+  box-shadow: 2.5px 2.5px 0 0 var(--nb-line);
+  border-inline-start-color: var(--color);
+}
+
+.post-content .callout .callout-title {
+  font-family: var(--font-arabic-display);
+  font-weight: 700;
+  padding: 0.25rem 0 0.5rem 0;
+  gap: 0.5rem;
+}
+
+.post-content .callout .callout-title-inner p {
+  font-family: var(--font-arabic-display) !important;
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+  color: var(--color) !important;
+}
+
+.post-content .callout-content {
+  color: var(--color-ink);
+}
+
+/* ── Tables in Articles (Neo-Brutalist Card Layout) ── */
+.post-content .table-container {
+  overflow-x: auto;
+  margin: 1.75rem 0;
+  border: 1.5px solid var(--nb-line);
+  box-shadow: 3px 3px 0 0 var(--nb-line);
+  border-radius: var(--border-radius);
+  background: var(--color-surface-elevated);
+}
+
+.post-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.post-content th {
+  background: var(--color-field);
+  color: var(--color-ink);
+  font-family: var(--font-arabic-display);
+  font-weight: 700;
+  font-size: 0.98rem;
+  padding: 0.8rem 1.1rem;
+  border-bottom: 2px solid var(--nb-line);
+  text-align: start;
+}
+
+.post-content td {
+  padding: 0.75rem 1.1rem;
+  border-bottom: 1px solid var(--nb-line);
+  color: var(--color-ink);
+  font-size: 0.98rem;
+  text-align: start;
+}
+
+.post-content tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Checklists & Task Lists ── */
+.post-content ul:has(input[type="checkbox"]),
+.post-content .contains-task-list {
+  list-style-type: none;
+  padding-inline-start: 0.25rem;
+}
+
+.post-content input[type="checkbox"] {
+  accent-color: var(--nb-main, #f6c445);
+  margin-inline-end: 0.5rem;
+  transform: scale(1.15);
+  vertical-align: middle;
+}
+
+/* ── Math Formulas Display ── */
+.post-content .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 0.5rem 0;
 }
 
 /* ── Poetry Section ── */
