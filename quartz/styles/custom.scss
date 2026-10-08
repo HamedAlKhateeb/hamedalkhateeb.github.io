@@ -4799,5 +4799,68 @@ body:has(.alfarhan-home-container) {
   background: var(--container-bg, var(--color-surface-elevated)) !important;
 }
 
+/* ============================================================
+   Article & Content Links Styling
+   Ensures links inside articles and content are clearly visible,
+   distinguishable from body text, with an elegant hover state.
+   ============================================================ */
+.post-content,
+.page-content,
+.shadhra-raw-content,
+.micro-body {
+  a:not([role="anchor"]):not(.tag-item):not(.tag-link) {
+    color: var(--secondary, #b45309);
+    text-decoration: underline;
+    text-decoration-color: rgba(180, 83, 9, 0.4);
+    text-underline-offset: 3px;
+    font-weight: 600;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+
+    &:hover {
+      color: var(--tertiary, #d97706);
+      text-decoration-color: var(--tertiary, #d97706);
+    }
+  }
+
+  a.internal:not([role="anchor"]):not(:has(> img)) {
+    background-color: var(--highlight);
+    padding: 1px 5px;
+    border-radius: 4px;
+    text-decoration: none;
+    border-bottom: 1.5px solid rgba(180, 83, 9, 0.4);
+
+    &:hover {
+      background-color: rgba(251, 191, 36, 0.35);
+      border-bottom-color: var(--tertiary, #d97706);
+    }
+  }
+}
+
+:root[saved-theme="dark"] {
+  .post-content,
+  .page-content,
+  .shadhra-raw-content,
+  .micro-body {
+    a:not([role="anchor"]):not(.tag-item):not(.tag-link) {
+      color: var(--secondary, #fbbf24);
+      text-decoration-color: rgba(251, 191, 36, 0.45);
+
+      &:hover {
+        color: var(--tertiary, #f59e0b);
+        text-decoration-color: var(--tertiary, #f59e0b);
+      }
+    }
+
+    a.internal:not([role="anchor"]):not(:has(> img)) {
+      color: var(--secondary, #fbbf24);
+      border-bottom-color: rgba(251, 191, 36, 0.45);
+
+      &:hover {
+        border-bottom-color: var(--tertiary, #f59e0b);
+      }
+    }
+  }
+}
+
 
 
