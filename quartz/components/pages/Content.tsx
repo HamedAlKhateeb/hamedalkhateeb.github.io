@@ -339,8 +339,8 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
           !f.slug.endsWith("index"),
       )
       .sort((a, b) => {
-        const aDate = a.dates?.published ?? new globalThis.Date("1970-01-01")
-        const bDate = b.dates?.published ?? new globalThis.Date("1970-01-01")
+        const aDate = getDate(cfg, a) ?? a.dates?.created ?? a.dates?.published ?? new globalThis.Date("1970-01-01")
+        const bDate = getDate(cfg, b) ?? b.dates?.created ?? b.dates?.published ?? new globalThis.Date("1970-01-01")
         return bDate.getTime() - aDate.getTime()
       })
 
