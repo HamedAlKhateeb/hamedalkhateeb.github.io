@@ -456,6 +456,56 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
         }
       }
     })
+
+    // Merge adjacent poem-containers so consecutive verses (even if separated by blank lines in markdown) stay in a single unified container
+    const mergeAdjacentPoemContainers = (parent: any) => {
+      if (!parent?.children || !Array.isArray(parent.children)) return
+      const newChildren: any[] = []
+      for (let i = 0; i < parent.children.length; i++) {
+        const current = parent.children[i]
+        const isCurrentPoem =
+          current.type === "element" &&
+          current.tagName === "div" &&
+          (current.properties?.className?.includes("poem-container") ||
+            current.properties?.className?.includes("poem-wrapper"))
+
+        if (isCurrentPoem) {
+          const prev = newChildren[newChildren.length - 1]
+          if (
+            prev &&
+            prev.type === "element" &&
+            prev.tagName === "div" &&
+            (prev.properties?.className?.includes("poem-container") ||
+              prev.properties?.className?.includes("poem-wrapper"))
+          ) {
+            prev.children = [...(prev.children || []), ...(current.children || [])]
+            continue
+          }
+
+          const prevPrev = newChildren[newChildren.length - 2]
+          if (
+            prev &&
+            prev.type === "text" &&
+            prev.value.trim() === "" &&
+            prevPrev &&
+            prevPrev.type === "element" &&
+            prevPrev.tagName === "div" &&
+            (prevPrev.properties?.className?.includes("poem-container") ||
+              prevPrev.properties?.className?.includes("poem-wrapper"))
+          ) {
+            newChildren.pop()
+            prevPrev.children = [...(prevPrev.children || []), ...(current.children || [])]
+            continue
+          }
+        } else if (current.children && Array.isArray(current.children)) {
+          mergeAdjacentPoemContainers(current)
+        }
+        newChildren.push(current)
+      }
+      parent.children = newChildren
+    }
+
+    mergeAdjacentPoemContainers(processedTree)
   }
 
   const content = htmlToJsx(fileData.filePath!, processedTree) as ComponentChildren
