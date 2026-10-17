@@ -566,7 +566,7 @@ document.addEventListener("nav", async () => {
 
     // ── Telegram helper ────────────────────────────────────────────────
     const notifyTelegram = (payload: Record<string, string>) => {
-      fetch("https://telegram-notify.hsmefh.workers.dev", {
+      fetch("https://telegram-notify.myreports-367.workers.dev", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -649,6 +649,7 @@ document.addEventListener("nav", async () => {
                   actionType: "reaction",
                   emoji: clickedEmoji,
                   author: currentUser.displayName || T.anonymous,
+                  authorEmail: currentUser.email || "",
                   articleTitle: document.title,
                   articleUrl: window.location.href,
                 })
@@ -687,6 +688,7 @@ document.addEventListener("nav", async () => {
         notifyTelegram({
           actionType: "like",
           author: currentUser?.displayName || T.visitor,
+          authorEmail: currentUser?.email || "",
           content: snap.text,
           articleTitle: document.title,
           articleUrl: window.location.href,
@@ -766,7 +768,7 @@ document.addEventListener("nav", async () => {
     }
 
     // ── Reply form (supports both Google & Guest) ──────────────────────
-    const showReplyForm = (replyArea: HTMLElement, parentId: string) => {
+    const showReplyForm = (replyArea: HTMLElement, parentId: string, parentData?: any) => {
       const existing = replyArea.querySelector(".fc-reply-form")
       if (existing) {
         existing.remove()
@@ -842,6 +844,7 @@ document.addEventListener("nav", async () => {
             userName = currentUser.displayName
             userPhoto = currentUser.photoURL || ""
             userId = currentUser.uid
+            userEmail = currentUser.email || ""
           } else {
             const gName =
               (form.querySelector(".fc-reply-name") as HTMLInputElement)?.value.trim() || ""
@@ -908,6 +911,9 @@ document.addEventListener("nav", async () => {
             content: text,
             articleTitle: document.title,
             articleUrl: window.location.href,
+            parentAuthor: parentData?.userName || "",
+            parentEmail: parentData?.userEmail || "",
+            parentContent: parentData?.text || "",
           })
 
           form.remove()
@@ -998,7 +1004,7 @@ document.addEventListener("nav", async () => {
 
       el.querySelector(".fc-reply-btn")?.addEventListener("click", () => {
         const area = el.querySelector(".fc-replies-area") as HTMLElement
-        showReplyForm(area, cdoc.id)
+        showReplyForm(area, cdoc.id, d)
       })
 
       if (canEdit) {
@@ -1092,12 +1098,15 @@ document.addEventListener("nav", async () => {
           userPhoto: currentUser.photoURL || "",
           userGravatar: "",
           userWebsite: "",
+          userEmail: currentUser.email || "",
           isGuest: false,
           createdAt: serverTimestamp(),
           likes: [],
         })
         notifyTelegram({
+          actionType: "comment",
           author: currentUser.displayName || T.visitor,
+          authorEmail: currentUser.email || "",
           content: text,
           articleTitle: document.title,
           articleUrl: window.location.href,
@@ -1185,6 +1194,7 @@ document.addEventListener("nav", async () => {
         }
 
         notifyTelegram({
+          actionType: "comment",
           author: gName,
           authorEmail: gEmail,
           ...(gWeb ? { authorWebsite: gWeb } : {}),
