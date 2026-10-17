@@ -401,7 +401,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
   // ══════════════════════════════════════════════════════════════
   // 4. POETRY HANDLING (Pipes & Verse Splitting)
   // ══════════════════════════════════════════════════════════════
-  if (isPoetry) {
+  if (isPoetry || isArticle) {
     processedTree = JSON.parse(JSON.stringify(tree))
     visit(processedTree, "element", (node: any) => {
       if (node.tagName === "p") {
@@ -565,6 +565,7 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
       minutesStr = isAr ? `${Math.ceil(minutes)} دقائق قراءة` : `${Math.ceil(minutes)} min read`
     }
     const tags = (fileData.frontmatter?.tags as string[]) ?? []
+    const cover = (fileData.frontmatter?.cover ?? fileData.frontmatter?.image) as string | undefined
 
     return (
       <div class="post-single-card" dir={dir}>
@@ -577,6 +578,25 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
               {dateStr && minutesStr && <span class="meta-sep">•</span>}
               {minutesStr && <span>{minutesStr}</span>}
             </div>
+            {cover && (
+              <div class="post-cover-wrapper" style={{ marginTop: "1.5rem", marginBottom: "1rem" }}>
+                <img
+                  src={cover}
+                  alt={title}
+                  class="article-cover"
+                  loading="eager"
+                  style={{
+                    width: "100%",
+                    maxHeight: "450px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    border: "2px solid var(--nb-line, #000)",
+                    boxShadow: "3px 3px 0 0 var(--nb-line, #000)",
+                    display: "block",
+                  }}
+                />
+              </div>
+            )}
           </div>
           <div class="post-content">{content}</div>
           {tags.length > 0 && (
