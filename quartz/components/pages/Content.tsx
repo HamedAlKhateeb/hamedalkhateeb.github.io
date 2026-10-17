@@ -405,15 +405,20 @@ const Content: QuartzComponent = ({ fileData, tree, allFiles, cfg }: QuartzCompo
     processedTree = JSON.parse(JSON.stringify(tree))
     visit(processedTree, "element", (node: any) => {
       if (node.tagName === "p") {
-        const hasPipe = node.children?.some((c: any) => c.type === "text" && c.value.includes("|"))
+        const textContent = node.children
+          ?.map((c: any) => {
+            if (c.type === "text") return c.value
+            if (c.type === "element" && c.tagName === "br") return "\n"
+            return ""
+          })
+          .join("") ?? ""
+
+        // Never treat markdown tables as poems
+        const isTable =
+          textContent.includes("---") ||
+          textContent.split("\n").some((l: string) => (l.match(/\|/g) || []).length > 2)
+        const hasPipe = textContent.includes("|") && !isTable
         if (hasPipe) {
-          const textContent = node.children
-            .map((c: any) => {
-              if (c.type === "text") return c.value
-              if (c.type === "element" && c.tagName === "br") return "\n"
-              return ""
-            })
-            .join("")
           const lines = textContent.split("\n")
           const divChildren = lines
             .map((line: string) => {
