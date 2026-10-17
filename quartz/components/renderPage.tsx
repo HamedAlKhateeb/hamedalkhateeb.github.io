@@ -304,7 +304,7 @@ export function renderPage(
   const isArticle = !slug.endsWith("index")
   const isHome = slug === "index" || slug === "" || slug === "en" || slug === "en/index"
   const doc = (
-    <html lang={lang} dir={direction}>
+    <html lang={lang} dir={direction} prefix="og: http://ogp.me/ns#">
       <Head {...componentData} />
       <body data-slug={slug} class={`${isArticle ? "is-article" : "is-list"} ${isHome ? "is-home-page" : ""}`}>
         <div id="quartz-root" class="page">

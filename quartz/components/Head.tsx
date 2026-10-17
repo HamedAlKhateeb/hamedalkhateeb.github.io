@@ -131,6 +131,7 @@ export default (() => {
             <meta property="og:image" content={ogImageDefaultPath} />
             <meta property="og:image:secure_url" content={ogImageDefaultPath} />
             <meta property="og:image:url" content={ogImageDefaultPath} />
+            <link rel="image_src" href={ogImageDefaultPath} />
             <meta name="twitter:image" content={ogImageDefaultPath} />
             <meta name="twitter:image:alt" content={title} />
             <meta property="og:image:type" content={`image/${ogImageMime}`} />
