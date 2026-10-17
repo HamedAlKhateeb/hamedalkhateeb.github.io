@@ -56,6 +56,13 @@
   --nb-shadow-hover: 5px 5px 0 0 var(--nb-line);
   --nb-main: #e5a822;
   --nb-main-hover: #f6c445;
+  --darkgray: #f5f5f4;
+  --dark: #fafaf9;
+  --secondary: #fbbf24;
+  --tertiary: #f59e0b;
+  --light: #141413;
+  --lightgray: #292524;
+  --gray: #a8a29e;
 }
 
 body,
@@ -1982,43 +1989,52 @@ html[lang="ar"] {
 }
 
 // Dark Mode Support for Arabic Pages
-html[lang="ar"][saved-theme="dark"] {
-  --light: #161617;
-  --lightgray: #393639;
-  --gray: #646464;
-  --darkgray: #d4d4d4;
-  --dark: #ebebec;
-  --secondary: #7b97aa;
-  --tertiary: #84a59d;
-  --highlight: rgba(143, 159, 169, 0.12);
-  --textHighlight: #b3aa0266;
+html[lang="ar"][saved-theme="dark"],
+:root[saved-theme="dark"] {
+  --light: #141413;
+  --lightgray: #292524;
+  --gray: #a8a29e;
+  --darkgray: #f5f5f4;
+  --dark: #fafaf9;
+  --color-ink: #f5f5f4;
+  --color-ink-muted: #a8a29e;
+  --secondary: #fbbf24;
+  --tertiary: #f59e0b;
+  --highlight: rgba(251, 191, 36, 0.15);
+  --textHighlight: #fbbf2488;
+  --site-bg: #141413;
+  --container-bg: #1c1c1b;
+  --color-surface: #141413;
+  --color-surface-elevated: #1c1c1b;
+  --color-field: #242220;
 
-  .center > article {
-    background-color: #1a1a1c !important;
-    border-color: rgba(255, 255, 255, 0.05) !important;
+  .center > article,
+  .post-single-card {
+    background-color: #1c1c1b !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
   }
 
   blockquote {
-    background-color: rgba(255, 255, 255, 0.02) !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
   }
 
   .magazine-card {
-    background-color: #1a1a1c !important;
-    border-color: rgba(255, 255, 255, 0.08) !important;
+    background-color: #1c1c1b !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
   }
   .magazine-card.poetry-card {
     background-color: #1f1f22 !important;
-    border-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
   }
   .card-poem-preview {
-    background-color: rgba(255, 255, 255, 0.02);
-    border-color: rgba(255, 255, 255, 0.04);
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
   }
   .card-poem-preview .card-hemistich {
-    color: var(--darkgray) !important;
+    color: var(--darkgray, #f5f5f4) !important;
   }
   .card-poem-preview .card-hemistich.first {
-    border-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
   }
 }
 
@@ -4848,6 +4864,7 @@ body:has(.alfarhan-home-container) {
   font-family: var(--font-arabic, "Amiri", serif) !important;
   font-size: var(--main-font-size, 19px) !important;
   line-height: var(--main-line-height, 1.8) !important;
+  color: var(--color-ink, #1a1a1a);
 }
 
 .rq-container,
@@ -4893,23 +4910,53 @@ body:has(.alfarhan-home-container) {
   }
 }
 
-:root[saved-theme="dark"] {
+:root[saved-theme="dark"],
+[saved-theme="dark"] {
+  .post-content,
+  .post-content p,
+  .post-content li,
+  .post-content blockquote,
+  .shadhra-raw-content,
+  .shadhra-raw-content p,
+  .shadhra-raw-content li,
+  .shadhra-raw-content blockquote,
+  .micro-body,
+  .micro-body p {
+    color: #f5f5f4 !important;
+  }
+
+  .post-single-title,
+  .article-title,
+  .post-content h1,
+  .post-content h2,
+  .post-content h3,
+  .post-content h4,
+  .post-content h5,
+  .post-content h6 {
+    color: #fafaf9 !important;
+  }
+
+  .post-single-card {
+    background: var(--container-bg, #1c1c1b) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+  }
+
   .post-content,
   .page-content,
   .shadhra-raw-content,
   .micro-body {
     a:not([role="anchor"]):not(.tag-item):not(.tag-link) {
-      color: var(--secondary, #fbbf24);
+      color: var(--secondary, #fbbf24) !important;
       text-decoration-color: rgba(251, 191, 36, 0.45);
 
       &:hover {
-        color: var(--tertiary, #f59e0b);
+        color: var(--tertiary, #f59e0b) !important;
         text-decoration-color: var(--tertiary, #f59e0b);
       }
     }
 
     a.internal:not([role="anchor"]):not(:has(> img)) {
-      color: var(--secondary, #fbbf24);
+      color: var(--secondary, #fbbf24) !important;
       border-bottom-color: rgba(251, 191, 36, 0.45);
 
       &:hover {

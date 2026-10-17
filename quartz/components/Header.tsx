@@ -125,12 +125,16 @@ function initReadingSettings() {
       return;
     }
     try {
-      const savedSiteBg = localStorage.getItem("user-site-bg") || "#f4f0ea";
-      applySiteBg(savedSiteBg);
+      const savedSiteBg = localStorage.getItem("user-site-bg");
+      if (savedSiteBg) {
+        applySiteBg(savedSiteBg, false);
+      }
     } catch (_) {}
     try {
-      const savedContainerBg = localStorage.getItem("user-container-bg") || "#ffffff";
-      applyContainerBg(savedContainerBg);
+      const savedContainerBg = localStorage.getItem("user-container-bg");
+      if (savedContainerBg) {
+        applyContainerBg(savedContainerBg, false);
+      }
     } catch (_) {}
     try {
       const savedFont = localStorage.getItem("user-font-family") || "amiri";
@@ -153,17 +157,27 @@ function initReadingSettings() {
   }
 
   // 1. Site Background
-  const applySiteBg = (bg) => {
+  const applySiteBg = (bg, save = true) => {
     document.documentElement.style.setProperty("--site-bg", bg);
     if (document.body) document.body.style.setProperty("--site-bg", bg);
-    try { localStorage.setItem("user-site-bg", bg); } catch (_) {}
+    if (save) {
+      try { localStorage.setItem("user-site-bg", bg); } catch (_) {}
+    }
     if (bg === "#181816") {
       document.documentElement.setAttribute("saved-theme", "dark");
       try { localStorage.setItem("theme", "dark"); } catch (_) {}
+      const curContainer = localStorage.getItem("user-container-bg");
+      if (!curContainer || curContainer === "#ffffff" || curContainer === "#fdfbf7" || curContainer === "#f7f1e1") {
+        applyContainerBg("#22201d", save);
+      }
     } else {
       if (document.documentElement.getAttribute("saved-theme") === "dark") {
         document.documentElement.setAttribute("saved-theme", "light");
         try { localStorage.setItem("theme", "light"); } catch (_) {}
+      }
+      const curContainer = localStorage.getItem("user-container-bg");
+      if (curContainer === "#22201d") {
+        applyContainerBg("#ffffff", save);
       }
     }
     document.querySelectorAll(".site-bg-btn").forEach((b) => {
@@ -180,10 +194,12 @@ function initReadingSettings() {
   });
 
   // 2. Container Background
-  const applyContainerBg = (bg) => {
+  const applyContainerBg = (bg, save = true) => {
     document.documentElement.style.setProperty("--container-bg", bg);
     if (document.body) document.body.style.setProperty("--container-bg", bg);
-    try { localStorage.setItem("user-container-bg", bg); } catch (_) {}
+    if (save) {
+      try { localStorage.setItem("user-container-bg", bg); } catch (_) {}
+    }
     if (bg === "transparent") {
       document.documentElement.style.setProperty("--container-border", "none");
       document.documentElement.style.setProperty("--container-shadow", "none");
@@ -195,6 +211,43 @@ function initReadingSettings() {
       b.classList.toggle("active", b.getAttribute("data-container-bg") === bg);
     });
   };
+
+  // Sync reading-settings swatches and clear inline overrides when theme changes externally
+  const onThemeChange = (e) => {
+    const theme = e.detail && e.detail.theme ? e.detail.theme : document.documentElement.getAttribute("saved-theme");
+    if (theme === "dark") {
+      document.documentElement.style.removeProperty("--site-bg");
+      if (document.body) document.body.style.removeProperty("--site-bg");
+      document.documentElement.style.removeProperty("--container-bg");
+      if (document.body) document.body.style.removeProperty("--container-bg");
+      try {
+        localStorage.removeItem("user-site-bg");
+        localStorage.removeItem("user-container-bg");
+      } catch (_) {}
+      document.querySelectorAll(".site-bg-btn").forEach((b) => {
+        b.classList.toggle("active", b.getAttribute("data-site-bg") === "#181816");
+      });
+      document.querySelectorAll(".container-bg-btn").forEach((b) => {
+        b.classList.toggle("active", b.getAttribute("data-container-bg") === "#22201d");
+      });
+    } else if (theme === "light") {
+      document.documentElement.style.removeProperty("--site-bg");
+      if (document.body) document.body.style.removeProperty("--site-bg");
+      document.documentElement.style.removeProperty("--container-bg");
+      if (document.body) document.body.style.removeProperty("--container-bg");
+      try {
+        localStorage.removeItem("user-site-bg");
+        localStorage.removeItem("user-container-bg");
+      } catch (_) {}
+      document.querySelectorAll(".site-bg-btn").forEach((b) => {
+        b.classList.toggle("active", b.getAttribute("data-site-bg") === "#f4f0ea");
+      });
+      document.querySelectorAll(".container-bg-btn").forEach((b) => {
+        b.classList.toggle("active", b.getAttribute("data-container-bg") === "#ffffff");
+      });
+    }
+  };
+  track(document, "themechange", onThemeChange);
 
   document.querySelectorAll(".container-bg-btn").forEach((b) => {
     const h = (e) => {
